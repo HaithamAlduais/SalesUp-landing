@@ -2550,6 +2550,94 @@ html[dir='ltr'] .article-progress-bar { transform-origin: left; }
   transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease;
 }
 .article-back:hover {
+/* ===== screen:platform ===== */
+
+.platform-hero {
+  position: relative;
+  min-height: min(78vh, 900px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 16px 110px;
+}
+
+.platform-fx {
+  /* reaches up behind the transparent header like the landing hero;
+     static gradient doubles as the no-WebGPU fallback */
+  position: absolute;
+  inset: -86px 0 0 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 8%, #eafaf2 0%, #ffffff 72%);
+  mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+}
+
+.platform-copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 933px;
+  text-align: center;
+}
+
+.platform-eyebrow {
+  color: var(--eyebrow);
+  font-size: clamp(17px, 1.7vw, 24px);
+  font-weight: 400;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+}
+
+.platform-copy h1 {
+  color: var(--green);
+  font-size: clamp(64px, 9vw, 120px);
+  font-weight: 700;
+  line-height: 1.15;
+  filter: drop-shadow(0 0 24px rgba(255, 255, 255, 0.9));
+}
+
+.platform-desc {
+  color: var(--ink);
+  font-size: clamp(17px, 1.8vw, 24px);
+  font-weight: 400;
+  max-width: 680px;
+}
+
+.platform-actions {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* the primary button sizes to its label — one line, never wraps */
+.platform-actions .button--dark {
+  width: auto;
+  min-width: 251px;
+  padding-inline: 40px;
+  white-space: nowrap;
+}
+
+.platform-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 62px;
+  padding: 0 28px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(4, 203, 121, 0.5);
+  background: rgba(255, 255, 255, 0.55);
+  color: #039458;
+  font-size: clamp(17px, 1.4vw, 20px);
+  font-weight: 700;
+  transition: background-color 240ms ease, color 240ms ease, border-color 240ms ease;
+}
+.platform-ghost:hover {
   background: var(--green);
   border-color: var(--green);
   color: #fff;
@@ -2771,4 +2859,65 @@ html[dir='ltr'] .related-card:hover .cta-arrow { transform: scaleX(-1) translate
   .related-card { padding: 24px 18px; }
   .related-icon { height: 76px; }
   .related-card h3 { font-size: 17px; }
+.platform-ghost:hover .cta-arrow { transform: translateX(-4px); }
+html[dir='ltr'] .platform-ghost:hover .cta-arrow { transform: scaleX(-1) translateX(-4px); }
+
+.platform-star {
+  position: absolute;
+  z-index: 0;
+  width: 46px;
+  height: 48px;
+  opacity: 0.85;
+  pointer-events: none;
+  animation: platform-float 7s ease-in-out infinite;
+}
+.platform-star--a { right: 14%; top: 18%; transform: rotate(24deg); }
+.platform-star--b {
+  left: 11%;
+  bottom: 26%;
+  width: 30px;
+  height: 31px;
+  transform: rotate(-18deg);
+  animation-delay: 2.2s;
+}
+
+@keyframes platform-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -14px; }
+}
+
+/* dark theme */
+[data-theme='dark'] .platform-fx {
+  background: radial-gradient(120% 90% at 50% 8%, #11393a 0%, #0b1b1c 72%);
+}
+[data-theme='dark'] .platform-eyebrow {
+  color: rgba(232, 246, 239, 0.35);
+  filter: none;
+}
+[data-theme='dark'] .platform-copy h1 {
+  filter: drop-shadow(0 0 26px rgba(4, 203, 121, 0.35));
+}
+[data-theme='dark'] .platform-desc { color: #cfe9dd; }
+[data-theme='dark'] .platform-ghost {
+  background: rgba(11, 27, 28, 0.4);
+  color: #35e3ad;
+}
+[data-theme='dark'] .platform-ghost:hover {
+  background: var(--green);
+  color: #06231c;
+}
+
+/* mobile */
+@media (max-width: 700px) {
+  .platform-hero { min-height: 62vh; padding-bottom: 80px; }
+  .platform-copy h1 { font-size: clamp(56px, 17vw, 76px); }
+  .platform-actions { gap: 14px; }
+  .platform-actions .button--dark { min-width: 210px; padding-inline: 28px; }
+  .platform-ghost { height: 54px; padding: 0 22px; }
+  .platform-star--a { right: 6%; top: 12%; }
+  .platform-star--b { left: 5%; bottom: 18%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .platform-star { animation: none; }
 }
