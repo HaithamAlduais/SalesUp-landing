@@ -15,7 +15,7 @@ function BlogIndex() {
 
   const q = query.trim().toLowerCase()
   const posts = BLOG_POSTS.filter((p) =>
-    q === '' ? true : (lang === 'ar' ? p.titleAr : p.titleEn).toLowerCase().includes(q)
+    q === '' ? true : (lang === 'ar' ? p.title.ar : p.title.en).toLowerCase().includes(q)
   )
 
   return (
@@ -53,7 +53,7 @@ function BlogIndex() {
               {COARSE_POINTER ? <InViewFx variant={p.fx} /> : <CardFx variant={p.fx} />}
               <div className="blog-card-inner">
                 <img className="blog-card-icon" src={p.icon} alt="" loading="lazy" />
-                <h3>{lang === 'ar' ? p.titleAr : p.titleEn}</h3>
+                <h3>{lang === 'ar' ? p.title.ar : p.title.en}</h3>
                 <span className="sector-cta" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
                   {L('اقرأ المقال', 'Read Article')}
                   <svg className="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
