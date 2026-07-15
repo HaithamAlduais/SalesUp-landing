@@ -1965,3 +1965,272 @@ html[dir='ltr'] .featured-badge { right: auto; left: 20px; }
   .marquee-track { animation: none; }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
 }
+
+/* ===== screen:services ===== */
+
+.svc-section {
+  width: min(var(--content), 100% - 32px);
+  margin-inline: auto;
+  padding-top: 130px;
+  padding-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+/* index = card deck: each panel pins below the header and the next
+   card slides up over it (pure sticky — mobile-native, no libraries).
+   Cascade offsets leave a visible edge of every pinned card. */
+.svc-section--deck {
+  padding-top: 130px;
+  gap: 64px;
+}
+
+.svc-deck {
+  display: flex;
+  flex-direction: column;
+}
+
+.svc-panel {
+  position: sticky;
+  top: calc(96px + var(--i, 0) * 14px);
+  height: min(70vh, 620px);
+  margin-bottom: 28px;
+  border-radius: 22px;
+  border: 1px solid rgba(230, 230, 230, 0.55);
+  background: rgba(255, 255, 255, 0.99);
+  box-shadow:
+    0 -20px 44px -28px rgba(19, 63, 64, 0.35),
+    var(--card-shadow);
+  overflow: clip;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.svc-panel:last-child { margin-bottom: 0; }
+
+.svc-panel-index {
+  position: absolute;
+  z-index: 1;
+  top: 18px;
+  inset-inline-start: 26px;
+  color: rgba(4, 203, 121, 0.3);
+  font-size: clamp(34px, 4vw, 56px);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.svc-panel-copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+}
+
+.svc-icon {
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+}
+
+.svc-panel h3 {
+  color: var(--ink);
+  font-size: clamp(24px, 2.4vw, 32px);
+  font-weight: 700;
+}
+
+.svc-panel-copy > p {
+  color: var(--ink);
+  font-size: clamp(16px, 1.7vw, 23px);
+  font-weight: 400;
+  max-width: 560px;
+  opacity: 0.92;
+}
+
+.svc-cta {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 24px;
+  border-radius: 999px;
+  border: 1px solid var(--green);
+  background: linear-gradient(0deg, #133f40 0%, #177e6f 100%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 240ms ease;
+}
+.svc-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(7, 108, 97, 0.3);
+}
+.svc-cta:hover .cta-arrow { transform: translateX(-4px); }
+html[dir='ltr'] .svc-cta:hover .cta-arrow { transform: scaleX(-1) translateX(-4px); }
+
+/* detail heading (Figma 5:1835) — start-aligned, mirrors via dir */
+.svc-detail-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: start;
+}
+.svc-detail-heading .eyebrow {
+  color: var(--eyebrow);
+  font-size: clamp(17px, 1.7vw, 24px);
+}
+.svc-detail-heading h2 {
+  color: var(--green);
+  font-size: clamp(28px, 2.8vw, 40px);
+  font-weight: 700;
+}
+.svc-detail-desc {
+  color: var(--ink);
+  font-size: clamp(16px, 1.7vw, 24px);
+  max-width: 900px;
+}
+
+/* request form panel — reuses .contact-panel surface */
+.svc-request {
+  min-height: 0;
+  padding: 56px clamp(16px, 4vw, 96px);
+}
+.svc-form-intro {
+  color: #fff;
+  font-size: clamp(16px, 1.6vw, 22px);
+  text-align: center;
+}
+.svc-select {
+  width: 100%;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 22px center;
+  background-size: 18px;
+}
+html[dir='ltr'] .svc-select { background-position: right 22px center; }
+.svc-select option { color: var(--ink); background: #fff; }
+
+/* success panel (Figma 5:3609) */
+.svc-success {
+  min-height: 420px;
+  padding: 60px clamp(16px, 5vw, 133px);
+}
+.svc-success-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+.svc-check {
+  width: 46px;
+  height: 46px;
+  color: #a9e8cf;
+}
+.svc-success-inner h2 {
+  color: #fff;
+  font-size: clamp(26px, 2.8vw, 40px);
+  font-weight: 700;
+}
+.svc-success-inner p {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(16px, 1.6vw, 24px);
+  max-width: 700px;
+}
+.svc-success-inner .button {
+  margin-top: 14px;
+  width: auto;
+  padding-inline: 34px;
+}
+
+/* FAQ (Figma 5:1835) — minimal underlined rows */
+.svc-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: start;
+}
+.svc-faq .eyebrow { color: var(--eyebrow); font-size: clamp(15px, 1.4vw, 20px); }
+.svc-faq h2 {
+  color: var(--green);
+  font-size: clamp(24px, 2.4vw, 34px);
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+.svc-faq-list { display: flex; flex-direction: column; }
+.svc-faq-item { border-bottom: 1px solid rgba(19, 63, 64, 0.12); }
+.svc-faq-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 4px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--green);
+  font-size: clamp(17px, 1.7vw, 24px);
+  font-weight: 700;
+  text-align: start;
+}
+.svc-faq-chevron {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  color: var(--green);
+  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.svc-faq-item.is-open .svc-faq-chevron { transform: rotate(180deg); }
+.svc-faq-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 360ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.svc-faq-item.is-open .svc-faq-body { grid-template-rows: 1fr; }
+.svc-faq-body > p {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: clamp(15px, 1.5vw, 21px);
+  padding-inline: 4px;
+}
+.svc-faq-item.is-open .svc-faq-body > p { padding-bottom: 20px; }
+
+/* dark mode */
+[data-theme='dark'] .svc-panel {
+  background: rgba(15, 44, 45, 0.98);
+  border-color: rgba(26, 86, 88, 0.8);
+  box-shadow: 0 -20px 44px -24px rgba(0, 0, 0, 0.7), var(--card-shadow);
+}
+[data-theme='dark'] .svc-panel-index { color: rgba(4, 203, 121, 0.45); }
+[data-theme='dark'] .svc-panel h3,
+[data-theme='dark'] .svc-panel-copy > p,
+[data-theme='dark'] .svc-detail-desc,
+[data-theme='dark'] .svc-faq-body > p {
+  color: #e8f6ef;
+}
+[data-theme='dark'] .svc-faq-item { border-bottom-color: rgba(255, 255, 255, 0.12); }
+
+/* responsive */
+@media (max-width: 980px) {
+  .svc-section { padding-top: 104px; gap: 44px; }
+  .svc-section--deck { gap: 44px; }
+  .svc-panel { top: calc(84px + var(--i, 0) * 10px); height: min(64vh, 560px); margin-bottom: 20px; }
+  .svc-panel-index { font-size: 30px; inset-inline-start: 18px; top: 14px; }
+  .svc-icon { width: 84px; height: 84px; }
+}
+@media (max-width: 700px) {
+  .svc-panel h3 { font-size: 21px; }
+  .svc-panel-copy > p { font-size: 15.5px; }
+  .svc-cta { font-size: 14px; padding: 10px 20px; }
+  .svc-request { padding: 36px 16px; }
+  .svc-success { padding: 44px 16px; }
+}
