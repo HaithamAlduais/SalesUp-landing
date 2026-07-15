@@ -1888,10 +1888,10 @@ html[dir='ltr'] .featured-badge { right: auto; left: 20px; }
 
 .jobs-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   margin-top: 22px;
 }
 
