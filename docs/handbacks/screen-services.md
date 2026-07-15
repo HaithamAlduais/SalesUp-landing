@@ -135,3 +135,34 @@ Verification (matrix re-run):
 - Also observed: `python` on PATH now resolves to a denied
   hermes-agent venv shim (parallel-session side effect?) — used explicit
   tooling instead; audit may want to check the machine's PATH.
+
+## Update 3 — index as a card deck (client direction)
+
+Client shared two scroll-effect references (GSAP cinematic footer;
+Lenis + stacked sticky sections) and asked for a "card wheel" done our
+way. Decisions:
+
+- Adopted the **stacked sticky deck** for the index: each service panel
+  `position: sticky` pins below the header at a cascading offset
+  (96px + i×14 desktop / 84px + i×10 mobile) while the next card slides
+  up over it. Pure CSS sticky — NO GSAP/Lenis (zero new deps; native on
+  mobile; no scroll hijacking). Replaces the crossfade story from
+  Update 2 (simpler: no scroll math, no dots).
+- Each panel: numbered 01-06 ghost index, icon, copy, permanent CTA,
+  and its ActiveFx shader driven by an in-view observer that DEFAULTS
+  TRUE (visible even with degraded observer delivery; healthy browsers
+  reclaim offscreen GPU). Worst case all 6 scenes mount (~8 devices
+  page-wide) — within browser caps; audit may tighten if needed.
+- The cinematic-footer reference (giant wordmark, magnetic pills) was
+  deliberately NOT implemented here — footer is shared-shell/hub scope
+  (and main already carries a MegaLogoFx footer treatment).
+
+Verification (DOM-based; pane screenshots still dead):
+- tsc clean. Desktop 1440: panels pin at 96/110/124 with the next card
+  mid-slide (544) — cascade formula exact; indices 01-06; no h-scroll.
+- Mobile 375: panels pin at 84/94/104/114, next at 558 — deck works
+  natively; all six fx layers `is-on` with canvases mounted.
+- Mid-pass the session dev server on 5174 DIED (cause unknown —
+  parallel-session contention suspected); restarted via preview_start.
+  Audit: re-verify visually on a healthy pane, and watch for the
+  hermes-agent python PATH shim + server reaping on this machine.

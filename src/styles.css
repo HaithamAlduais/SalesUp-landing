@@ -1848,63 +1848,49 @@ html[dir='ltr'] .featured-badge { right: auto; left: 20px; }
   gap: 60px;
 }
 
-/* index = sticky story (landing About pattern): one service at a time,
-   its shader revealed by state — visible on desktop AND mobile */
-.svc-section--story {
-  padding-top: 0;
-  gap: 0;
+/* index = card deck: each panel pins below the header and the next
+   card slides up over it (pure sticky — mobile-native, no libraries).
+   Cascade offsets leave a visible edge of every pinned card. */
+.svc-section--deck {
+  padding-top: 130px;
+  gap: 64px;
 }
 
-.svc-track {
-  height: 520vh;
-  width: 100%;
-}
-
-.svc-viewport {
-  position: sticky;
-  top: 0;
-  min-height: 100vh;
+.svc-deck {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(32px, 5vh, 60px);
 }
 
-.svc-stage {
-  position: relative;
-  width: 100%;
-  height: min(400px, 48vh);
-}
-
-.svc-slide {
-  position: absolute;
-  inset: 0;
+.svc-panel {
+  position: sticky;
+  top: calc(96px + var(--i, 0) * 14px);
+  height: min(70vh, 620px);
+  margin-bottom: 28px;
   border-radius: 22px;
-  border: 1px solid rgba(230, 230, 230, 0.5);
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(230, 230, 230, 0.55);
+  background: rgba(255, 255, 255, 0.99);
+  box-shadow:
+    0 -20px 44px -28px rgba(19, 63, 64, 0.35),
+    var(--card-shadow);
   overflow: clip;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transform: translateY(56px) scale(0.97);
-  transition: opacity 520ms ease, transform 520ms cubic-bezier(0.22, 0.9, 0.3, 1);
-  pointer-events: none;
+}
+.svc-panel:last-child { margin-bottom: 0; }
+
+.svc-panel-index {
+  position: absolute;
+  z-index: 1;
+  top: 18px;
+  inset-inline-start: 26px;
+  color: rgba(4, 203, 121, 0.3);
+  font-size: clamp(34px, 4vw, 56px);
+  font-weight: 700;
+  line-height: 1;
 }
 
-.svc-slide.is-active {
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
-}
-
-.svc-slide.is-passed {
-  transform: translateY(-44px) scale(0.97);
-}
-
-.svc-slide-copy {
+.svc-panel-copy {
   position: relative;
   z-index: 1;
   display: flex;
@@ -1921,13 +1907,13 @@ html[dir='ltr'] .featured-badge { right: auto; left: 20px; }
   object-fit: contain;
 }
 
-.svc-slide h3 {
+.svc-panel h3 {
   color: var(--ink);
   font-size: clamp(24px, 2.4vw, 32px);
   font-weight: 700;
 }
 
-.svc-slide-copy > p {
+.svc-panel-copy > p {
   color: var(--ink);
   font-size: clamp(16px, 1.7vw, 23px);
   font-weight: 400;
@@ -1956,28 +1942,6 @@ html[dir='ltr'] .featured-badge { right: auto; left: 20px; }
 }
 .svc-cta:hover .cta-arrow { transform: translateX(-4px); }
 html[dir='ltr'] .svc-cta:hover .cta-arrow { transform: scaleX(-1) translateX(-4px); }
-
-.svc-dots {
-  position: absolute;
-  left: 50%;
-  bottom: -34px;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-}
-
-.svc-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 99px;
-  background: rgba(4, 203, 121, 0.22);
-  transition: background-color 300ms ease, width 300ms ease;
-}
-
-.svc-dot.is-active {
-  width: 30px;
-  background: var(--green);
-}
 
 /* detail heading (Figma 5:1835) — start-aligned, mirrors via dir */
 .svc-detail-heading {
@@ -2111,32 +2075,31 @@ html[dir='ltr'] .svc-select { background-position: right 22px center; }
 .svc-faq-item.is-open .svc-faq-body > p { padding-bottom: 20px; }
 
 /* dark mode */
-[data-theme='dark'] .svc-slide {
-  background: rgba(17, 57, 58, 0.72);
+[data-theme='dark'] .svc-panel {
+  background: rgba(15, 44, 45, 0.98);
   border-color: rgba(26, 86, 88, 0.8);
+  box-shadow: 0 -20px 44px -24px rgba(0, 0, 0, 0.7), var(--card-shadow);
 }
-[data-theme='dark'] .svc-slide h3,
-[data-theme='dark'] .svc-slide-copy > p,
+[data-theme='dark'] .svc-panel-index { color: rgba(4, 203, 121, 0.45); }
+[data-theme='dark'] .svc-panel h3,
+[data-theme='dark'] .svc-panel-copy > p,
 [data-theme='dark'] .svc-detail-desc,
 [data-theme='dark'] .svc-faq-body > p {
   color: #e8f6ef;
 }
-[data-theme='dark'] .svc-dot { background: rgba(4, 203, 121, 0.25); }
-[data-theme='dark'] .svc-dot.is-active { background: var(--green); }
 [data-theme='dark'] .svc-faq-item { border-bottom-color: rgba(255, 255, 255, 0.12); }
 
 /* responsive */
 @media (max-width: 980px) {
   .svc-section { padding-top: 104px; gap: 44px; }
-  .svc-section--story { padding-top: 0; gap: 0; }
-  .svc-track { height: 480vh; }
-  .svc-viewport { gap: 28px; }
-  .svc-stage { height: min(360px, 52vh); }
+  .svc-section--deck { gap: 44px; }
+  .svc-panel { top: calc(84px + var(--i, 0) * 10px); height: min(64vh, 560px); margin-bottom: 20px; }
+  .svc-panel-index { font-size: 30px; inset-inline-start: 18px; top: 14px; }
   .svc-icon { width: 84px; height: 84px; }
 }
 @media (max-width: 700px) {
-  .svc-slide h3 { font-size: 21px; }
-  .svc-slide-copy > p { font-size: 15.5px; }
+  .svc-panel h3 { font-size: 21px; }
+  .svc-panel-copy > p { font-size: 15.5px; }
   .svc-cta { font-size: 14px; padding: 10px 20px; }
   .svc-request { padding: 36px 16px; }
   .svc-success { padding: 44px 16px; }
