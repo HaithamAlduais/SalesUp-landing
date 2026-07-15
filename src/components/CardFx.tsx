@@ -3,12 +3,15 @@ import {
   Shader,
   Blob,
   ChromaFlow,
+  CursorRipples,
   Dither,
   FilmGrain,
   FlutedGlass,
+  SolidColor,
   Stretch,
   Stripes,
   Swirl,
+  WaveDistortion,
 } from 'shaders/react'
 
 const fillStyle = { position: 'absolute', inset: 0, width: '100%', height: '100%' } as const
@@ -243,6 +246,50 @@ export function InViewFx({ variant }: { variant: number }) {
     <div className="card-fx card-fx--inview" ref={ref} aria-hidden="true">
       {on ? <Scene variant={variant} /> : null}
     </div>
+  )
+}
+
+/*
+ * Footer mega-logo scene (user-specified structure: SolidColor base +
+ * Swirl + mouse-following Blob + WaveDistortion + CursorRipples +
+ * FilmGrain, retuned to SalesUp colors). Rendered through a CSS mask of
+ * the SalesUp wordmark, so the giant logo appears filled with living
+ * glass that follows and ripples with the cursor.
+ */
+export function MegaLogoFx({ dark }: { dark: boolean }) {
+  return (
+    <InViewGate margin="160px">
+      <Shader style={fillStyle}>
+        <SolidColor color={dark ? '#0e2e2f' : '#104041'} />
+        <Swirl
+          blend={45}
+          colorA="#04cb79"
+          colorB={dark ? '#0b4844' : '#076c61'}
+          colorSpace="oklab"
+          detail={3.5}
+          speed={0.6}
+        />
+        <Blob
+          blendMode="linearDodge"
+          center={{
+            type: 'mouse-position',
+            reach: 0.55,
+            originX: 0.5,
+            originY: 0.5,
+            momentum: 0.3,
+            smoothing: 0.3,
+          }}
+          colorA="#05ffa6"
+          colorB="#04b76d"
+          deformation={0.9}
+          size={0.15}
+          softness={0.7}
+        />
+        <WaveDistortion angle={23} edges="mirror" frequency={5.1} speed={2.5} strength={0.15} />
+        <CursorRipples chromaticSplit={2} decay={5} intensity={20} radius={0.7} />
+        <FilmGrain strength={0.075} />
+      </Shader>
+    </InViewGate>
   )
 }
 

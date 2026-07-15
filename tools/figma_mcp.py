@@ -18,7 +18,7 @@ def post(payload, session=None):
     if session:
         req.add_header("Mcp-Session-Id", session)
     body = json.dumps(payload).encode()
-    resp = urllib.request.urlopen(req, body, timeout=120)
+    resp = urllib.request.urlopen(req, body, timeout=420)
     sid = resp.headers.get("Mcp-Session-Id", session)
     raw = resp.read().decode("utf-8", "replace")
     if raw.lstrip().startswith("{"):
