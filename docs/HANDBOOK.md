@@ -44,6 +44,10 @@ page already departs from Figma with approved patterns — reuse them.
 - `src/shared/theme.tsx` — `useTheme` (View-Transitions circular reveal),
   `ThemeToggle`, `usePageTheme`.
 - `src/shared/ui.tsx` — `CountUp` (3.6s ease-out), `PagePlaceholder`.
+- `src/shared/Select.tsx` — the design-system dropdown. Use it for ALL
+  form dropdowns (never a bare native `<select>` — its options list is
+  unstylable browser chrome). Full keyboard + listbox ARIA + hidden
+  required-value carrier for native validation.
 - `src/components/CardFx.tsx` — ALL WebGL scenes (shaders.com `shaders`
   npm package, WebGPU-only):
   - `HeroFx({dark})` — Swirl+ChromaFlow+FlutedGlass+FilmGrain, cursor

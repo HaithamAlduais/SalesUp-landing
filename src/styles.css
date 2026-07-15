@@ -946,12 +946,11 @@ h1, h2, h3, p { margin: 0; }
   opacity: 0.32;
 }
 
-/* explicit button affordance */
+/* the CTA is the ONLY link; it appears with the reveal (open state,
+   desktop hover, or keyboard focus) */
 .sector-cta {
   position: relative;
   z-index: 2;
-}
-.sector-cta {
   margin-top: 14px;
   display: inline-flex;
   align-items: center;
@@ -963,7 +962,40 @@ h1, h2, h3, p { margin: 0; }
   color: #039458;
   font-size: 16px;
   font-weight: 700;
-  transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition:
+    opacity 260ms ease,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease;
+}
+
+.sector-card.is-open .sector-cta,
+.sector-card:focus-within .sector-cta {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* desktop: hovering alone reveals the content and the button */
+@media (hover: hover) {
+  .sector-card:hover .sector-cta {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .sector-card:hover .sector-icon {
+    width: 58px;
+    height: 58px;
+  }
+  .sector-card:hover .sector-desc {
+    max-height: 96px;
+    opacity: 1;
+    margin-block: 4px 2px;
+  }
 }
 
 .cta-arrow {
@@ -1413,6 +1445,100 @@ h1, h2, h3, p { margin: 0; }
 .form-status {
   color: rgba(255, 255, 255, 0.8);
   font-size: 16px;
+}
+
+/* ---------- design-system dropdown (shared/Select.tsx) ---------- */
+
+.su-select {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.su-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  text-align: start;
+  cursor: pointer;
+}
+.su-select-trigger.is-placeholder .su-select-label {
+  color: rgba(255, 255, 255, 0.39);
+}
+.su-select-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.su-select-chevron {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  opacity: 0.8;
+  transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.su-select.is-open .su-select-chevron { transform: rotate(180deg); }
+
+.su-select-list {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  background: rgba(13, 36, 37, 0.96);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.5);
+  max-height: 280px;
+  overflow: auto;
+  opacity: 0;
+  transform: translateY(-6px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 260ms cubic-bezier(0.32, 0.72, 0, 1), visibility 0s 200ms;
+}
+.su-select.is-open .su-select-list {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 200ms ease, transform 260ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.su-select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px 16px;
+  border-radius: 12px;
+  color: #e8f6ef;
+  font-size: clamp(16px, 1.4vw, 19px);
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+.su-select-option.is-hi { background: rgba(4, 203, 121, 0.16); }
+.su-select-option.is-selected { color: #35e3ad; font-weight: 600; }
+.su-select-check { width: 18px; height: 18px; flex: 0 0 auto; }
+
+/* value carrier: invisible but still natively validatable */
+.su-select-value {
+  position: absolute;
+  bottom: 8px;
+  inset-inline-start: 50%;
+  width: 2px;
+  height: 2px;
+  opacity: 0;
+  border: 0;
+  padding: 0;
+  pointer-events: none;
 }
 
 /* ---------- footer ---------- */

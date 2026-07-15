@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react'
 import { PageShell } from '../shared/PageShell'
 import { useLang } from '../shared/i18n'
 import { usePageTheme } from '../shared/theme'
+import { Select } from '../shared/Select'
 import { ContactFx } from '../components/CardFx'
 import contactGlow from '../assets/contact-glow.svg'
 
@@ -401,27 +402,14 @@ function MarketersApply() {
             </div>
             <div className="mk-form-row">
               <input className="field" name="email" type="email" placeholder={L(T.fEmail.ar, T.fEmail.en)} aria-label={L('الايميل', 'Email')} autoComplete="email" />
-              <span className="mk-select">
-                <select
-                  className="field"
-                  name="plan"
-                  aria-label={type === 'services' ? L('الخدمة', 'Service') : L('الباقة', 'Package')}
-                  defaultValue={options.some((o) => o.key === pick) ? pick : ''}
-                  required
-                >
-                  <option value="" disabled hidden>
-                    {type === 'services' ? L(T.fPickService.ar, T.fPickService.en) : L(T.fPickPackage.ar, T.fPickPackage.en)}
-                  </option>
-                  {options.map((o) => (
-                    <option value={o.key} key={o.key}>
-                      {L(o.name.ar, o.name.en)}
-                    </option>
-                  ))}
-                </select>
-                <svg className="mk-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </span>
+              <Select
+                name="plan"
+                ariaLabel={type === 'services' ? L('الخدمة', 'Service') : L('الباقة', 'Package')}
+                placeholder={type === 'services' ? L(T.fPickService.ar, T.fPickService.en) : L(T.fPickPackage.ar, T.fPickPackage.en)}
+                options={options.map((o) => ({ value: o.key, label: L(o.name.ar, o.name.en) }))}
+                defaultValue={options.some((o) => o.key === pick) ? pick : ''}
+                required
+              />
             </div>
             <div className="mk-form-row">
               <input className="field" name="link" type="url" placeholder={L(T.fLink.ar, T.fLink.en)} aria-label={L('رابط المنتج / الخدمة', 'Product / service link')} required />
