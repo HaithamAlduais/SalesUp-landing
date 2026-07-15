@@ -55,10 +55,12 @@
 ## Known gaps / TODOs for the audit session
 - Load-more button intentionally omitted (see deviations) — confirm with
   client or reinstate when post count grows.
-- Post icons were extracted from card screenshots (white→alpha) because
+- Post icons were extracted from card screenshots because
   `get_design_context` timed out repeatedly under parallel-session load on
   the Figma bridge; quality is good at display size (≤148px) but the hub
-  may re-export originals from Figma at 2× if wanted.
+  may re-export originals from Figma at 2× if wanted. Client flagged a
+  white fringe on dark cards → fixed in commit 5dfdd58 (1px alpha erosion
+  + white de-matting, `o = (c − 255(1−a))/a`), verified fringe-free on dark.
 - `tools/__pycache__/*.pyc` got committed in baseline 627c5c3 (hub-side
   noise, not this branch) — hub should gitignore/remove it.
 
