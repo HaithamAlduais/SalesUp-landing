@@ -1872,6 +1872,12 @@ html[dir='ltr'] .featured-badge { right: auto; left: 20px; }
   box-shadow: 0 16px 36px rgba(4, 203, 121, 0.15);
 }
 
+/* hover reveals the card's WebGL scene (the global reveal rule is
+   scoped to sector cards; svc cards need their own) */
+.svc-card:hover .card-fx {
+  opacity: 0.3;
+}
+
 .svc-card-inner {
   position: relative;
   z-index: 1;

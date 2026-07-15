@@ -66,6 +66,10 @@
 - [x] Console error sweep clean
 - [x] GPU: no permanently-mounted Shader roots (CardFx hover lifecycle,
       InViewFx observer, ContactFx internal gate)
+- Post-review fix: the card hover shaders were mounting but invisible —
+  the global reveal rule is scoped to `.sector-card:hover`; added
+  `.svc-card:hover .card-fx { opacity: 0.3 }` to the services block and
+  re-verified visually (canvas mounts, opacity 0.3, pattern visible).
 - FAQ toggle + submit→success verified by async state assertions
   (open/close per click; success panel replaces form and scrolls top).
 - **Note:** mid-session the Browser pane's screenshot capture began
