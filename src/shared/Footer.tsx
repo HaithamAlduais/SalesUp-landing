@@ -1,8 +1,6 @@
 import { useLang } from './i18n'
 import { usePageTheme } from './theme'
 import { MegaLogoFx } from '../components/CardFx'
-import logoFooter from '../assets/logo-footer.png'
-import logoFooterDark from '../assets/logo-footer-dark.png'
 import social1 from '../assets/social-1.png'
 import social2 from '../assets/social-2.png'
 import social3 from '../assets/social-3.png'
@@ -38,19 +36,11 @@ export function Footer() {
       <div className="footer-inner">
         <div className="footer-grid">
           <div className="footer-brand">
-            <div className="footer-brand-logo">
-              <img className="logo-on-light" src={logoFooter} alt="SalesUp" />
-              <img className="logo-on-dark" src={logoFooterDark} alt="SalesUp" />
-            </div>
-            <p className="footer-tagline">
-              {L('تمكين المبيعات ، خطوة بخطوة', 'Sales enablement, step by step')}
-            </p>
-            <div className="socials" dir="ltr" aria-label={L('حسابات التواصل الاجتماعي', 'Social media accounts')}>
-              {SOCIALS.map((s) => (
-                <a href="#footer" key={s.label} aria-label={s.label}>
-                  <img src={s.src} alt="" width={22} height={22} />
-                </a>
-              ))}
+            {/* the living-glass wordmark, brand-logo sized */}
+            <div className="footer-logo-fx" role="img" aria-label="SalesUp">
+              <div className="footer-logo-fx-inner">
+                <MegaLogoFx dark={dark} />
+              </div>
             </div>
           </div>
 
@@ -95,12 +85,19 @@ export function Footer() {
             <a href="#footer">{L('سياسة الخصوصية', 'Privacy Policy')}</a>
           </div>
         </div>
-      </div>
 
-      {/* giant living-glass wordmark */}
-      <div className="footer-mega" aria-hidden="true">
-        <div className="footer-mega-fx">
-          <MegaLogoFx dark={dark} />
+        {/* closing block: tagline + socials, centered */}
+        <div className="footer-end">
+          <p className="footer-tagline">
+            {L('تمكين المبيعات ، خطوة بخطوة', 'Sales enablement, step by step')}
+          </p>
+          <div className="socials" dir="ltr" aria-label={L('حسابات التواصل الاجتماعي', 'Social media accounts')}>
+            {SOCIALS.map((s) => (
+              <a href="#footer" key={s.label} aria-label={s.label}>
+                <img src={s.src} alt="" width={22} height={22} />
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </footer>
