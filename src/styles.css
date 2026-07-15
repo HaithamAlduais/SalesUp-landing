@@ -1835,3 +1835,163 @@ html[dir='ltr'] .featured-badge { right: auto; left: 20px; }
   .marquee-track { animation: none; }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
 }
+
+
+/* ===== screen:sectors =====
+   Sector pages (Figma 5:1530/5:1944/5:2089/5:2234): heading + icon
+   panel + one-open accordion. All sector-page styles live in this
+   block, including dark-mode and responsive rules. */
+
+.sector-page {
+  width: min(1372px, 100% - 32px);
+  margin-inline: auto;
+  padding-top: 110px;
+  margin-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  min-height: 55vh;
+}
+
+.sector-layout {
+  display: grid;
+  grid-template-columns: 1fr 275px; /* logical: accordion at inline-start, panel at inline-end... mirrored automatically */
+  gap: 16px;
+  align-items: stretch;
+}
+
+/* icon panel (desktop): white card, sector fx behind, icon swaps with
+   a soft entrance when the open sector changes */
+.sector-panel {
+  position: relative;
+  order: 2;
+  border-radius: 22px;
+  border: 1px solid var(--grey-line);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--card-shadow);
+  overflow: clip;
+  display: grid;
+  place-items: center;
+  min-height: 320px;
+}
+
+.sector-panel-icon {
+  position: relative;
+  z-index: 1;
+  width: min(200px, 62%);
+  height: auto;
+  animation: sector-icon-in 480ms cubic-bezier(0.22, 0.9, 0.3, 1);
+}
+
+@keyframes sector-icon-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+
+.sector-accordion {
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sector-acc-item {
+  border-radius: 18px;
+  border: 1px solid var(--grey-line);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--card-shadow);
+  overflow: clip;
+  transition: border-color 250ms ease, box-shadow 250ms ease;
+}
+
+.sector-acc-item.is-open {
+  border-color: rgba(4, 203, 121, 0.45);
+  box-shadow: 0 10px 30px rgba(4, 203, 121, 0.1);
+}
+
+.sector-acc-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 26px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: start;
+  color: var(--ink);
+  font-size: clamp(20px, 1.8vw, 25px);
+  font-weight: 700;
+  transition: color 200ms ease;
+}
+
+.sector-acc-head:hover,
+.sector-acc-item.is-open .sector-acc-head {
+  color: var(--green);
+}
+
+.acc-chevron {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  transition: transform 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sector-acc-item.is-open .acc-chevron { transform: rotate(180deg); }
+
+/* smooth height animation via the grid-rows trick */
+.sector-acc-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 450ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sector-acc-item.is-open .sector-acc-body { grid-template-rows: 1fr; }
+.sector-acc-inner { overflow: hidden; }
+
+.sector-acc-inner p {
+  padding: 0 26px 24px;
+  color: var(--ink);
+  font-size: clamp(16px, 1.4vw, 20px);
+  font-weight: 400;
+  line-height: 1.9;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 350ms ease 120ms, transform 350ms ease 120ms;
+}
+.sector-acc-item.is-open .sector-acc-inner p { opacity: 1; transform: none; }
+
+.sector-acc-icon { display: none; } /* desktop shows the side panel instead */
+
+/* dark mode */
+[data-theme='dark'] .sector-panel,
+[data-theme='dark'] .sector-acc-item {
+  background: rgba(17, 57, 58, 0.72);
+  border-color: rgba(26, 86, 88, 0.8);
+}
+[data-theme='dark'] .sector-acc-item.is-open {
+  border-color: rgba(4, 203, 121, 0.45);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+[data-theme='dark'] .sector-acc-head { color: #e8f6ef; }
+[data-theme='dark'] .sector-acc-head:hover,
+[data-theme='dark'] .sector-acc-item.is-open .sector-acc-head { color: var(--green); }
+[data-theme='dark'] .sector-acc-inner p { color: #cfe9dd; }
+
+/* responsive */
+@media (max-width: 980px) {
+  .sector-page { padding-top: 84px; gap: 40px; }
+  .sector-layout { grid-template-columns: 1fr; }
+  .sector-panel { display: none; } /* the icon moves inline below */
+  .sector-acc-icon {
+    display: block;
+    width: 96px;
+    height: 96px;
+    margin: 2px 26px 12px;
+  }
+}
+
+@media (max-width: 700px) {
+  .sector-acc-head { padding: 16px 18px; font-size: 18px; }
+  .sector-acc-inner p { padding: 0 18px 18px; font-size: 15px; line-height: 1.8; }
+  .sector-acc-icon { width: 80px; height: 80px; margin: 2px 18px 10px; }
+}
