@@ -4,6 +4,7 @@ import { PageShell } from './shared/PageShell'
 import { usePageTheme } from './shared/theme'
 import { useLang } from './shared/i18n'
 import { CountUp } from './shared/ui'
+import { SECTORS } from './pages/SectorPage'
 
 import maskSquiggleL from './assets/mask-squiggle-l.png'
 import maskSquiggleR from './assets/mask-squiggle-r.png'
@@ -211,12 +212,17 @@ function About() {
 
 function Sectors() {
   const { lang, L } = useLang()
+  /* card body toggles a reveal (shader + short description); ONLY the
+     اكتشف القطاع pill navigates — so touch users see the scene before
+     leaving the page */
+  const [open, setOpen] = useState<number | null>(null)
   const cards = [
-    { title: L('فنتك', 'Fintech'), icon: iconFintech, href: '/sectors/fintech' },
-    { title: 'SaaS', icon: iconSaas, href: '/sectors/saas' },
-    { title: L('الوكالات الإعلانية', 'Ad Agencies'), icon: iconAgencies, href: '/sectors/agencies' },
-    { title: L('تقنية المعلومات', 'Information Technology'), icon: iconTech, href: '/sectors/technology' },
+    { slug: 'fintech', title: L('فنتك', 'Fintech'), icon: iconFintech, href: '/sectors/fintech' },
+    { slug: 'saas', title: 'SaaS', icon: iconSaas, href: '/sectors/saas' },
+    { slug: 'agencies', title: L('الوكالات الإعلانية', 'Ad Agencies'), icon: iconAgencies, href: '/sectors/agencies' },
+    { slug: 'technology', title: L('تقنية المعلومات', 'Information Technology'), icon: iconTech, href: '/sectors/technology' },
   ]
+  const toggle = (i: number) => setOpen((cur) => (cur === i ? null : i))
   return (
     <section className="sectors-section" id="sectors">
       <div className="section-heading">
@@ -228,19 +234,38 @@ function Sectors() {
       </div>
       <div className="sector-grid" dir="ltr">
         {cards.map((c, i) => (
-          <a className="sector-card" href={c.href} key={c.href}>
+          <div
+            className={`sector-card${open === i ? ' is-open' : ''}`}
+            key={c.href}
+            role="button"
+            tabIndex={0}
+            aria-expanded={open === i}
+            onClick={() => toggle(i)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                toggle(i)
+              }
+            }}
+          >
             {COARSE_POINTER ? <InViewFx variant={4 + i} /> : <CardFx variant={4 + i} />}
             <div className="sector-card-inner">
               <img className="sector-icon" src={c.icon} alt="" width={134} height={134} />
               <h3>{c.title}</h3>
-              <span className="sector-cta" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+              <p className="sector-desc">{L(SECTORS[c.slug].descAr, SECTORS[c.slug].descEn)}</p>
+              <a
+                className="sector-cta"
+                href={c.href}
+                dir={lang === 'ar' ? 'rtl' : 'ltr'}
+                onClick={(e) => e.stopPropagation()}
+              >
                 {L('اكتشف القطاع', 'Explore Sector')}
                 <svg className="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M19 12H5m0 0 6-6m-6 6 6 6" />
                 </svg>
-              </span>
+              </a>
             </div>
-          </a>
+          </div>
         ))}
       </div>
     </section>
