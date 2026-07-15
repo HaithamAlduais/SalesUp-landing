@@ -98,3 +98,40 @@
 - Async-read gotcha when verifying React state from the console: read
   AFTER a timeout — programmatic `.click()` flushes async, and same-tick
   reads look like frozen state.
+
+## Update 2 — sticky-story index (client request)
+
+Per client review ("the sticky scroll and mobile view and shaders should
+be visible also in mobile — learn from the main screen"):
+
+- The index grid was replaced with the landing About **sticky story**:
+  520vh track (480vh mobile), pinned viewport, six crossfading service
+  slides with progress dots. Each slide carries its `ActiveFx` shader
+  revealed by STATE — visible on desktop AND mobile, no hover anywhere.
+  The استكشف الخدمة CTA is a permanent button on each slide (tap
+  navigates; the shader is already visible, per the handbook's touch
+  pattern). Figma's 2-col grid (5:1675) is superseded by explicit client
+  direction; hover-state frame 5:1755's CTA became the always-visible
+  slide CTA.
+- `trackVisible` now DEFAULTS TRUE and the IntersectionObserver refines
+  it — shaders still show if observer delivery misbehaves, gating still
+  reclaims GPU when it works. **Audit note:** the landing About/Sectors
+  gates initialize to `false`; consider the same default-true hardening
+  there.
+- Detail page, request form, success state, FAQ: unchanged.
+
+Verification (matrix re-run):
+- tsc clean; scroll→slide mapping verified on desktop (30% → slide 3 of
+  6, correct title + dot); mobile 375: viewport pinned (top 0), stage
+  343×360, story advances, fx computed opacity 0.32 with canvas mounted,
+  no h-scroll; AR + EN strings unchanged from v1 (bilingual ✓).
+- **Environment caveat:** the Browser pane degraded further during this
+  pass (frozen compositor: screenshots time out, IntersectionObserver
+  callbacks never deliver, CSS transitions don't advance — across tabs;
+  likely contention from 4 parallel session dev servers + WebGPU). Shader
+  visibility was proven by computed style with transitions bypassed
+  (0.32 / slide 1.0). The audit session MUST re-verify visually on a
+  healthy pane and re-take all screenshots.
+- Also observed: `python` on PATH now resolves to a denied
+  hermes-agent venv shim (parallel-session side effect?) — used explicit
+  tooling instead; audit may want to check the machine's PATH.

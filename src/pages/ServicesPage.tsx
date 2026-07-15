@@ -1,8 +1,8 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import { PageShell } from '../shared/PageShell'
 import { useLang } from '../shared/i18n'
 import { usePageTheme } from '../shared/theme'
-import { CardFx, COARSE_POINTER, ContactFx, InViewFx } from '../components/CardFx'
+import { ActiveFx, ContactFx } from '../components/CardFx'
 
 import iconInsideSales from '../assets/icon-inside-sales.png'
 import iconOutsideSales from '../assets/icon-outside-sales.png'
@@ -138,38 +138,91 @@ const SERVICES: Service[] = [
 
 function ServicesIndex() {
   const { lang, L } = useLang()
+
+  /* sticky story (landing About pattern): one service slide at a time,
+     shader revealed by STATE — visible on every device, no hover */
+  const [active, setActive] = useState(0)
+  /* starts true so the shader shows even if observer delivery is
+     degraded; the observer then refines it to gate GPU offscreen */
+  const [trackVisible, setTrackVisible] = useState(true)
+  const trackRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el = trackRef.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const total = el.offsetHeight - window.innerHeight
+      if (total <= 0) return
+      const progress = Math.min(0.999, Math.max(0, -rect.top / total))
+      setActive(Math.floor(progress * SERVICES.length))
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [])
+
+  /* release the active slide's GPU scene once the story is offscreen */
+  useEffect(() => {
+    const el = trackRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      (entries) => setTrackVisible(entries[0].isIntersecting),
+      { rootMargin: '120px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <section className="svc-section">
-      <div className="section-heading">
-        <p className="eyebrow">{L('الخدمات', 'Services')}</p>
-        <div className="heading-group">
-          <h2>{L('حلول تساعدك ترتّب المبيعات وتفتح فرص نمو أوضح', 'Solutions that organize your sales and open clearer growth opportunities')}</h2>
-          <p className="heading-desc">{L('نشتغل معك حسب احتياجك، سواء كنت تحتاج فريق يدعم مبيعاتك، توليد عملاء محتملين، تطوير عملية البيع، أو حلول تساعدك تقيس وتحسّن الأداء', 'We work around your needs — a team to support your sales, lead generation, sales-process development, or tools to measure and improve performance')}</p>
-        </div>
-      </div>
-      <div className="svc-grid">
-        {SERVICES.map((s) => (
-          <a className="svc-card" href={s.href ?? `/services/${s.slug}`} key={s.slug}>
-            {COARSE_POINTER ? <InViewFx variant={s.fx} /> : <CardFx variant={s.fx} />}
-            {s.badge ? (
-              <span className="featured-badge">
-                {L('جديـــــــد', 'NEW')}
-                <img className="badge-star" src={badgeStar} alt="" />
-              </span>
-            ) : null}
-            <div className="svc-card-inner">
-              <img className="svc-icon" src={s.icon} alt="" width={96} height={96} />
-              <h3 lang={s.latin ? 'en' : undefined}>{L(s.ar, s.en)}</h3>
-              <p>{L(s.descAr, s.descEn)}</p>
-              <span className="svc-cta" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
-                {L('استكشف الخدمة', 'Explore Service')}
-                <svg className="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M19 12H5m0 0 6-6m-6 6 6 6" />
-                </svg>
-              </span>
+    <section className="svc-section svc-section--story">
+      <div className="svc-track" ref={trackRef}>
+        <div className="svc-viewport">
+          <div className="section-heading">
+            <p className="eyebrow">{L('الخدمات', 'Services')}</p>
+            <div className="heading-group">
+              <h2>{L('حلول تساعدك ترتّب المبيعات وتفتح فرص نمو أوضح', 'Solutions that organize your sales and open clearer growth opportunities')}</h2>
+              <p className="heading-desc">{L('نشتغل معك حسب احتياجك، سواء كنت تحتاج فريق يدعم مبيعاتك، توليد عملاء محتملين، تطوير عملية البيع، أو حلول تساعدك تقيس وتحسّن الأداء', 'We work around your needs — a team to support your sales, lead generation, sales-process development, or tools to measure and improve performance')}</p>
             </div>
-          </a>
-        ))}
+          </div>
+          <div className="svc-stage">
+            {SERVICES.map((s, i) => (
+              <article
+                className={`svc-slide${i === active ? ' is-active' : ''}${i < active ? ' is-passed' : ''}`}
+                key={s.slug}
+                aria-hidden={i !== active}
+              >
+                <ActiveFx variant={s.fx} active={i === active && trackVisible} />
+                {s.badge ? (
+                  <span className="featured-badge">
+                    {L('جديـــــــد', 'NEW')}
+                    <img className="badge-star" src={badgeStar} alt="" />
+                  </span>
+                ) : null}
+                <div className="svc-slide-copy">
+                  <img className="svc-icon" src={s.icon} alt="" width={104} height={104} />
+                  <h3 lang={s.latin ? 'en' : undefined}>{L(s.ar, s.en)}</h3>
+                  <p>{L(s.descAr, s.descEn)}</p>
+                  <a className="svc-cta" href={s.href ?? `/services/${s.slug}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+                    {L('استكشف الخدمة', 'Explore Service')}
+                    <svg className="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M19 12H5m0 0 6-6m-6 6 6 6" />
+                    </svg>
+                  </a>
+                </div>
+              </article>
+            ))}
+            <div className="svc-dots" dir="ltr" role="presentation">
+              {SERVICES.map((s, i) => (
+                <span className={`svc-dot${i === active ? ' is-active' : ''}`} key={s.slug} />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   )
