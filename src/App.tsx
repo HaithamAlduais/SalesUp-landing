@@ -1,5 +1,5 @@
 import { CSSProperties, FormEvent, useEffect, useRef, useState } from 'react'
-import { ActiveFx, CardFx, COARSE_POINTER, ContactFx, HeroFx, InViewFx } from './components/CardFx'
+import { ActiveFx, COARSE_POINTER, ContactFx, HeroFx, InViewFx } from './components/CardFx'
 import { PageShell } from './shared/PageShell'
 import { usePageTheme } from './shared/theme'
 import { useLang } from './shared/i18n'
@@ -248,7 +248,9 @@ function Sectors() {
               }
             }}
           >
-            {COARSE_POINTER ? <InViewFx variant={4 + i} /> : <CardFx variant={4 + i} />}
+            {/* ambient scene on every device — softly on while the card
+                is on screen; hover/open intensifies it */}
+            <InViewFx variant={4 + i} />
             <div className="sector-card-inner">
               <img className="sector-icon" src={c.icon} alt="" width={134} height={134} />
               <h3>{c.title}</h3>

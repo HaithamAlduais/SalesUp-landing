@@ -1819,6 +1819,12 @@ html[dir='ltr'] .featured-badge { right: auto; left: 20px; }
   opacity: 0.26;
 }
 
+/* sector cards: the ambient scene is on for every pointer type at
+   rest; hover/open rules below intensify it */
+.sector-card .card-fx--inview {
+  opacity: 0.2;
+}
+
 /* card content sits above the fx layer */
 .sector-card-inner {
   z-index: 1;
