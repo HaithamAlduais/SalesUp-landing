@@ -70,6 +70,12 @@ if __name__ == "__main__":
         print("NO RESPONSE")
         sys.exit(1)
     content = res.get("result", {}).get("content", [])
+    images = [c for c in content if c.get("type") == "image"]
+    if images and out:
+        import base64
+        open(out, "wb").write(base64.b64decode(images[0].get("data", "")))
+        print(f"wrote {out} (image)")
+        sys.exit(0)
     text = "\n".join(c.get("text", "") for c in content if c.get("type") == "text")
     if not text and content:
         text = json.dumps(content)[:2000]
