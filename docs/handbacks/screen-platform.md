@@ -60,6 +60,13 @@
   hover states). **Hub: please re-take the 8-state screenshot matrix
   during the merge audit.**
 
+## Client-review revisions applied
+- 2026-07-15: actions stacked vertically (ghost CTA under the primary
+  button) and the primary button now sizes to its label on one line
+  (`width: auto` + `white-space: nowrap`, min-width preserved) — client
+  feedback on the EN label wrapping. Verified 1-line rendering in all
+  four language/viewport states.
+
 ## Known gaps / TODOs for the audit session
 - Visual screenshot matrix pending (compositor freeze, above).
 - The additions in Design decisions #2 need client sign-off; trivially
