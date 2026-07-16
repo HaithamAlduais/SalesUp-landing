@@ -40,9 +40,13 @@ Also fixed from the route sweep: sector pages marked "من نحن" active →
 now "الرئيسية".
 
 ## 3. Deferred / pending items
-- **Figma landing-variant diff (55:879 vs 5:962): NOT done** — the
-  Figma Dev Mode bridge was down (desktop app closed). Run
-  `python tools/figma_mcp.py get_screenshot 55:879 out.txt` when open.
+- **Figma landing-variant diff (55:879 vs 5:962): DONE** (bridge
+  restored 2026-07-16). Structural diff of both trees (282 nodes each,
+  ids stripped, coords normalized): identical except ONE node — the
+  partners marquee instance (5:962: Frame 41124876, 3013×130 strip;
+  55:879: Frame 41124875, 1811×221 single-row variant). Screenshots
+  confirm. No action taken: the client already commissioned a full
+  marquee redesign (mono logo wall) that supersedes both variants.
 - Fintech sector copy + authored FAQ answers + authored EN copy still
   need client sign-off (flagged in the per-screen handbacks).
 - EN-mobile screenshot pass on marketers (left by its session).
