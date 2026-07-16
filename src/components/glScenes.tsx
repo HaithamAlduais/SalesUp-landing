@@ -33,6 +33,9 @@ uniform vec3 u_chromaRight;
 uniform float u_chromaStrength;
 uniform float u_aberr;
 uniform float u_grain;
+uniform float u_flute;
+uniform float u_mixBias;
+uniform float u_spec;
 
 in vec2 v_uv;
 out vec4 fragColor;
@@ -89,7 +92,7 @@ vec2 blobField(vec2 p, float t) {
 vec3 sceneColor(vec2 uv, float aspect) {
   /* Swirl base */
   vec2 sw = swirlField(uv, u_time);
-  vec3 col = mix(u_swirlA, u_swirlB, sw.x) * sw.y;
+  vec3 col = mix(u_swirlA, u_swirlB, sw.x * u_mixBias) * sw.y;
 
   /* Blob (touch-ambient wash; u_blobOpacity is 0 on fine-pointer devices) */
   if (u_blobOpacity > 0.001) {
@@ -150,7 +153,7 @@ void main() {
   float flutePos = u * 8.0 + tF;
   float cell = (fract(flutePos) - 0.5) * 2.0;
   float slope = sign(cell) * pow(max(abs(cell), 1e-4), 3.0);
-  float refrU = -(slope * 4.0) * (0.5 / 8.0);
+  float refrU = -(slope * 4.0) * (0.5 / 8.0) * u_flute;
   /* back to y-up uv space for the offset */
   vec2 uvW = v_uv + vec2(refrU * ca / aspect, -refrU * sa);
   uvW = mirrorUV(uvW);
@@ -174,7 +177,7 @@ void main() {
   float nDotH = max(slope * hx + nz * hy, 0.0);
   float fresnel = pow(1.0 - nz, 5.0);
   float fresnelMix = 0.04 + 0.96 * fresnel;
-  float spec = pow(nDotH, 256.0) * fresnelMix * 0.12;
+  float spec = pow(nDotH, 256.0) * fresnelMix * u_spec;
   col += vec3(spec);
 
   /* ---- FilmGrain (strength 0.05, bias 2, static) ---- */
@@ -209,6 +212,11 @@ export function heroUniforms(dark: boolean, coarse: boolean): Record<string, num
     u_aberr: coarse ? 0 : 0.2,
     // FilmGrain strength
     u_grain: 0.05,
+    // parity tuning vs the vendor hero: flute displacement scale,
+    // swirl mid-tone bias (dark stays near-black), specular strength
+    u_flute: 0.5,
+    u_mixBias: dark ? 0.8 : 1.0,
+    u_spec: dark ? 0.07 : 0.1,
   };
 }
 
