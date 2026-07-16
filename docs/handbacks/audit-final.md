@@ -61,8 +61,19 @@ now "الرئيسية".
   anywhere. Wire a backend/endpoint (or a forms service) before launch.
 - ~~Bundle size~~ Resolved: route + engine code-splitting shipped;
   initial JS ~63KB gzip.
-- WebGPU-less browsers get static fallbacks (by design), losing the
-  shader identity.
+- ~~WebGPU-less browsers lose the shader identity~~ Resolved
+  (2026-07-16, commits ffb8bc8 + cc4ed7d): three render tiers now serve
+  every device. `webgpu` = vendor engine (capable desktops, guarded by
+  a render watchdog — the engine's silent init failures downgrade after
+  4s and are remembered for 3 days); `webgl` = our GLSL ES 3.00 ports
+  of all four scenes in `glScenes.tsx`/`glRuntime.tsx` (~9KB gzip; the
+  DEFAULT on coarse-pointer devices, so all phones get real shaders
+  instantly — WebGPU only exists on iOS 26+); `css` = animated brand
+  gradients (`html.no-webgpu`) for relics without WebGL2. Debug:
+  `?fx=webgpu|webgl|css` forces a tier, `?fxdead` exercises the
+  watchdog, `?nogpu` = css; `<html data-gpu="mode:reason">` reports the
+  decision. Verified in the prod build (`salesup-preview` launch config,
+  port 4173): all five paths + light/dark + mobile, console clean.
 
 ## 5. Cleanup
 Worktrees removed (`../salesup-worktrees/*`) and all seven `screen/*`
