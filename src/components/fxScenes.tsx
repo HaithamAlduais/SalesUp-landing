@@ -38,14 +38,17 @@ export function HeroScene({ dark }: { dark: boolean }) {
         detail={1.7}
       />
       {COARSE_POINTER ? (
+        /* touch ambient: light mode gets the broad brand-green wash;
+           dark mode stays near-black with only a small, deep, faint
+           glow (a bright full-size blob turned the dark hero green) */
         <Blob
-          colorA="#04cb79"
-          colorB="#5fcfad"
+          colorA={dark ? '#0a8f5c' : '#04cb79'}
+          colorB={dark ? '#0d4a41' : '#5fcfad'}
           deformation={0.8}
-          size={0.9}
+          size={dark ? 0.55 : 0.9}
           softness={1}
           speed={0.5}
-          opacity={dark ? 0.5 : 0.4}
+          opacity={dark ? 0.22 : 0.4}
         />
       ) : null}
       <ChromaFlow
