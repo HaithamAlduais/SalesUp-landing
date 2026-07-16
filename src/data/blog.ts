@@ -17,6 +17,12 @@ export type Bi = { ar: string; en: string }
 export type BlogPost = {
   slug: string
   title: Bi
+  /** one-line teaser for the index cards */
+  excerpt: Bi
+  /** topic chip shown on cards and the article header */
+  category: Bi
+  /** estimated reading time in minutes */
+  readMins: number
   /** article hero / related-card image */
   image: string
   /** small 3D icon for the index cards */
@@ -37,6 +43,12 @@ export const BLOG_POSTS: BlogPost[] = [
       ar: 'تعرف على الذكاء الاصطناعي في المبيعات دليل شامل من سيلزاب',
       en: 'AI in Sales: A Complete Guide from SalesUp',
     },
+    excerpt: {
+      ar: 'كيف يغيّر الذكاء الاصطناعي طريقة البيع — من فهم العملاء إلى أتمتة المتابعة وتحسين النتائج',
+      en: 'How AI is changing the way you sell — from understanding customers to automating follow-up and improving results',
+    },
+    category: { ar: 'الذكاء الاصطناعي', en: 'AI & Sales' },
+    readMins: 6,
     image: imgAiInSales,
     icon: iconAi,
     fx: 6,
@@ -47,6 +59,12 @@ export const BLOG_POSTS: BlogPost[] = [
       ar: 'منصات التسويق بالعمولة للشركات ما هي ولماذا تحتاجها شركتك؟',
       en: 'Affiliate Marketing Platforms for Businesses: What Are They and Why Does Your Company Need One?',
     },
+    excerpt: {
+      ar: 'نموذج تسويق تدفع فيه مقابل النتائج فقط — تعرف على المنصات ولماذا تحتاجها شركتك الآن',
+      en: 'A marketing model where you pay for results only — what these platforms are and why your company needs one now',
+    },
+    category: { ar: 'تسويق', en: 'Marketing' },
+    readMins: 7,
     image: imgAffiliate,
     icon: iconAffiliate,
     fx: 2,
@@ -57,6 +75,12 @@ export const BLOG_POSTS: BlogPost[] = [
       ar: 'كيف تتعامل مع اعتراضات العملاء؟ دليل عملي لإغلاق عملية البيع',
       en: 'How to Handle Customer Objections: A Practical Guide to Closing the Sale',
     },
+    excerpt: {
+      ar: 'دليل عملي للتعامل مع اعتراضات العملاء وتحويلها إلى فرص حقيقية لإغلاق الصفقة',
+      en: 'A practical guide to handling customer objections and turning them into real opportunities to close',
+    },
+    category: { ar: 'مبيعات', en: 'Sales' },
+    readMins: 5,
     image: imgObjections,
     icon: iconObjections,
     fx: 0,

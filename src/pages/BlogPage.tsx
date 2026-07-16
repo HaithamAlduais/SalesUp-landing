@@ -52,9 +52,22 @@ function BlogIndex() {
             <a className="blog-card" href={`/blog/${p.slug}`} key={p.slug}>
               {COARSE_POINTER ? <InViewFx variant={p.fx} /> : <CardFx variant={p.fx} />}
               <div className="blog-card-inner">
-                <img className="blog-card-icon" src={p.icon} alt="" loading="lazy" />
+                <div className="blog-thumb">
+                  <img className="blog-card-icon" src={p.icon} alt="" loading="lazy" />
+                </div>
+                <div className="blog-meta">
+                  <span className="blog-chip">{L(p.category.ar, p.category.en)}</span>
+                  <span className="blog-read">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 7v5l3 3" />
+                    </svg>
+                    {L(`${p.readMins} دقائق قراءة`, `${p.readMins} min read`)}
+                  </span>
+                </div>
                 <h3>{lang === 'ar' ? p.title.ar : p.title.en}</h3>
-                <span className="sector-cta" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+                <p className="blog-excerpt">{L(p.excerpt.ar, p.excerpt.en)}</p>
+                <span className="sector-cta blog-cta" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
                   {L('اقرأ المقال', 'Read Article')}
                   <svg className="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M19 12H5m0 0 6-6m-6 6 6 6" />

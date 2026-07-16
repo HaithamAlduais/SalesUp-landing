@@ -67,6 +67,16 @@ function ArticleBody({ slug, post }: { slug: string; post: BlogPost }) {
             <span>{L('كل المقالات', 'All Articles')}</span>
           </a>
         </div>
+        <div className="blog-meta article-meta">
+          <span className="blog-chip">{L(post.category.ar, post.category.en)}</span>
+          <span className="blog-read">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v5l3 3" />
+            </svg>
+            {L(`${post.readMins} دقائق قراءة`, `${post.readMins} min read`)}
+          </span>
+        </div>
       </header>
 
       <div className="article-hero">
