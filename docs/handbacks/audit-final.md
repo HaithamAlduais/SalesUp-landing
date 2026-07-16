@@ -1,0 +1,61 @@
+# Handback — Final audit session (hub, 2026-07-16)
+
+## Scope executed
+All seven screen branches were merged into `master` prior to this
+session (styles.css blocks reassembled verbatim from branches after a
+union-splice repair — commit 16901e7). This session ran the release
+audit per `docs/handoffs/audit-final.md` and closed out the worktrees.
+
+## 1. Full-site pass
+- 17 routes probed (iframe sweep, Arabic): all render, correct
+  headings, footer on every page, no error overlays. Fallbacks work:
+  unknown blog slug → "المقال غير موجود"; unknown route → landing.
+- 8 routes re-probed in English: LTR direction, translated headings,
+  correct active-nav on every page.
+- Landing anchor targets (#about/#sectors/#process/#contact/#footer/#top)
+  all resolve — footer links are sound.
+- `npx tsc --noEmit` clean; postcss parse of styles.css clean;
+  `npm run build` passes (bundle 1.05MB / 270KB gzip — the shaders
+  engine dominates; consider code-splitting later).
+
+## 2. Adversarial review (28-agent workflow) — confirmed & fixed
+| Severity | Finding | Fix (commit 69f1580) |
+|---|---|---|
+| high | Services deck kept all 6 ActiveFx GPU devices mounted (initial state `true`, sticky panels never stop intersecting) | Deck scroll progress drives an active±1 mount window; nothing mounts offscreen |
+| medium | Services request form shipped a bare native `<select>` (missed in the Select migration) | Migrated to `shared/Select` |
+| medium | NEW badge / index numeral overlap on the deck's Marketers panel | Badge pinned physically right (numeral is `dir="ltr"`, always physically left); verified live in AR + EN — note: the reported RTL overlap was partly the *first* fix attempt's regression; final state verified collision-free |
+| medium | 2 of 3 blog cards advertised reading times but led to "coming soon" bodies | Index now shows "المقال قريباً" for body-less articles |
+| low | Sector accordion `replaceState` dropped query string/hash (`?coarse`, utm) | Search + hash preserved |
+| low | Fintech sector description was creative/design-industry copy | Rewritten as real fintech copy (AR+EN) — **verify against Figma when the bridge is up**; also feeds the landing sector cards |
+| low | Forms show a success receipt but transmit nothing | NOT fixed — no backend exists (known baseline; see risks) |
+Rejected as not-real after verification: IntersectionObserver `entries[0]`
+idiom (no concrete failure), deck CTA clipping on landscape phones
+(box math showed the CTA stays tappable).
+Also fixed from the route sweep: sector pages marked "من نحن" active →
+now "الرئيسية".
+
+## 3. Deferred / pending items
+- **Figma landing-variant diff (55:879 vs 5:962): NOT done** — the
+  Figma Dev Mode bridge was down (desktop app closed). Run
+  `python tools/figma_mcp.py get_screenshot 55:879 out.txt` when open.
+- Fintech sector copy + authored FAQ answers + authored EN copy still
+  need client sign-off (flagged in the per-screen handbacks).
+- EN-mobile screenshot pass on marketers (left by its session).
+- **Pixel screenshots were not retaken this session** — the Browser
+  pane renderer freezes while occluded by other windows (documented by
+  every screen session). All checks above are DOM/computed-style
+  probes, which the occlusion does not affect.
+
+## 4. Residual risks for the client
+- **Forms are front-end only.** Landing contact, services request, and
+  marketers apply all show success states without sending data
+  anywhere. Wire a backend/endpoint (or a forms service) before launch.
+- Bundle size (270KB gzip JS) is acceptable but heavy; the shaders
+  engine is the bulk. Route-level code-splitting is the next lever.
+- WebGPU-less browsers get static fallbacks (by design), losing the
+  shader identity.
+
+## 5. Cleanup
+Worktrees removed (`../salesup-worktrees/*`) and all seven `screen/*`
+branches deleted after merge. Repo pushed to
+https://github.com/HaithamAlduais/SalesUp-landing.git (master).
