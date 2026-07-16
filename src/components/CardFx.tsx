@@ -16,6 +16,20 @@ const CardScene = lazy(() => import('./fxScenes').then((m) => ({ default: m.Card
 const MegaLogoScene = lazy(() => import('./fxScenes').then((m) => ({ default: m.MegaLogoScene })))
 const ContactScene = lazy(() => import('./fxScenes').then((m) => ({ default: m.ContactScene })))
 
+/* warm the engine chunk during idle time on WebGPU-capable devices so
+   scenes appear instantly when their gates open (the split keeps it
+   out of the blocking initial load; this fetch is fire-and-forget) */
+if (typeof window !== 'undefined' && 'gpu' in navigator) {
+  const warm = () => {
+    import('./fxScenes')
+  }
+  if (typeof window.requestIdleCallback === 'function') {
+    window.requestIdleCallback(warm, { timeout: 2500 })
+  } else {
+    setTimeout(warm, 800)
+  }
+}
+
 /*
  * Mounts its children only while near the viewport. Offscreen scenes
  * release their GPU device (each <Shader> root holds its own), and a

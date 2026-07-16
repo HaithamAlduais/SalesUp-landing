@@ -1779,6 +1779,51 @@ html[dir='ltr'] .featured-badge { right: auto; left: 20px; }
   gap: 44px;
 }
 
+/* ---------- no-WebGPU fallbacks: living gradients ----------
+   phones and browsers without navigator.gpu can't run the shader
+   engine at all; html.no-webgpu (set at boot) swaps every scene for an
+   animated brand gradient so the pages still feel alive immediately */
+
+@keyframes fx-drift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+html.no-webgpu .hero-shader {
+  background: linear-gradient(115deg, #ffffff 0%, #eafaf2 22%, #c9f3e0 45%, #eefaf4 68%, #ffffff 100%);
+  background-size: 280% 280%;
+  animation: fx-drift 16s ease-in-out infinite;
+}
+html.no-webgpu[data-theme='dark'] .hero-shader {
+  background: linear-gradient(115deg, #0b1b1c 0%, #10373a 30%, #0d4a3b 52%, #11393a 72%, #0b1b1c 100%);
+  background-size: 280% 280%;
+}
+
+html.no-webgpu .card-fx {
+  background: linear-gradient(
+    135deg,
+    rgba(4, 203, 121, 0.55) 0%,
+    rgba(95, 207, 173, 0.4) 30%,
+    rgba(19, 63, 64, 0.4) 60%,
+    rgba(4, 226, 134, 0.5) 100%
+  );
+  background-size: 260% 260%;
+  animation: fx-drift 11s ease-in-out infinite;
+}
+
+html.no-webgpu .contact-fx {
+  background: linear-gradient(120deg, #177e6f 0%, #133f40 35%, #1b8a78 65%, #123c3d 100%);
+  background-size: 260% 260%;
+  animation: fx-drift 14s ease-in-out infinite;
+}
+
+html.no-webgpu .footer-logo-fx-inner {
+  background: linear-gradient(120deg, #04cb79 0%, #076c61 40%, #05ffa6 70%, #04cb79 100%);
+  background-size: 300% 300%;
+  animation: fx-drift 9s ease-in-out infinite;
+}
+
 /* ---------- shader fx layers ---------- */
 
 .card-fx {
@@ -2166,6 +2211,12 @@ html[dir='ltr'] .featured-badge { right: auto; left: 20px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .marquee-track { animation: none; }
+  html.no-webgpu .hero-shader,
+  html.no-webgpu .card-fx,
+  html.no-webgpu .contact-fx,
+  html.no-webgpu .footer-logo-fx-inner {
+    animation: none;
+  }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
 }
 
