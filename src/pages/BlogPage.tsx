@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { PageShell } from '../shared/PageShell'
 import { useLang } from '../shared/i18n'
 import { CardFx, COARSE_POINTER, InViewFx } from '../components/CardFx'
-import { BLOG_POSTS } from '../data/blog'
+import { ARTICLES, BLOG_POSTS } from '../data/blog'
 
 /*
  * المدونة — blog index (Figma frame 5:1392).
@@ -57,12 +57,15 @@ function BlogIndex() {
                 </div>
                 <div className="blog-meta">
                   <span className="blog-chip">{L(p.category.ar, p.category.en)}</span>
+                  {/* only advertise a reading time when the body exists */}
                   <span className="blog-read">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <circle cx="12" cy="12" r="9" />
                       <path d="M12 7v5l3 3" />
                     </svg>
-                    {L(`${p.readMins} دقائق قراءة`, `${p.readMins} min read`)}
+                    {ARTICLES[p.slug]
+                      ? L(`${p.readMins} دقائق قراءة`, `${p.readMins} min read`)
+                      : L('المقال قريباً', 'Coming soon')}
                   </span>
                 </div>
                 <h3>{lang === 'ar' ? p.title.ar : p.title.en}</h3>

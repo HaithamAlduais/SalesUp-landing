@@ -35,9 +35,9 @@ export const SECTORS: Record<
     icon: iconFintech,
     fx: 4,
     descAr:
-      'توفر Salesup دعمًا مخصصًا للمبدعين ومحترفي التصميم في تطوير وتسويق مشاريعهم الإبداعية. نحن نقدم أدوات وموارد لتحسين جودة التصميم وتعزيز الابتكار في الأعمال الإبداعية.',
+      'نساعد شركات التقنية المالية توصل لعملائها بثقة — من بناء مسار المبيعات وتوليد العملاء المحتملين، إلى شرح المنتج المالي بشكل واضح يكسب ثقة العميل ويسرّع قرار الاشتراك.',
     descEn:
-      'SalesUp provides dedicated support for creators and design professionals to develop and market their creative projects. We offer tools and resources that raise design quality and drive innovation in creative work.',
+      'We help fintech companies reach their customers with confidence — from building the sales pipeline and generating qualified leads, to explaining financial products clearly in a way that earns trust and speeds up sign-up decisions.',
   },
   saas: {
     ar: 'Saas',
@@ -84,7 +84,8 @@ function SectorsBody({ initial }: { initial: string }) {
 
   const select = (slug: string) => {
     setOpen(slug)
-    window.history.replaceState(null, '', `/sectors/${slug}`)
+    /* keep the query string ("?coarse", utm tags) and hash intact */
+    window.history.replaceState(null, '', `/sectors/${slug}${window.location.search}${window.location.hash}`)
   }
 
   const current = SECTORS[open]
@@ -141,7 +142,7 @@ function SectorsBody({ initial }: { initial: string }) {
 export default function SectorPage({ slug }: { slug: string }) {
   const initial = slug in SECTORS ? slug : 'technology'
   return (
-    <PageShell active="about">
+    <PageShell active="home">
       <SectorsBody initial={initial} />
     </PageShell>
   )

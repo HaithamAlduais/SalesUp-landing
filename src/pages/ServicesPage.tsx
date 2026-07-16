@@ -2,6 +2,7 @@ import { CSSProperties, FormEvent, useEffect, useRef, useState } from 'react'
 import { PageShell } from '../shared/PageShell'
 import { useLang } from '../shared/i18n'
 import { usePageTheme } from '../shared/theme'
+import { Select } from '../shared/Select'
 import { ActiveFx, ContactFx } from '../components/CardFx'
 
 import iconInsideSales from '../assets/icon-inside-sales.png'
@@ -136,28 +137,15 @@ const SERVICES: Service[] = [
   },
 ]
 
-function ServicePanel({ service, index }: { service: Service; index: number }) {
+function ServicePanel({ service, index, fxActive }: { service: Service; index: number; fxActive: boolean }) {
   const { lang, L } = useLang()
 
-  /* shader visible whenever the card is on screen — starts true so
-     degraded observer delivery can never hide it; a healthy observer
-     refines it to reclaim GPU offscreen */
-  const ref = useRef<HTMLElement>(null)
-  const [seen, setSeen] = useState(true)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      (entries) => setSeen(entries[0].isIntersecting),
-      { rootMargin: '80px' }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
   return (
-    <article className="svc-panel" ref={ref} style={{ '--i': index } as CSSProperties}>
-      <ActiveFx variant={service.fx} active={seen} />
+    <article className="svc-panel" style={{ '--i': index } as CSSProperties}>
+      {/* GPU budget: the deck's sticky panels all keep intersecting once
+          pinned, so visibility is driven by deck scroll progress
+          (active ± 1) instead of per-panel observers */}
+      <ActiveFx variant={service.fx} active={fxActive} />
       {service.badge ? (
         <span className="featured-badge">
           {L('جديـــــــد', 'NEW')}
@@ -183,6 +171,42 @@ function ServicePanel({ service, index }: { service: Service; index: number }) {
 function ServicesIndex() {
   const { L } = useLang()
 
+  /* deck scroll progress → which panel is in focus; only active ± 1
+     hold a live GPU scene, and none while the deck is offscreen */
+  const deckRef = useRef<HTMLDivElement>(null)
+  const [activeIdx, setActiveIdx] = useState(0)
+  const [deckVisible, setDeckVisible] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el = deckRef.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const total = el.offsetHeight - window.innerHeight
+      if (total <= 0) return
+      const progress = Math.min(0.999, Math.max(0, -rect.top / total))
+      setActiveIdx(Math.floor(progress * SERVICES.length))
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [])
+
+  useEffect(() => {
+    const el = deckRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      (entries) => setDeckVisible(entries[0].isIntersecting),
+      { rootMargin: '120px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   /* card deck: each panel pins under the header while the next slides
      up over it (pure position: sticky — native on mobile, no libs) */
   return (
@@ -194,9 +218,9 @@ function ServicesIndex() {
           <p className="heading-desc">{L('نشتغل معك حسب احتياجك، سواء كنت تحتاج فريق يدعم مبيعاتك، توليد عملاء محتملين، تطوير عملية البيع، أو حلول تساعدك تقيس وتحسّن الأداء', 'We work around your needs — a team to support your sales, lead generation, sales-process development, or tools to measure and improve performance')}</p>
         </div>
       </div>
-      <div className="svc-deck">
+      <div className="svc-deck" ref={deckRef}>
         {SERVICES.map((s, i) => (
-          <ServicePanel service={s} index={i} key={s.slug} />
+          <ServicePanel service={s} index={i} fxActive={deckVisible && Math.abs(i - activeIdx) <= 1} key={s.slug} />
         ))}
       </div>
     </section>
@@ -243,11 +267,14 @@ function RequestForm({ service }: { service: Service }) {
           </div>
           <div className="field-row">
             <input className="field" name="email" type="email" placeholder={L('الايميل', 'Email')} aria-label={L('الايميل', 'Email')} autoComplete="email" />
-            <select className="field svc-select" name="service" aria-label={L('الخدمة', 'Service')} defaultValue={service.slug}>
-              {SERVICES.filter((s) => !s.href).map((s) => (
-                <option value={s.slug} key={s.slug}>{L(s.ar, s.en)}</option>
-              ))}
-            </select>
+            <Select
+              name="service"
+              ariaLabel={L('الخدمة', 'Service')}
+              placeholder={L('اختر الخدمة*', 'Choose a service*')}
+              options={SERVICES.filter((s) => !s.href).map((s) => ({ value: s.slug, label: L(s.ar, s.en) }))}
+              defaultValue={service.slug}
+              required
+            />
           </div>
           <div className="field-row">
             <input className="field" name="org" type="text" placeholder={L('اسم الجهة', 'Company name')} aria-label={L('اسم الجهة', 'Company name')} autoComplete="organization" />

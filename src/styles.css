@@ -2186,6 +2186,18 @@ html[dir='ltr'] .featured-badge { right: auto; left: 20px; }
   line-height: 1;
 }
 
+/* the deck badge pins to the physical RIGHT corner in both languages:
+   the index numeral (dir="ltr") always anchors physically LEFT, so
+   this can never collide with it */
+.svc-panel .featured-badge,
+html[dir='ltr'] .svc-panel .featured-badge {
+  top: 22px;
+  left: auto;
+  right: 22px;
+  inset-inline-start: auto;
+  inset-inline-end: auto;
+}
+
 .svc-panel-copy {
   position: relative;
   z-index: 1;
