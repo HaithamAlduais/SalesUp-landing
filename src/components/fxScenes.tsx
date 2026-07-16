@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 import {
   Shader,
   Blob,
@@ -14,6 +14,7 @@ import {
   WaveDistortion,
 } from 'shaders/react'
 import { COARSE_POINTER } from './pointer'
+import { fxFrameRendered, fxSceneMounted } from './gpu'
 
 /*
  * All WebGL scene definitions live here so the shaders engine ships in
@@ -24,6 +25,22 @@ import { COARSE_POINTER } from './pointer'
 const fillStyle = { position: 'absolute', inset: 0, width: '100%', height: '100%' } as const
 
 /*
+ * Shader root wired to the GPU watchdog (gpu.ts): mounting arms it, and
+ * onReady — which the engine fires only after the first successfully
+ * rendered frame — proves the device. Devices that pass the adapter
+ * probe but can't actually run the engine (iOS Safari) downgrade to the
+ * CSS fallbacks instead of showing blank canvases.
+ */
+function FxShader({ children }: { children: ReactNode }) {
+  useEffect(() => fxSceneMounted(), [])
+  return (
+    <Shader style={fillStyle} onReady={fxFrameRendered}>
+      {children}
+    </Shader>
+  )
+}
+
+/*
  * Hero scene (user-specified structure: Swirl + ChromaFlow + FlutedGlass
  * + FilmGrain) tuned to the SalesUp design system. On desktop the cursor
  * paints brand greens (ChromaFlow). On touch devices — where no cursor
@@ -31,7 +48,7 @@ const fillStyle = { position: 'absolute', inset: 0, width: '100%', height: '100%
  */
 export function HeroScene({ dark }: { dark: boolean }) {
   return (
-    <Shader style={fillStyle}>
+    <FxShader>
       <Swirl
         colorA={dark ? '#0b1b1c' : '#ffffff'}
         colorB={dark ? '#11393a' : '#eefaf4'}
@@ -73,7 +90,7 @@ export function HeroScene({ dark }: { dark: boolean }) {
         speed={0.15}
       />
       <FilmGrain strength={0.05} />
-    </Shader>
+    </FxShader>
   )
 }
 
@@ -83,53 +100,53 @@ export function HeroScene({ dark }: { dark: boolean }) {
  */
 const CARD_SCENES: (() => ReactNode)[] = [
   () => (
-    <Shader style={fillStyle}>
+    <FxShader>
       <Stripes angle={-14} balance={0.77} density={4} softness={0.57} />
       <Stretch center={{ x: 0.2, y: 0.52 }} falloff={0.49} />
       <Dither colorA="#04cb79" colorB="#b9f4df" threshold={0.66} />
-    </Shader>
+    </FxShader>
   ),
   () => (
-    <Shader style={fillStyle}>
+    <FxShader>
       <Stripes angle={24} balance={0.77} density={4} softness={0.57} />
       <Stretch angle={251} center={{ x: 0.45, y: 0.58 }} falloff={0.49} />
       <Dither colorA="#5fcfad" colorB="#076c61" threshold={0.66} />
-    </Shader>
+    </FxShader>
   ),
   () => (
-    <Shader style={fillStyle}>
+    <FxShader>
       <Stripes angle={-110} balance={0.77} density={4} softness={0.57} />
       <Stretch angle={289} center={{ x: 0.82, y: 0.6 }} falloff={0.49} />
       <Dither colorA="#04e286" colorB="#133f40" threshold={0.66} />
-    </Shader>
+    </FxShader>
   ),
   () => (
-    <Shader style={fillStyle}>
+    <FxShader>
       <Stripes angle={32} balance={0.77} density={4} softness={0.57} />
       <Stretch angle={165} center={{ x: 0.34, y: 0.37 }} falloff={0.49} />
       <Dither colorA="#9ae8c9" colorB="#03a462" threshold={0.66} />
-    </Shader>
+    </FxShader>
   ),
   () => (
-    <Shader style={fillStyle}>
+    <FxShader>
       <Stripes angle={-76} balance={0.77} density={4} softness={0.57} />
       <Stretch angle={360} center={{ x: 0.56, y: 0.44 }} falloff={0.49} />
       <Dither colorA="#0b4844" colorB="#04b76d" threshold={0.66} />
-    </Shader>
+    </FxShader>
   ),
   () => (
-    <Shader style={fillStyle}>
+    <FxShader>
       <Stripes angle={-102} balance={0.77} density={4} softness={0.57} />
       <Stretch angle={246} center={{ x: 0.4, y: 0.62 }} falloff={0.49} />
       <Dither colorA="#177e6f" colorB="#5fcfad" threshold={0.66} />
-    </Shader>
+    </FxShader>
   ),
   () => (
-    <Shader style={fillStyle}>
+    <FxShader>
       <Stripes angle={-115} balance={0.77} density={4} softness={0.57} />
       <Stretch angle={258} center={{ x: 0.53, y: 0.53 }} falloff={0.49} />
       <Dither colorA="#039458" colorB="#b9f4df" threshold={0.66} />
-    </Shader>
+    </FxShader>
   ),
 ]
 
@@ -146,7 +163,7 @@ export function CardScene({ variant }: { variant: number }) {
  */
 export function MegaLogoScene({ dark }: { dark: boolean }) {
   return (
-    <Shader style={fillStyle}>
+    <FxShader>
       <SolidColor color={dark ? '#0e2e2f' : '#104041'} />
       <Swirl
         blend={45}
@@ -175,7 +192,7 @@ export function MegaLogoScene({ dark }: { dark: boolean }) {
       <WaveDistortion angle={23} edges="mirror" frequency={5.1} speed={2.5} strength={0.15} />
       <CursorRipples chromaticSplit={2} decay={5} intensity={20} radius={0.7} />
       <FilmGrain strength={0.075} />
-    </Shader>
+    </FxShader>
   )
 }
 
@@ -186,7 +203,7 @@ export function MegaLogoScene({ dark }: { dark: boolean }) {
  */
 export function ContactScene({ dark }: { dark: boolean }) {
   return (
-    <Shader style={fillStyle}>
+    <FxShader>
       <Swirl
         colorA={dark ? '#0c2b2c' : '#133f40'}
         colorB={dark ? '#134243' : '#177e6f'}
@@ -216,6 +233,6 @@ export function ContactScene({ dark }: { dark: boolean }) {
         speed={0.15}
       />
       <FilmGrain strength={0.05} />
-    </Shader>
+    </FxShader>
   )
 }

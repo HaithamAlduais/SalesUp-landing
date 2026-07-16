@@ -1796,7 +1796,7 @@ html.no-webgpu .hero-shader {
   animation: fx-drift 16s ease-in-out infinite;
 }
 html.no-webgpu[data-theme='dark'] .hero-shader {
-  background: linear-gradient(115deg, #0b1b1c 0%, #10373a 30%, #0d4a3b 52%, #11393a 72%, #0b1b1c 100%);
+  background: linear-gradient(115deg, #0b1b1c 0%, #124547 30%, #0f5a47 52%, #124144 72%, #0b1b1c 100%);
   background-size: 280% 280%;
 }
 
@@ -1810,6 +1810,19 @@ html.no-webgpu .card-fx {
   );
   background-size: 260% 260%;
   animation: fx-drift 11s ease-in-out infinite;
+}
+
+/* the engine scenes read at low container opacity; the flat gradients
+   need more presence to feel alive at the same setting */
+html.no-webgpu .card-fx--inview,
+html.no-webgpu .sector-card .card-fx--inview {
+  opacity: 0.45;
+}
+html.no-webgpu .card-fx--state.is-on {
+  opacity: 0.5;
+}
+html.no-webgpu .sector-card:hover .card-fx {
+  opacity: 0.55;
 }
 
 html.no-webgpu .contact-fx {
