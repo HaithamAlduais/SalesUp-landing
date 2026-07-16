@@ -15,8 +15,13 @@ audit per `docs/handoffs/audit-final.md` and closed out the worktrees.
 - Landing anchor targets (#about/#sectors/#process/#contact/#footer/#top)
   all resolve — footer links are sound.
 - `npx tsc --noEmit` clean; postcss parse of styles.css clean;
-  `npm run build` passes (bundle 1.05MB / 270KB gzip — the shaders
-  engine dominates; consider code-splitting later).
+  `npm run build` passes.
+- **Code-splitting shipped (post-audit follow-up)**: initial JS is now
+  ~63KB gzip (was 270KB). The shaders engine lives in a lazy `fxScenes`
+  chunk (184KB gzip) loaded the first time a scene mounts in-view;
+  every page is its own route chunk (0.8–7KB gzip); sector data moved
+  to `src/data/sectors.ts` so the landing/router don't pull page code.
+  All routes re-verified rendering after the split.
 
 ## 2. Adversarial review (28-agent workflow) — confirmed & fixed
 | Severity | Finding | Fix (commit 69f1580) |
@@ -50,8 +55,8 @@ now "الرئيسية".
 - **Forms are front-end only.** Landing contact, services request, and
   marketers apply all show success states without sending data
   anywhere. Wire a backend/endpoint (or a forms service) before launch.
-- Bundle size (270KB gzip JS) is acceptable but heavy; the shaders
-  engine is the bulk. Route-level code-splitting is the next lever.
+- ~~Bundle size~~ Resolved: route + engine code-splitting shipped;
+  initial JS ~63KB gzip.
 - WebGPU-less browsers get static fallbacks (by design), losing the
   shader identity.
 

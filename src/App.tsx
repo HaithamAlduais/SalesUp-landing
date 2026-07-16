@@ -4,7 +4,7 @@ import { PageShell } from './shared/PageShell'
 import { usePageTheme } from './shared/theme'
 import { useLang } from './shared/i18n'
 import { CountUp } from './shared/ui'
-import { SECTORS } from './pages/SectorPage'
+import { SECTORS } from './data/sectors'
 
 import maskSquiggleL from './assets/mask-squiggle-l.png'
 import maskSquiggleR from './assets/mask-squiggle-r.png'

@@ -1,12 +1,19 @@
-import { ReactNode } from 'react'
-import LandingPage from '../App'
-import ServicesPage from './ServicesPage'
-import MarketersPage from './MarketersPage'
-import SectorPage, { SECTORS } from './SectorPage'
-import BlogPage from './BlogPage'
-import BlogArticlePage from './BlogArticlePage'
-import PlatformPage from './PlatformPage'
-import JobsPage from './JobsPage'
+import { lazy, ReactNode, Suspense } from 'react'
+import { SECTORS } from '../data/sectors'
+
+/*
+ * Route-level code splitting: each screen ships as its own chunk (and
+ * the shaders engine as another — see components/fxScenes.tsx), so a
+ * page's initial load carries only its own code.
+ */
+const LandingPage = lazy(() => import('../App'))
+const ServicesPage = lazy(() => import('./ServicesPage'))
+const MarketersPage = lazy(() => import('./MarketersPage'))
+const SectorPage = lazy(() => import('./SectorPage'))
+const BlogPage = lazy(() => import('./BlogPage'))
+const BlogArticlePage = lazy(() => import('./BlogArticlePage'))
+const PlatformPage = lazy(() => import('./PlatformPage'))
+const JobsPage = lazy(() => import('./JobsPage'))
 
 function normalizePath(pathname: string) {
   const clean = pathname.split('?')[0].split('#')[0]
@@ -47,5 +54,5 @@ export function resolvePage(pathname: string): ReactNode {
 }
 
 export default function Root() {
-  return <>{resolvePage(window.location.pathname)}</>
+  return <Suspense fallback={null}>{resolvePage(window.location.pathname)}</Suspense>
 }
