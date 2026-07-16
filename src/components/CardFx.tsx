@@ -8,6 +8,7 @@ import { lazy, ReactNode, Suspense, useEffect, useRef, useState } from 'react'
  */
 
 export { COARSE_POINTER } from './pointer'
+import { gpuReady, useGpuOk } from './gpu'
 
 const fillStyle = { position: 'absolute', inset: 0, width: '100%', height: '100%' } as const
 
@@ -19,15 +20,18 @@ const ContactScene = lazy(() => import('./fxScenes').then((m) => ({ default: m.C
 /* warm the engine chunk during idle time on WebGPU-capable devices so
    scenes appear instantly when their gates open (the split keeps it
    out of the blocking initial load; this fetch is fire-and-forget) */
-if (typeof window !== 'undefined' && 'gpu' in navigator) {
-  const warm = () => {
-    import('./fxScenes')
-  }
-  if (typeof window.requestIdleCallback === 'function') {
-    window.requestIdleCallback(warm, { timeout: 2500 })
-  } else {
-    setTimeout(warm, 800)
-  }
+if (typeof window !== 'undefined') {
+  gpuReady.then((ok) => {
+    if (!ok) return
+    const warm = () => {
+      import('./fxScenes')
+    }
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(warm, { timeout: 2500 })
+    } else {
+      setTimeout(warm, 800)
+    }
+  })
 }
 
 /*
@@ -38,6 +42,7 @@ if (typeof window !== 'undefined' && 'gpu' in navigator) {
 function InViewGate({ children, margin = '220px' }: { children: ReactNode; margin?: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const [on, setOn] = useState(false)
+  const gpuOk = useGpuOk()
 
   useEffect(() => {
     const el = ref.current
@@ -52,7 +57,7 @@ function InViewGate({ children, margin = '220px' }: { children: ReactNode; margi
 
   return (
     <div ref={ref} style={fillStyle}>
-      {on ? <Suspense fallback={null}>{children}</Suspense> : null}
+      {on && gpuOk ? <Suspense fallback={null}>{children}</Suspense> : null}
     </div>
   )
 }
@@ -72,6 +77,7 @@ export function HeroFx({ dark }: { dark: boolean }) {
  * hovered card holds a GPU context. Visibility fades via CSS :hover.
  */
 export function CardFx({ variant }: { variant: number }) {
+  const gpuOk = useGpuOk()
   const ref = useRef<HTMLDivElement>(null)
   const [on, setOn] = useState(false)
 
@@ -97,7 +103,7 @@ export function CardFx({ variant }: { variant: number }) {
 
   return (
     <div className="card-fx" ref={ref} aria-hidden="true">
-      {on ? (
+      {on && gpuOk ? (
         <Suspense fallback={null}>
           <CardScene variant={variant} />
         </Suspense>
@@ -112,6 +118,7 @@ export function CardFx({ variant }: { variant: number }) {
  * service cards.
  */
 export function ActiveFx({ variant, active }: { variant: number; active: boolean }) {
+  const gpuOk = useGpuOk()
   const [on, setOn] = useState(active)
 
   useEffect(() => {
@@ -125,7 +132,7 @@ export function ActiveFx({ variant, active }: { variant: number; active: boolean
 
   return (
     <div className={`card-fx card-fx--state${active ? ' is-on' : ''}`} aria-hidden="true">
-      {on ? (
+      {on && gpuOk ? (
         <Suspense fallback={null}>
           <CardScene variant={variant} />
         </Suspense>
@@ -139,6 +146,7 @@ export function ActiveFx({ variant, active }: { variant: number; active: boolean
  * card is on screen — no hover needed to reveal it.
  */
 export function InViewFx({ variant }: { variant: number }) {
+  const gpuOk = useGpuOk()
   const ref = useRef<HTMLDivElement>(null)
   const [on, setOn] = useState(false)
 
@@ -155,7 +163,7 @@ export function InViewFx({ variant }: { variant: number }) {
 
   return (
     <div className="card-fx card-fx--inview" ref={ref} aria-hidden="true">
-      {on ? (
+      {on && gpuOk ? (
         <Suspense fallback={null}>
           <CardScene variant={variant} />
         </Suspense>
