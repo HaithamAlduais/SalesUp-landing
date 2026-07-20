@@ -56,9 +56,14 @@ now "الرئيسية".
   probes, which the occlusion does not affect.
 
 ## 4. Residual risks for the client
-- **Forms are front-end only.** Landing contact, services request, and
-  marketers apply all show success states without sending data
-  anywhere. Wire a backend/endpoint (or a forms service) before launch.
+- ~~Forms are front-end only~~ Resolved in code (2026-07-20, commit
+  5c3e5ca): all three forms POST to `/api/lead`, a Vercel serverless
+  function that inserts Zoho CRM Leads; success is never faked (an
+  unconfigured/failing backend shows a bilingual error with the
+  hi@salesup.sa fallback), and a honeypot drops bots. **Remaining
+  manual step for the client**: create the Zoho Self Client and add
+  the env vars in Vercel per `docs/ZOHO.md` — until then live forms
+  show the error state instead of sending.
 - ~~Bundle size~~ Resolved: route + engine code-splitting shipped;
   initial JS ~63KB gzip.
 - ~~WebGPU-less browsers lose the shader identity~~ Resolved

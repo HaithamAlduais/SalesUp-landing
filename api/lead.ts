@@ -88,9 +88,10 @@ function json(status: number, body: Record<string, unknown>): Response {
   })
 }
 
-export default async function handler(request: Request): Promise<Response> {
-  if (request.method !== 'POST') return json(405, { ok: false, error: 'method-not-allowed' })
-
+/* per-method export — Vercel's Node runtime only routes the web
+   Request/Response signature through named method exports (a plain
+   default export falls back to the legacy (req, res) convention) */
+export async function POST(request: Request): Promise<Response> {
   let body: LeadBody
   try {
     body = (await request.json()) as LeadBody
@@ -142,7 +143,7 @@ export default async function handler(request: Request): Promise<Response> {
        attempt 1 runs on a freshly-refreshed one */
     for (let attempt = 0; attempt < 2; attempt++) {
       const { token, apiDomain } = await getAccessToken()
-      const resp = await fetch(`${apiDomain}/crm/v6/Leads`, {
+      const resp = await fetch(`${apiDomain}/crm/v8/Leads`, {
         method: 'POST',
         headers: {
           Authorization: `Zoho-oauthtoken ${token}`,
