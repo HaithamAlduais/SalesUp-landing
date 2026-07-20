@@ -1422,6 +1422,9 @@ h1, h2, h3, p { margin: 0; }
 
 .field-row .field { flex: 482 1 0; min-width: 0; }
 .field-row .field--phone { flex: 490 1 0; }
+/* the custom Select must grow like a plain .field, or the row's
+   Figma-ratio flex values (482 vs 1) crush it to a sliver */
+.field-row .su-select { flex: 482 1 0; }
 
 .field--message {
   height: 170px;
