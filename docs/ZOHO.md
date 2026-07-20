@@ -93,19 +93,53 @@ Spam: a hidden honeypot field silently drops bot submissions that fill
 it. Genuine failures (Zoho down, bad token) show the form's error state
 with `hi@salesup.sa` as fallback — success is never faked.
 
-Every contact is tagged `موقع الويب` plus its form type (`استشارة`,
-`طلب خدمة`, `مسوقين`). The vocabulary is kept small on purpose: Bigin
-allows 5 tags per record and 10 per module on Express.
+Every contact carries up to three tags: `موقع الويب`, its form type
+(`استشارة`, `طلب خدمة`, `مسوقين`), and the service or package chosen
+(e.g. `تحسين محركات البحث SEO`). Bigin allows 5 tags per record and
+caps distinct tags per module, so keep the vocabulary closed — it
+should grow only when the site's own service list grows.
 
-## Deal routing
+## Deal routing — built, deliberately OFF
 
-`PIPELINE_ROUTES` in [api/lead.js](../api/lead.js) maps a site slug (the
-chosen service or package, or `form:<name>` when a form has no
-selection) to a Bigin placement: team pipeline + sub-pipeline + stage.
-When a route matches, the submission also creates a deal linked to the
-new contact. Names must match Bigin exactly — read the real structure
-from `GET /api/pipelines?key=…` ([api/pipelines.js](../api/pipelines.js),
-a temporary key-guarded probe; delete it once the map is written).
+**Current state (2026-07-20):** submissions create a tagged Contact and
+nothing else. `PIPELINE_ROUTES` in [api/lead.js](../api/lead.js) is
+empty, so no deals are created. This is a decision, not an oversight:
+the org's nine team pipelines each belong to a *client* (Pin, QUbit,
+Hatif, Eduba, Moasher, Lahant, يسوى, and Salesup Marketer / leads
+Generation), and website inquiries are SalesUp's own new business —
+filing them under a client would pollute that client's board. The
+client will create a dedicated website pipeline later.
+
+**To switch routing on** once that pipeline exists:
+
+1. `GET /api/pipelines?key=…` ([api/pipelines.js](../api/pipelines.js),
+   key-guarded probe) → returns every team pipeline with its id,
+   sub-pipelines, and the stages valid inside each.
+2. Add entries to `PIPELINE_ROUTES`, keyed by the site's own slug — the
+   `service` slug, the `plan` slug, or `form:<name>` as the catch-all
+   for a form with no selection. All three forms sharing one
+   destination is just three `form:*` keys pointing at the same route:
+
+   ```js
+   const WEBSITE = {
+     teamPipeline: 'موقع سيلز أب',
+     teamPipelineId: '5068000000XXXXXX',
+     subPipeline: '<its sub-pipeline name>',
+     stage: 'New leads',
+   }
+   const PIPELINE_ROUTES = {
+     'form:contact': WEBSITE,
+     'form:service-request': WEBSITE,
+     'form:marketers-apply': WEBSITE,
+   }
+   ```
+
+   Names must match Bigin exactly, and a stage is only valid inside its
+   own sub-pipeline. Per-service routing later is just more keys
+   (`'inside-sales': {...}`), which take precedence over `form:*`.
+3. Deploy, submit through a form, confirm the deal card appears.
+4. Delete `api/pipelines.js` when routing is settled — it exists only
+   to read the structure.
 
 Unmapped submissions still create the contact, so routing can be filled
 in incrementally without risking lost leads. A deal that fails to insert

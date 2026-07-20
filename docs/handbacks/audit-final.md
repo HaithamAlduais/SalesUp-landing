@@ -56,14 +56,18 @@ now "الرئيسية".
   probes, which the occlusion does not affect.
 
 ## 4. Residual risks for the client
-- ~~Forms are front-end only~~ Resolved in code (2026-07-20, commit
-  5c3e5ca): all three forms POST to `/api/lead`, a Vercel serverless
-  function that inserts Zoho CRM Leads; success is never faked (an
-  unconfigured/failing backend shows a bilingual error with the
-  hi@salesup.sa fallback), and a honeypot drops bots. **Remaining
-  manual step for the client**: create the Zoho Self Client and add
-  the env vars in Vercel per `docs/ZOHO.md` — until then live forms
-  show the error state instead of sending.
+- ~~Forms are front-end only~~ **Resolved and live in production**
+  (2026-07-20). All three forms POST to `/api/lead`, a Vercel
+  serverless function that creates a **Bigin by Zoho Contact** tagged
+  with source, form type, and the chosen service. Verified end to end
+  against the live site: real browser submissions land in Bigin.
+  Success is never faked — a failing backend shows a bilingual error
+  with the hi@salesup.sa fallback — and a honeypot drops bots.
+  Credentials live only in Vercel env vars; the token's scopes cannot
+  read, edit, or delete any existing record.
+  **Deal routing into pipelines is built but intentionally off** — see
+  `docs/ZOHO.md` for why (the org's pipelines are per-client) and the
+  four steps to enable it once a website pipeline exists.
 - ~~Bundle size~~ Resolved: route + engine code-splitting shipped;
   initial JS ~63KB gzip.
 - ~~WebGPU-less browsers lose the shader identity~~ Resolved
