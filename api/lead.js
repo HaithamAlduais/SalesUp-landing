@@ -181,6 +181,10 @@ export async function POST(request) {
     Lead_Source: sourceByForm[form],
     Description: detailLines.join('\n') || '—',
     Tag: [{ name: TAG_SOURCE }, { name: tagByForm[form] }],
+    /* custom text field on Contacts (api_name, not its "salesup
+       website" label) — marks the record as website-originated so it
+       can be filtered without relying on tags */
+    salesup_website: 'yes',
   }
   /* the chosen service or package, so the shared pipeline stays
      filterable; label over slug, and only when the visitor picked one */
