@@ -1,8 +1,8 @@
-# Zoho CRM integration
+# Bigin by Zoho integration
 
 The three site forms (landing contact, services request, marketers
 apply) POST to `/api/lead` — a Vercel serverless function
-([api/lead.ts](../api/lead.ts)) that creates a **Lead** in Zoho CRM.
+([api/lead.js](../api/lead.js)) that creates a **Contact** in Bigin by Zoho.
 The forms show a real error state (with a direct-email fallback) until
 the function is configured, so nothing silently pretends to send.
 
@@ -11,18 +11,20 @@ follow these steps once:
 
 ## 1. Create a Self Client in the Zoho API console
 
-1. Open the API console for your data center — `https://api-console.zoho.sa/`
-   if the account is on the Saudi DC (`crm.zoho.sa`), or
-   `https://api-console.zoho.com/` for the global DC. **All URLs below
-   must use the same DC.**
+1. Open the API console for your data center — check the address bar
+   when logged into Bigin: `bigin.zoho.sa` → use
+   `https://api-console.zoho.sa/`; `bigin.zoho.com` → use
+   `https://api-console.zoho.com/`. **All URLs below must use the same
+   DC.**
 2. **Get Started → Self Client → Create**. Copy the **Client ID** and
    **Client Secret**.
 3. In the **Generate Code** tab enter:
-   - Scope: `ZohoCRM.modules.leads.CREATE`
+   - Scope: `ZohoBigin.modules.contacts.CREATE`
    - Time Duration: 10 minutes
    - Scope Description: anything (e.g. "website leads")
-4. Click **Create**, pick the CRM org if asked, and copy the generated
-   **code** (it expires in the duration you chose — do step 2 promptly).
+4. Click **Create**, pick the Bigin portal/org if asked, and copy the
+   generated **code** (it expires in the duration you chose — do step 2
+   promptly).
 
 ## 2. Exchange the code for a refresh token
 
@@ -60,10 +62,10 @@ the variables up.
 ## 4. Verify
 
 - `curl -s -X POST https://sales-up-landing.vercel.app/api/lead -H "Content-Type: application/json" -d '{"form":"contact","name":"اختبار","phone":"0500000000"}'`
-  should return `{"ok":true}` — and a Lead named "اختبار" appears in
-  CRM → Leads with source "SalesUp Website — استشارة مجانية".
+  should return `{"ok":true}` — and a Contact named "اختبار" appears in
+  Bigin → Contacts with source "موقع SalesUp — استشارة مجانية".
 - Submit the site's contact form; the success message should appear
-  and the lead should land in CRM.
+  and the contact should land in Bigin.
 
 Before the variables are set, the same curl returns
 `{"ok":false,"error":"zoho-not-configured"}` (HTTP 503) — that's the
@@ -71,14 +73,13 @@ expected pre-setup state.
 
 ## Field mapping
 
-| Site field                    | Zoho Lead field                    |
+| Site field                    | Bigin Contact field                |
 | ----------------------------- | ---------------------------------- |
 | name                          | Last Name (required)               |
 | phone                         | Phone (required)                   |
 | email                         | Email                              |
-| org (services form)           | Company (default "غير محدد")       |
-| message / service / plan / link / notes | Description (labeled lines) |
-| which form was used           | Lead Source (`SalesUp Website — …`) |
+| org / message / service / plan / link / notes | Description (labeled lines; Bigin's Company is a lookup, so org stays in Description) |
+| which form was used           | Lead Source (`موقع SalesUp — …`)   |
 
 Spam: a hidden honeypot field silently drops bot submissions that fill
 it. Genuine failures (Zoho down, bad token) show the form's error state
