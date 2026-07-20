@@ -1,5 +1,6 @@
 import { CSSProperties, FormEvent, useEffect, useRef, useState } from 'react'
 import { ActiveFx, COARSE_POINTER, ContactFx, HeroFx, InViewFx } from './components/CardFx'
+import { leadFromForm, submitLead } from './components/leads'
 import { PageShell } from './shared/PageShell'
 import { usePageTheme } from './shared/theme'
 import { useLang } from './shared/i18n'
@@ -489,11 +490,14 @@ function Process() {
 
 function Contact({ dark }: { dark: boolean }) {
   const { L } = useLang()
-  const [sent, setSent] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSent(true)
+    if (status === 'sending') return
+    const payload = leadFromForm(event.currentTarget, { form: 'contact' })
+    setStatus('sending')
+    setStatus((await submitLead(payload)) ? 'sent' : 'error')
   }
 
   return (
@@ -514,9 +518,13 @@ function Contact({ dark }: { dark: boolean }) {
               <input className="field field--phone" name="phone" type="tel" placeholder={L('رقم الجوال*', 'Phone*')} aria-label={L('رقم الجوال', 'Phone')} autoComplete="tel" required />
             </div>
             <textarea className="field field--full field--message" name="message" placeholder={L('الرسالة', 'Message')} aria-label={L('الرسالة', 'Message')} />
+            <input className="hp-field" name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" />
             <div className="form-action">
-              <button className="button button--submit" type="submit">{L('ارسل طلبك', 'Send Request')}</button>
-              {sent ? <p className="form-status" role="status">{L('وصلنا طلبك، بنتواصل معك قريبًا.', "We received your request — we'll be in touch soon.")}</p> : null}
+              <button className="button button--submit" type="submit" disabled={status === 'sending'}>
+                {status === 'sending' ? L('جارٍ الإرسال…', 'Sending…') : L('ارسل طلبك', 'Send Request')}
+              </button>
+              {status === 'sent' ? <p className="form-status" role="status">{L('وصلنا طلبك، بنتواصل معك قريبًا.', "We received your request — we'll be in touch soon.")}</p> : null}
+              {status === 'error' ? <p className="form-status form-status--error" role="alert">{L('تعذّر إرسال الطلب. حاول مرة أخرى، أو راسلنا مباشرة على hi@salesup.sa', "Couldn't send your request. Please try again, or email us directly at hi@salesup.sa")}</p> : null}
             </div>
           </form>
         </div>

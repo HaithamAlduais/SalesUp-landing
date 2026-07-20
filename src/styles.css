@@ -1441,6 +1441,28 @@ h1, h2, h3, p { margin: 0; }
   font-size: 16px;
 }
 
+.form-status--error {
+  color: #ffb4a8;
+}
+
+/* honeypot: invisible to humans, tempting to bots (api/lead.ts drops
+   any submission that fills it) */
+.hp-field {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+
+/* submit buttons hold their look while a request is in flight */
+.button--submit:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
 /* ---------- design-system dropdown (shared/Select.tsx) ---------- */
 
 .su-select {

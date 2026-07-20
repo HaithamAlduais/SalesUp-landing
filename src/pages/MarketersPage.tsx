@@ -4,6 +4,7 @@ import { useLang } from '../shared/i18n'
 import { usePageTheme } from '../shared/theme'
 import { Select } from '../shared/Select'
 import { ContactFx } from '../components/CardFx'
+import { leadFromForm, submitLead } from '../components/leads'
 import contactGlow from '../assets/contact-glow.svg'
 
 /*
@@ -357,15 +358,20 @@ function MarketersApply() {
   const type: Tab = params.get('type') === 'package' ? 'packages' : 'services'
   const pick = params.get('pick') ?? ''
   const options = type === 'services' ? SERVICES : PACKAGES
-  const [sent, setSent] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSent(true)
-    window.scrollTo({ top: 0 })
+    if (status === 'sending') return
+    const payload = leadFromForm(event.currentTarget, { form: 'marketers-apply' })
+    payload.planType = type === 'services' ? 'خدمات المسوقين' : 'باقات المسوقين'
+    setStatus('sending')
+    const ok = await submitLead(payload)
+    setStatus(ok ? 'sent' : 'error')
+    if (ok) window.scrollTo({ top: 0 })
   }
 
-  if (sent) {
+  if (status === 'sent') {
     return (
       <section className="mk-section mk-section--apply">
         <p className="contact-eyebrow">{L(T.applyEyebrow.ar, T.applyEyebrow.en)}</p>
@@ -415,8 +421,12 @@ function MarketersApply() {
               <input className="field" name="link" type="url" placeholder={L(T.fLink.ar, T.fLink.en)} aria-label={L('رابط المنتج / الخدمة', 'Product / service link')} required />
               <input className="field" name="notes" type="text" placeholder={L(T.fNotes.ar, T.fNotes.en)} aria-label={L('ملاحظات', 'Notes')} />
             </div>
+            <input className="hp-field" name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" />
             <div className="form-action">
-              <button className="button button--submit" type="submit">{L(T.submit.ar, T.submit.en)}</button>
+              <button className="button button--submit" type="submit" disabled={status === 'sending'}>
+                {status === 'sending' ? L('جارٍ الإرسال…', 'Sending…') : L(T.submit.ar, T.submit.en)}
+              </button>
+              {status === 'error' ? <p className="form-status form-status--error" role="alert">{L('تعذّر إرسال الطلب. حاول مرة أخرى، أو راسلنا مباشرة على hi@salesup.sa', "Couldn't send your request. Please try again, or email us directly at hi@salesup.sa")}</p> : null}
             </div>
           </form>
         </div>
