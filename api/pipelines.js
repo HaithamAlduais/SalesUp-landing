@@ -56,16 +56,34 @@ export async function GET(request) {
   if (!process.env.ZOHO_REFRESH_TOKEN) {
     return json(503, { error: 'zoho-not-configured' })
   }
+  const module = url.searchParams.get('module') || 'Pipelines'
 
   try {
     const { token, apiDomain, scope } = await getAccessToken()
-    const resp = await fetch(`${apiDomain}/bigin/v2/settings/layouts?module=Pipelines`, {
+    const resp = await fetch(`${apiDomain}/bigin/v2/settings/layouts?module=${module}`, {
       headers: { Authorization: `Zoho-oauthtoken ${token}` },
       signal: AbortSignal.timeout(8000),
     })
     const raw = await resp.json().catch(() => null)
     if (!resp.ok) {
       return json(502, { error: 'layouts-failed', status: resp.status, scope, detail: raw })
+    }
+
+    /* any module other than Pipelines: list its writable fields, so a
+       custom field's real api_name and type can be read off rather than
+       guessed from its display label */
+    if (module !== 'Pipelines') {
+      const fields = (raw.layouts || [])
+        .flatMap((l) => l.sections || [])
+        .flatMap((s) => s.fields || [])
+        .filter((f) => !f.read_only)
+        .map((f) => ({
+          api_name: f.api_name,
+          label: f.field_label || f.display_label,
+          type: f.data_type,
+          options: (f.pick_list_values || []).map((p) => p.actual_value || p.display_value),
+        }))
+      return json(200, { module, scope, count: fields.length, fields })
     }
 
     /* flatten to just what the routing map needs: each team pipeline
