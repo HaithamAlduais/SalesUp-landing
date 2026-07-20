@@ -23,6 +23,35 @@
 const FORMS = new Set(['contact', 'service-request', 'marketers-apply'])
 const MAX_LEN = 3000
 
+/*
+ * Service → Bigin pipeline routing.
+ *
+ * Keys are the site's own slugs (`service` from the services form,
+ * `plan` from the marketers form, or `form:<name>` as the fallback for
+ * a submission that carries no selection). Each value places the deal:
+ *   teamPipeline / teamPipelineId — the Team Pipeline (Bigin's top
+ *     level; plan-limited, so several services may share one)
+ *   subPipeline — mandatory; must match that pipeline's configured name
+ *   stage       — mandatory; must be a stage valid in THAT sub-pipeline
+ *
+ * Fill from the real org structure via GET /api/pipelines?key=… — names
+ * must match Bigin exactly or the insert is rejected. While a key is
+ * missing the contact is still created (with tags) and only the deal is
+ * skipped, so routing can be rolled out without risking lost leads.
+ */
+const PIPELINE_ROUTES = {}
+
+/* tags kept to a deliberately small vocabulary: Bigin allows 5 tags per
+   record and only 10 per module on Express, so per-service tags would
+   crowd the ceiling — the service lives in the deal's pipeline and in
+   Description instead */
+const TAG_SOURCE = 'موقع الويب'
+const tagByForm = {
+  contact: 'استشارة',
+  'service-request': 'طلب خدمة',
+  'marketers-apply': 'مسوقين',
+}
+
 let cachedToken = null
 
 async function getAccessToken() {
@@ -63,8 +92,38 @@ function clean(value) {
 function json(status, body) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json; charset=utf-8' },
   })
+}
+
+/* one Bigin write, with a single retry after a 401 refreshes the token.
+   Returns the created record's id, or null when Bigin rejected it. */
+async function biginInsert(module, record, getToken, onExpired) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const { token, apiDomain } = await getToken()
+    const resp = await fetch(`${apiDomain}/bigin/v2/${module}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Zoho-oauthtoken ${token}`,
+        /* explicit charset: Arabic must never be re-encoded in transit */
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      body: JSON.stringify({ data: [record] }),
+      signal: AbortSignal.timeout(8000),
+    })
+    const result = await resp.json().catch(() => null)
+    if (resp.status === 401 && attempt === 0) {
+      onExpired()
+      continue
+    }
+    const row = result && result.data && result.data[0]
+    if (!resp.ok || !row || row.status !== 'success') {
+      console.error(`[lead] ${module} insert failed:`, resp.status, JSON.stringify(result))
+      return null
+    }
+    return (row.details && row.details.id) || null
+  }
+  return null
 }
 
 /* per-method export — Vercel's Node runtime only routes the web
@@ -113,42 +172,46 @@ export async function POST(request) {
     clean(body.notes) && `ملاحظات: ${clean(body.notes)}`,
   ].filter(Boolean)
 
-  const record = {
+  const contact = {
     Last_Name: name,
     Phone: phone,
     Lead_Source: sourceByForm[form],
     Description: detailLines.join('\n') || '—',
+    Tag: [{ name: TAG_SOURCE }, { name: tagByForm[form] }],
   }
   const email = clean(body.email)
-  if (email) record.Email = email
+  if (email) contact.Email = email
 
   try {
-    /* attempt 0 may run on a cached token; a 401 clears the cache and
-       attempt 1 runs on a freshly-refreshed one */
-    for (let attempt = 0; attempt < 2; attempt++) {
-      const { token, apiDomain } = await getAccessToken()
-      const resp = await fetch(`${apiDomain}/bigin/v2/Contacts`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Zoho-oauthtoken ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ data: [record] }),
-        signal: AbortSignal.timeout(8000),
-      })
-      const result = await resp.json().catch(() => null)
-      if (resp.status === 401 && attempt === 0) {
-        cachedToken = null
-        continue
-      }
-      const row = result && result.data && result.data[0]
-      if (!resp.ok || !row || row.status !== 'success') {
-        console.error('[lead] bigin insert failed:', resp.status, JSON.stringify(result))
-        return json(502, { ok: false, error: 'zoho-rejected' })
-      }
-      return json(200, { ok: true })
+    const expire = () => {
+      cachedToken = null
     }
-    return json(502, { ok: false, error: 'zoho-rejected' })
+    const contactId = await biginInsert('Contacts', contact, getAccessToken, expire)
+    if (!contactId) return json(502, { ok: false, error: 'zoho-rejected' })
+
+    /* deal routing: the selection picks the pipeline, falling back to a
+       per-form route for submissions that carry no selection */
+    const routeKey = clean(body.plan) || clean(body.service) || `form:${form}`
+    const route = PIPELINE_ROUTES[routeKey] || PIPELINE_ROUTES[`form:${form}`]
+    if (route) {
+      const title = plan || service || sourceByForm[form]
+      const deal = {
+        Deal_Name: `${name} — ${title}`,
+        Sub_Pipeline: route.subPipeline,
+        Stage: route.stage,
+        Contact_Name: { id: contactId },
+        Description: detailLines.join('\n') || '—',
+      }
+      if (route.teamPipeline && route.teamPipelineId) {
+        deal.Pipeline = { name: route.teamPipeline, id: route.teamPipelineId }
+      }
+      /* the contact is already saved, so a failed deal must not fail the
+         submission — the lead is captured either way; log and move on */
+      const dealId = await biginInsert('Pipelines', deal, getAccessToken, expire)
+      if (!dealId) console.error('[lead] deal not created for contact', contactId, routeKey)
+    }
+
+    return json(200, { ok: true })
   } catch (err) {
     console.error('[lead] error:', err)
     return json(500, { ok: false, error: 'lead-failed' })
