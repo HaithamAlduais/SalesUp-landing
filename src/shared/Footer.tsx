@@ -15,9 +15,18 @@ const SOCIALS = [
   { src: social5, label: 'LinkedIn' },
 ]
 
+/* office location — the pin the client shared. The embed URL needs no
+   API key; the wrapper link opens the place page in Google Maps. */
+const OFFICE = {
+  lat: 24.8224917,
+  lng: 46.7907162,
+  link: 'https://maps.app.goo.gl/5sCQKCrstpm5miXbA',
+}
+
 export function Footer() {
-  const { L } = useLang()
+  const { L, lang } = useLang()
   const { dark } = usePageTheme()
+  const mapSrc = `https://maps.google.com/maps?q=${OFFICE.lat},${OFFICE.lng}&z=16&hl=${lang}&output=embed`
 
   return (
     <footer className="site-footer" id="footer">
@@ -57,8 +66,15 @@ export function Footer() {
           <div className="footer-col">
             <p className="footer-head">{L('تواصل معنا', 'Contact Us')}</p>
             <div className="footer-block">
-              <p>{L('حي الصحافة – الرياض', 'As Sahafah District – Riyadh')}</p>
-              <p>{L('المملكة العربية السعودية', 'Saudi Arabia')}</p>
+              <a
+                className="footer-link footer-address"
+                href={OFFICE.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>{L('حي الصحافة – الرياض', 'As Sahafah District – Riyadh')}</span>
+                <span>{L('المملكة العربية السعودية', 'Saudi Arabia')}</span>
+              </a>
             </div>
             <div className="footer-block">
               <a className="footer-link" href="mailto:hi@salesup.sa">hi@salesup.sa</a>
@@ -74,6 +90,32 @@ export function Footer() {
             <a className="footer-link" href="/#contact">{L('استشارة مجانية', 'Free Consultation')}</a>
           </nav>
         </div>
+
+        {/* office map: the iframe stays interactive (pan/zoom), and the
+            overlaid link opens the place in Google Maps. Lazy so the
+            embed never costs the initial load on any page. */}
+        <section className="footer-map" aria-label={L('موقع المكتب', 'Office location')}>
+          <iframe
+            className="footer-map-frame"
+            src={mapSrc}
+            title={L('موقع مكتب سيلز أب على الخريطة', 'SalesUp office location on the map')}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            allowFullScreen
+          />
+          <a
+            className="footer-map-cta"
+            href={OFFICE.link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" />
+              <circle cx="12" cy="10" r="2.6" />
+            </svg>
+            <span>{L('افتح الموقع في خرائط جوجل', 'Open in Google Maps')}</span>
+          </a>
+        </section>
 
         <div className="footer-bottom">
           <p className="copyright">

@@ -1706,6 +1706,72 @@ h1, h2, h3, p { margin: 0; }
 }
 html[dir='ltr'] .footer-link:hover { transform: translateX(4px); }
 
+/* ---------- office map (footer) ---------- */
+
+.footer-map {
+  position: relative;
+  margin-top: 56px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(19, 63, 64, 0.14);
+  box-shadow: 0 18px 44px rgba(19, 63, 64, 0.1);
+  background: rgba(19, 63, 64, 0.04);
+}
+
+.footer-map-frame {
+  display: block;
+  width: 100%;
+  height: 300px;
+  border: 0;
+  filter: saturate(0.9);
+}
+
+.footer-map-cta {
+  position: absolute;
+  inset-inline-end: 16px;
+  bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid var(--green);
+  background: linear-gradient(0deg, #133f40 0%, #177e6f 100%);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(19, 63, 64, 0.28);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.footer-map-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(19, 63, 64, 0.34);
+}
+
+.footer-map-cta svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+.footer-address {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.footer-address:hover { transform: none; }
+
+[data-theme='dark'] .footer-map {
+  border-color: rgba(232, 246, 239, 0.14);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+}
+[data-theme='dark'] .footer-map-frame {
+  filter: saturate(0.85) brightness(0.88);
+}
+
 .footer-bottom {
   margin-top: 72px;
   display: flex;
@@ -2251,6 +2317,15 @@ html.no-webgpu .footer-logo-fx-inner {
 
   .footer-grid { flex-direction: column; align-items: flex-start; gap: 36px; }
   .footer-bottom { flex-direction: column; align-items: flex-start; gap: 10px; margin-top: 48px; }
+  .footer-map { margin-top: 40px; }
+  .footer-map-frame { height: 220px; }
+  .footer-map-cta {
+    inset-inline-end: 12px;
+    bottom: 12px;
+    height: 40px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
   .footer-logo-fx { width: 215px; }
   .footer-end { padding: 40px 16px 44px; }
   .to-top { top: 24px; width: 44px; height: 44px; }
@@ -3611,26 +3686,18 @@ html[dir='ltr'] .mk-tabs-thumb.is-end { transform: translateX(100%); }
   font-weight: 600;
 }
 
-.mk-price {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-.mk-price strong {
-  color: var(--green);
-  font-size: 46px;
+/* the plan name carried a large price beneath it; with prices removed
+   the head would collapse, so the name takes that visual weight */
+.mk-card-head h3 {
+  font-size: 30px;
   font-weight: 700;
-  line-height: 1.15;
-}
-.mk-price span {
-  color: rgba(19, 63, 64, 0.7);
-  font-size: 15px;
-  font-weight: 500;
+  margin-top: 4px;
 }
 
 .mk-note {
   color: rgba(19, 63, 64, 0.6);
   font-size: 14.5px;
+  margin-top: 2px;
 }
 
 .mk-order {
@@ -3915,7 +3982,6 @@ html[dir='ltr'] .mk-tabs-thumb.is-end { transform: translateX(100%); }
 }
 [data-theme='dark'] .mk-kicker,
 [data-theme='dark'] .mk-features li { color: #e8f6ef; }
-[data-theme='dark'] .mk-price span { color: rgba(232, 246, 239, 0.7); }
 [data-theme='dark'] .mk-note { color: rgba(232, 246, 239, 0.6); }
 [data-theme='dark'] .mk-list-label { color: rgba(232, 246, 239, 0.75); }
 [data-theme='dark'] .mk-brief { color: rgba(232, 246, 239, 0.85); }
@@ -3939,7 +4005,7 @@ html[dir='ltr'] .mk-tabs-thumb.is-end { transform: translateX(100%); }
 @media (max-width: 700px) {
   .mk-section { gap: 48px; }
   .mk-kicker { font-size: 22px; }
-  .mk-price strong { font-size: 38px; }
+  .mk-card-head h3 { font-size: 24px; }
   .mk-order { height: 48px; padding: 0 28px; font-size: 15.5px; }
   .mk-features li { font-size: 15.5px; }
   .mk-faq-q { font-size: 17px; padding: 16px 2px; }

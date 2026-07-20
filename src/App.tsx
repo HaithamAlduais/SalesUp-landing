@@ -494,10 +494,15 @@ function Contact({ dark }: { dark: boolean }) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (status === 'sending') return
-    const payload = leadFromForm(event.currentTarget, { form: 'contact' })
+    if (status === 'sending' || status === 'sent') return
+    const el = event.currentTarget
+    const payload = leadFromForm(el, { form: 'contact' })
     setStatus('sending')
-    setStatus((await submitLead(payload)) ? 'sent' : 'error')
+    const ok = await submitLead(payload)
+    setStatus(ok ? 'sent' : 'error')
+    /* clear on success so a second click can't file the same lead twice
+       (this form stays on screen rather than swapping to a panel) */
+    if (ok) el.reset()
   }
 
   return (
@@ -522,7 +527,7 @@ function Contact({ dark }: { dark: boolean }) {
             <textarea className="field field--full field--message" name="message" placeholder={L('الرسالة', 'Message')} aria-label={L('الرسالة', 'Message')} />
             <input className="hp-field" name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" />
             <div className="form-action">
-              <button className="button button--submit" type="submit" disabled={status === 'sending'}>
+              <button className="button button--submit" type="submit" disabled={status === 'sending' || status === 'sent'}>
                 {status === 'sending' ? L('جارٍ الإرسال…', 'Sending…') : L('ارسل طلبك', 'Send Request')}
               </button>
               {status === 'sent' ? <p className="form-status" role="status">{L('وصلنا طلبك، بنتواصل معك قريبًا.', "We received your request — we'll be in touch soon.")}</p> : null}

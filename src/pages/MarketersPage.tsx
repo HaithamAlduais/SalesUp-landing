@@ -21,11 +21,12 @@ import contactGlow from '../assets/contact-glow.svg'
 
 type Bi = { ar: string; en: string }
 type Faq = { q: Bi; a: Bi }
+/* prices are deliberately absent site-wide — plans are presented by what
+   they include, and the visitor is quoted after contact */
 type Plan = {
   key: string
   kicker: Bi
   name: Bi
-  price: string
   note: Bi
   features: Bi[]
   brief?: Bi
@@ -40,7 +41,6 @@ const T = {
   },
   tabServices: { ar: 'الخدمات', en: 'Services' },
   tabPackages: { ar: 'الباقات', en: 'Packages' },
-  currency: { ar: 'ريال / شهرياً', en: 'SAR / month' },
   order: { ar: 'اطلب الخدمة الآن', en: 'Order Now' },
   includes: { ar: 'تشمل :', en: 'Includes:' },
   brief: { ar: 'وصف مختصر :', en: 'In short:' },
@@ -79,8 +79,7 @@ const SERVICES: Plan[] = [
     key: 'seo',
     kicker: { ar: 'الخدمة الأولى', en: 'First Service' },
     name: { ar: 'تحسين محركات البحث SEO', en: 'Search Engine Optimization (SEO)' },
-    price: '3,000',
-    note: { ar: 'عند الاشتراك لمدة 3 شهور', en: 'with a 3-month subscription' },
+    note: { ar: 'اشتراك لمدة ٣ شهور', en: '3-month subscription' },
     features: [
       { ar: 'تحليل الموقع والمنافسين', en: 'Site and competitor analysis' },
       { ar: 'بحث الكلمات المفتاحية', en: 'Keyword research' },
@@ -95,8 +94,7 @@ const SERVICES: Plan[] = [
     key: 'campaigns',
     kicker: { ar: 'الخدمة الثانية', en: 'Second Service' },
     name: { ar: 'إدارة الحملات الإعلانية', en: 'Ad Campaign Management' },
-    price: '3,900',
-    note: { ar: 'عند الاشتراك لمدة 3 شهور', en: 'with a 3-month subscription' },
+    note: { ar: 'اشتراك لمدة ٣ شهور', en: '3-month subscription' },
     features: [
       { ar: 'تحليل الموقع والمنافسين', en: 'Site and competitor analysis' },
       { ar: 'استراتيجية إعلانية', en: 'Advertising strategy' },
@@ -114,8 +112,7 @@ const PACKAGES: Plan[] = [
     key: 'basic',
     kicker: { ar: 'الباقة الأساسية', en: 'Basic Package' },
     name: { ar: 'الباقة الأساسية', en: 'Basic Package' },
-    price: '6,900',
-    note: { ar: 'عند الاشتراك لمدة 3 شهور', en: 'with a 3-month subscription' },
+    note: { ar: 'اشتراك لمدة ٣ شهور', en: '3-month subscription' },
     features: [
       { ar: 'الـ SEO تحسين محركات البحث', en: 'SEO — search engine optimization' },
       { ar: 'إدارة الحملات الإعلانية', en: 'Ad campaign management' },
@@ -129,8 +126,7 @@ const PACKAGES: Plan[] = [
     key: 'pro',
     kicker: { ar: 'الباقة الاحترافية', en: 'Professional Package' },
     name: { ar: 'الباقة الاحترافية', en: 'Professional Package' },
-    price: '8,000',
-    note: { ar: 'عند الاشتراك لمدة 3 شهور', en: 'with a 3-month subscription' },
+    note: { ar: 'اشتراك لمدة ٣ شهور', en: '3-month subscription' },
     features: [
       { ar: 'الـ SEO تحسين محركات البحث', en: 'SEO — search engine optimization' },
       { ar: 'إدارة الحملات الإعلانية', en: 'Ad campaign management' },
@@ -161,10 +157,10 @@ const FAQS_SERVICES: Faq[] = [
     },
   },
   {
-    q: { ar: 'هل السعر يشمل ميزانية الإعلانات؟', en: 'Does the price include the ad budget?' },
+    q: { ar: 'هل الاشتراك يشمل ميزانية الإعلانات؟', en: 'Does the subscription include the ad budget?' },
     a: {
-      ar: 'لا — السعر يغطي الإدارة والتشغيل والتحسين، وميزانية الإعلانات تحددها أنت وتدفعها مباشرة للمنصات الإعلانية.',
-      en: 'No — the price covers management, operation, and optimization; you set the ad budget and pay it directly to the ad platforms.',
+      ar: 'لا — الاشتراك يغطي الإدارة والتشغيل والتحسين، وميزانية الإعلانات تحددها أنت وتدفعها مباشرة للمنصات الإعلانية.',
+      en: 'No — the subscription covers management, operation, and optimization; you set the ad budget and pay it directly to the ad platforms.',
     },
   },
   {
@@ -201,8 +197,8 @@ const FAQS_PACKAGES: Faq[] = [
   {
     q: { ar: 'كم مدة الاشتراك؟', en: 'How long is the subscription?' },
     a: {
-      ar: 'الأسعار الموضحة عند الاشتراك لمدة ٣ شهور — وهي المدة الأنسب لبناء نتائج واضحة وقابلة للقياس.',
-      en: 'The listed prices apply to a 3-month subscription — the right window to build clear, measurable results.',
+      ar: 'الاشتراك يبدأ من ٣ شهور — وهي المدة الأنسب لبناء نتائج واضحة وقابلة للقياس.',
+      en: 'Subscriptions start at 3 months — the right window to build clear, measurable results.',
     },
   },
   {
@@ -230,10 +226,6 @@ function PlanCard({ plan, tab }: { plan: Plan; tab: Tab }) {
       <div className="mk-card-head">
         <p className="mk-kicker">{L(plan.kicker.ar, plan.kicker.en)}</p>
         {tab === 'services' ? <h3>{L(plan.name.ar, plan.name.en)}</h3> : null}
-        <p className="mk-price" dir="ltr">
-          <strong>{plan.price}</strong>
-          <span>{L(T.currency.ar, T.currency.en)}</span>
-        </p>
         <p className="mk-note">{L(plan.note.ar, plan.note.en)}</p>
         <a className="mk-order" href={`/marketers/apply?type=${tab === 'services' ? 'service' : 'package'}&pick=${plan.key}`}>
           {L(T.order.ar, T.order.en)}

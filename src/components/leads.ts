@@ -29,13 +29,36 @@ export type LeadPayload = {
   website?: string /* honeypot */
 }
 
+/*
+ * AbortSignal.timeout only landed in Safari 16 — calling it on an older
+ * iPhone throws before fetch is even reached, which would fail every
+ * submission on those devices. Fall back to a controller, and to no
+ * timeout at all rather than no request.
+ */
+function abortAfter(ms: number): AbortSignal | undefined {
+  try {
+    if (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {
+      return AbortSignal.timeout(ms)
+    }
+    const controller = new AbortController()
+    setTimeout(() => controller.abort(), ms)
+    return controller.signal
+  } catch {
+    return undefined
+  }
+}
+
+/* generous enough that the function (12s budget) always answers first —
+   aborting early would report a failure for a lead that was created */
+const CLIENT_TIMEOUT_MS = 25000
+
 export async function submitLead(payload: LeadPayload): Promise<boolean> {
   try {
     const resp = await fetch('/api/lead', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(15000),
+      signal: abortAfter(CLIENT_TIMEOUT_MS),
     })
     if (!resp.ok) return false
     const data = (await resp.json()) as { ok?: boolean }
