@@ -15,7 +15,9 @@ export type LeadPayload = {
   message?: string
   org?: string
   service?: string
+  serviceLabel?: string
   plan?: string
+  planLabel?: string
   planType?: string
   link?: string
   notes?: string
@@ -45,6 +47,14 @@ export function leadFromForm(form: HTMLFormElement, base: { form: LeadForm }): L
     const value = data.get(name)
     return typeof value === 'string' ? value.trim() : ''
   }
+  /* the custom Select carries a slug in its hidden input (that's what
+     routing keys off); its human-readable label lives in the trigger,
+     and CRM records are far easier to read with the label alongside */
+  const label = (name: string) => {
+    const input = form.querySelector(`input[name="${name}"]`)
+    const text = input?.closest('.su-select')?.querySelector('.su-select-label')?.textContent
+    return typeof text === 'string' ? text.trim() : ''
+  }
   return {
     ...base,
     name: field('name'),
@@ -53,7 +63,9 @@ export function leadFromForm(form: HTMLFormElement, base: { form: LeadForm }): L
     message: field('message'),
     org: field('org'),
     service: field('service'),
+    serviceLabel: label('service'),
     plan: field('plan'),
+    planLabel: label('plan'),
     link: field('link'),
     notes: field('notes'),
     website: field('website'),

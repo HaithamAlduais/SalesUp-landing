@@ -99,11 +99,15 @@ export async function POST(request) {
   }
   /* Bigin contacts have no plain-text Company field (it's a lookup),
      so the organization lands in Description with the rest */
+  /* selects carry a slug for routing plus a readable label — prefer the
+     label so the CRM record says "المبيعات الداخلية", not "inside-sales" */
+  const service = clean(body.serviceLabel) || clean(body.service)
+  const plan = clean(body.planLabel) || clean(body.plan)
   const detailLines = [
     clean(body.org) && `الجهة: ${clean(body.org)}`,
     clean(body.message) && `الرسالة: ${clean(body.message)}`,
-    clean(body.service) && `الخدمة: ${clean(body.service)}`,
-    clean(body.plan) && `الباقة/الخدمة المختارة: ${clean(body.plan)}`,
+    service && `الخدمة: ${service}`,
+    plan && `الباقة/الخدمة المختارة: ${plan}`,
     clean(body.planType) && `النوع: ${clean(body.planType)}`,
     clean(body.link) && `رابط المنتج: ${clean(body.link)}`,
     clean(body.notes) && `ملاحظات: ${clean(body.notes)}`,
