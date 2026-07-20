@@ -19,9 +19,17 @@ follow these steps once:
 2. **Get Started → Self Client → Create**. Copy the **Client ID** and
    **Client Secret**.
 3. In the **Generate Code** tab enter:
-   - Scope: `ZohoBigin.modules.contacts.CREATE`
+   - Scope (comma-separated, no spaces):
+     `ZohoBigin.modules.contacts.CREATE,ZohoBigin.modules.pipelines.CREATE,ZohoBigin.settings.layouts.READ`
    - Time Duration: 10 minutes
    - Scope Description: anything (e.g. "website leads")
+
+   Scopes are baked into the refresh token permanently — widening them
+   later means minting a new token, so request all three up front.
+   They cover: creating contacts (with tags, which need no scope of
+   their own), creating deals in pipelines, and reading the pipeline /
+   stage names the routing map is built from. None of them can read,
+   edit, or delete existing records.
 4. Click **Create**, pick the Bigin portal/org if asked, and copy the
    generated **code** (it expires in the duration you chose — do step 2
    promptly).
@@ -84,3 +92,30 @@ expected pre-setup state.
 Spam: a hidden honeypot field silently drops bot submissions that fill
 it. Genuine failures (Zoho down, bad token) show the form's error state
 with `hi@salesup.sa` as fallback — success is never faked.
+
+Every contact is tagged `موقع الويب` plus its form type (`استشارة`,
+`طلب خدمة`, `مسوقين`). The vocabulary is kept small on purpose: Bigin
+allows 5 tags per record and 10 per module on Express.
+
+## Deal routing
+
+`PIPELINE_ROUTES` in [api/lead.js](../api/lead.js) maps a site slug (the
+chosen service or package, or `form:<name>` when a form has no
+selection) to a Bigin placement: team pipeline + sub-pipeline + stage.
+When a route matches, the submission also creates a deal linked to the
+new contact. Names must match Bigin exactly — read the real structure
+from `GET /api/pipelines?key=…` ([api/pipelines.js](../api/pipelines.js),
+a temporary key-guarded probe; delete it once the map is written).
+
+Unmapped submissions still create the contact, so routing can be filled
+in incrementally without risking lost leads. A deal that fails to insert
+never fails the submission — the contact is already saved and the error
+is logged in the Vercel function logs.
+
+## Arabic text
+
+Send `Content-Type: application/json; charset=utf-8` (both API calls
+do). Note that testing with `curl` from a Windows shell corrupts Arabic
+before it is sent — the console rewrites UTF-8 to legacy CP1256 and
+records land as `??????`. Test from a browser, or put the JSON in a
+file and use `--data-binary @file.json`.
