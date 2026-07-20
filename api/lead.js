@@ -41,16 +41,19 @@ const MAX_LEN = 3000
  */
 const PIPELINE_ROUTES = {}
 
-/* tags kept to a deliberately small vocabulary: Bigin allows 5 tags per
-   record and only 10 per module on Express, so per-service tags would
-   crowd the ceiling — the service lives in the deal's pipeline and in
-   Description instead */
+/* Tags: source + form type + the chosen service/package. Three per
+   record, within Bigin's limit of 5. The third one matters because all
+   three forms share one website pipeline — without it there is no way
+   to filter that pipeline down to, say, SEO requests. Keep the
+   vocabulary closed (it grows only when the site's own service list
+   grows) since Bigin also caps distinct tags per module. */
 const TAG_SOURCE = 'موقع الويب'
 const tagByForm = {
   contact: 'استشارة',
   'service-request': 'طلب خدمة',
   'marketers-apply': 'مسوقين',
 }
+const TAG_MAX_LEN = 40
 
 let cachedToken = null
 
@@ -179,6 +182,10 @@ export async function POST(request) {
     Description: detailLines.join('\n') || '—',
     Tag: [{ name: TAG_SOURCE }, { name: tagByForm[form] }],
   }
+  /* the chosen service or package, so the shared pipeline stays
+     filterable; label over slug, and only when the visitor picked one */
+  const choice = (plan || service).slice(0, TAG_MAX_LEN)
+  if (choice) contact.Tag.push({ name: choice })
   const email = clean(body.email)
   if (email) contact.Email = email
 
