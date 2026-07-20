@@ -505,7 +505,9 @@ function Contact({ dark }: { dark: boolean }) {
       <p className="contact-eyebrow">{L('احصل على استشارة مجانية', 'Get a Free Consultation')}</p>
       <div className="contact-panel">
         <ContactFx dark={dark} />
-        <img className="contact-glow" src={contactGlow} alt="" aria-hidden="true" />
+        <div className="contact-clip" aria-hidden="true">
+          <img className="contact-glow" src={contactGlow} alt="" />
+        </div>
         <div className="contact-inner">
           <div className="contact-copy">
             <h2>{L('احصل على استشارة مجانية', 'Get a Free Consultation')}</h2>

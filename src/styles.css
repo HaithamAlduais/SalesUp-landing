@@ -1341,11 +1341,21 @@ h1, h2, h3, p { margin: 0; }
   border: 1px solid #d5d5d5;
   background: linear-gradient(0deg, #133f40 0%, #177e6f 100%);
   box-shadow: 0 4px 12.5px rgba(0, 0, 0, 0.05);
-  overflow: clip;
+  /* no overflow clip: the select dropdown must escape the panel. The
+     fx canvas clips itself; the glow art sits inside .contact-clip */
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 60px clamp(16px, 5vw, 133px);
+}
+
+.contact-clip {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: clip;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .contact-glow {
@@ -1904,6 +1914,8 @@ html.no-webgpu .footer-logo-fx-inner {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  border-radius: inherit;
+  overflow: clip;
 }
 
 .contact-glow { z-index: 1; }

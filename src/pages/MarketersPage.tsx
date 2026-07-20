@@ -398,7 +398,9 @@ function MarketersApply() {
       <h1 className="mk-apply-title">{L(T.applyTitle.ar, T.applyTitle.en)}</h1>
       <div className="contact-panel mk-apply">
         <ContactFx dark={dark} />
-        <img className="contact-glow" src={contactGlow} alt="" aria-hidden="true" />
+        <div className="contact-clip" aria-hidden="true">
+          <img className="contact-glow" src={contactGlow} alt="" />
+        </div>
         <div className="mk-apply-inner">
           <p className="mk-apply-lead">{L(T.applyLead.ar, T.applyLead.en)}</p>
           <form className="mk-form" onSubmit={handleSubmit}>
