@@ -1,6 +1,6 @@
 import { CSSProperties, FormEvent, useEffect, useRef, useState } from 'react'
 import { ActiveFx, COARSE_POINTER, ContactFx, HeroFx, InViewFx } from './components/CardFx'
-import { leadFromForm, submitLead } from './components/leads'
+import { EMAIL_PATTERN, leadFromForm, submitLead } from './components/leads'
 import { PageShell } from './shared/PageShell'
 import { usePageTheme } from './shared/theme'
 import { useLang } from './shared/i18n'
@@ -516,7 +516,7 @@ function Contact({ dark }: { dark: boolean }) {
           <form className="contact-form" onSubmit={handleSubmit}>
             <input className="field field--full" name="name" type="text" placeholder={L('الاسم*', 'Name*')} aria-label={L('الاسم', 'Name')} autoComplete="name" required />
             <div className="field-row">
-              <input className="field" name="email" type="email" placeholder={L('الايميل', 'Email')} aria-label={L('الايميل', 'Email')} autoComplete="email" />
+              <input className="field" name="email" type="email" pattern={EMAIL_PATTERN} title={L('اكتب بريدًا كاملاً مثل name@example.com', 'Enter a complete email, e.g. name@example.com')} placeholder={L('الايميل', 'Email')} aria-label={L('الايميل', 'Email')} autoComplete="email" />
               <input className="field field--phone" name="phone" type="tel" placeholder={L('رقم الجوال*', 'Phone*')} aria-label={L('رقم الجوال', 'Phone')} autoComplete="tel" required />
             </div>
             <textarea className="field field--full field--message" name="message" placeholder={L('الرسالة', 'Message')} aria-label={L('الرسالة', 'Message')} />

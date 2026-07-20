@@ -4,7 +4,7 @@ import { useLang } from '../shared/i18n'
 import { usePageTheme } from '../shared/theme'
 import { Select } from '../shared/Select'
 import { ActiveFx, ContactFx } from '../components/CardFx'
-import { leadFromForm, submitLead } from '../components/leads'
+import { EMAIL_PATTERN, leadFromForm, submitLead } from '../components/leads'
 
 import iconInsideSales from '../assets/icon-inside-sales.png'
 import iconOutsideSales from '../assets/icon-outside-sales.png'
@@ -271,7 +271,7 @@ function RequestForm({ service }: { service: Service }) {
             <input className="field" name="phone" type="tel" placeholder={L('رقم الجوال*', 'Phone*')} aria-label={L('رقم الجوال', 'Phone')} autoComplete="tel" required />
           </div>
           <div className="field-row">
-            <input className="field" name="email" type="email" placeholder={L('الايميل', 'Email')} aria-label={L('الايميل', 'Email')} autoComplete="email" />
+            <input className="field" name="email" type="email" pattern={EMAIL_PATTERN} title={L('اكتب بريدًا كاملاً مثل name@example.com', 'Enter a complete email, e.g. name@example.com')} placeholder={L('الايميل', 'Email')} aria-label={L('الايميل', 'Email')} autoComplete="email" />
             <Select
               name="service"
               ariaLabel={L('الخدمة', 'Service')}

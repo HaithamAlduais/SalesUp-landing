@@ -4,7 +4,7 @@ import { useLang } from '../shared/i18n'
 import { usePageTheme } from '../shared/theme'
 import { Select } from '../shared/Select'
 import { ContactFx } from '../components/CardFx'
-import { leadFromForm, submitLead } from '../components/leads'
+import { EMAIL_PATTERN, leadFromForm, submitLead } from '../components/leads'
 import contactGlow from '../assets/contact-glow.svg'
 
 /*
@@ -409,7 +409,7 @@ function MarketersApply() {
               <input className="field" name="phone" type="tel" placeholder={L(T.fPhone.ar, T.fPhone.en)} aria-label={L('رقم الجوال', 'Phone')} autoComplete="tel" required />
             </div>
             <div className="mk-form-row">
-              <input className="field" name="email" type="email" placeholder={L(T.fEmail.ar, T.fEmail.en)} aria-label={L('الايميل', 'Email')} autoComplete="email" />
+              <input className="field" name="email" type="email" pattern={EMAIL_PATTERN} title={L('اكتب بريدًا كاملاً مثل name@example.com', 'Enter a complete email, e.g. name@example.com')} placeholder={L(T.fEmail.ar, T.fEmail.en)} aria-label={L('الايميل', 'Email')} autoComplete="email" />
               <Select
                 name="plan"
                 ariaLabel={type === 'services' ? L('الخدمة', 'Service') : L('الباقة', 'Package')}

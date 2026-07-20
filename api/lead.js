@@ -53,7 +53,15 @@ const tagByForm = {
   'service-request': 'طلب خدمة',
   'marketers-apply': 'مسوقين',
 }
-const TAG_MAX_LEN = 40
+const TAG_MAX_LEN = 25
+
+/* Zoho enforces its own field lengths and rejects the whole record when
+   one is exceeded, so trim before sending rather than lose the lead */
+const LIMITS = { name: 80, phone: 30, email: 100 }
+
+/* stricter than the browser's type="email", which accepts "a@b" —
+   Zoho requires a real domain and refuses the record otherwise */
+const EMAIL_RE = /^[^@\s]+@[^@\s.]+(\.[^@\s.]+)+$/
 
 let cachedToken = null
 
@@ -165,6 +173,16 @@ export async function POST(request) {
      label so the CRM record says "المبيعات الداخلية", not "inside-sales" */
   const service = clean(body.serviceLabel) || clean(body.service)
   const plan = clean(body.planLabel) || clean(body.plan)
+  /* Zoho rejects a record outright if Email isn't a real address, and
+     the browser's own type="email" check passes things it won't accept
+     (no dot in the domain). Email is optional on every form here, so a
+     typo in it must never cost the lead: keep the address only when it
+     is genuinely valid, and carry a bad one through in the description
+     so the team can still see what the visitor meant to type. */
+  const rawEmail = clean(body.email)
+  const email = EMAIL_RE.test(rawEmail) ? rawEmail.slice(0, LIMITS.email) : ''
+  const badEmail = rawEmail && !email ? rawEmail : ''
+
   const detailLines = [
     clean(body.org) && `الجهة: ${clean(body.org)}`,
     clean(body.message) && `الرسالة: ${clean(body.message)}`,
@@ -173,11 +191,13 @@ export async function POST(request) {
     clean(body.planType) && `النوع: ${clean(body.planType)}`,
     clean(body.link) && `رابط المنتج: ${clean(body.link)}`,
     clean(body.notes) && `ملاحظات: ${clean(body.notes)}`,
+    badEmail && `الايميل كما كتبه العميل (غير مكتمل): ${badEmail}`,
   ].filter(Boolean)
 
   const contact = {
-    Last_Name: name,
-    Phone: phone,
+    /* Zoho caps Last_Name; an over-long name would fail the insert */
+    Last_Name: name.slice(0, LIMITS.name),
+    Phone: phone.slice(0, LIMITS.phone),
     Lead_Source: sourceByForm[form],
     Description: detailLines.join('\n') || '—',
     Tag: [{ name: TAG_SOURCE }, { name: tagByForm[form] }],
@@ -190,15 +210,30 @@ export async function POST(request) {
      filterable; label over slug, and only when the visitor picked one */
   const choice = (plan || service).slice(0, TAG_MAX_LEN)
   if (choice) contact.Tag.push({ name: choice })
-  const email = clean(body.email)
   if (email) contact.Email = email
 
   try {
     const expire = () => {
       cachedToken = null
     }
-    const contactId = await biginInsert('Contacts', contact, getAccessToken, expire)
-    if (!contactId) return json(502, { ok: false, error: 'zoho-rejected' })
+    let contactId = await biginInsert('Contacts', contact, getAccessToken, expire)
+    if (!contactId) {
+      /* last-ditch capture: something in the rich record displeased
+         Zoho, so retry with only the fields a lead cannot exist
+         without. Better a plain record than a lost customer. */
+      console.error('[lead] rich insert rejected, retrying minimal', form)
+      const minimal = {
+        Last_Name: contact.Last_Name,
+        Phone: contact.Phone,
+        Lead_Source: contact.Lead_Source,
+        Description: [contact.Description, email && `الايميل: ${email}`]
+          .filter(Boolean)
+          .join('\n'),
+        salesup_website: 'yes',
+      }
+      contactId = await biginInsert('Contacts', minimal, getAccessToken, expire)
+      if (!contactId) return json(502, { ok: false, error: 'zoho-rejected' })
+    }
 
     /* deal routing: the selection picks the pipeline, falling back to a
        per-form route for submissions that carry no selection */

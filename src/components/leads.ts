@@ -7,6 +7,11 @@
 
 export type LeadForm = 'contact' | 'service-request' | 'marketers-apply'
 
+/* `type="email"` alone accepts "a@b" — Zoho requires a real domain and
+   rejects the whole record without one, so the field carries this
+   pattern and the visitor is told before they submit */
+export const EMAIL_PATTERN = '[^@\\s]+@[^@\\s.]+(\\.[^@\\s.]+)+'
+
 export type LeadPayload = {
   form: LeadForm
   name: string
