@@ -51,7 +51,7 @@ const CHOICE_TAGS = {
   'sales-development': 'تطوير المبيعات',
   'lead-generation': 'توليد العملاء المحتملين',
   'ai-sales': 'الـ AI للمبيعات',
-  marketers: 'ماركتيرز',
+  marketers: 'التسويق',
   seo: 'تحسين محركات البحث SEO',
   campaigns: 'إدارة الحملات الإعلانية',
   basic: 'الباقة الأساسية',

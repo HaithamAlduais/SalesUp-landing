@@ -218,7 +218,7 @@ function Sectors() {
      leaving the page */
   const [open, setOpen] = useState<number | null>(null)
   const cards = [
-    { slug: 'fintech', title: L('فنتك', 'Fintech'), icon: iconFintech, href: '/sectors/fintech' },
+    { slug: 'fintech', title: L('تقنية مالية', 'Financial Technology'), icon: iconFintech, href: '/sectors/fintech' },
     { slug: 'saas', title: 'SaaS', icon: iconSaas, href: '/sectors/saas' },
     { slug: 'agencies', title: L('الوكالات الإعلانية', 'Ad Agencies'), icon: iconAgencies, href: '/sectors/agencies' },
     { slug: 'technology', title: L('تقنية المعلومات', 'Information Technology'), icon: iconTech, href: '/sectors/technology' },
@@ -280,8 +280,7 @@ function Services() {
   const services = [
     {
       key: 'marketers',
-      title: 'Marketers',
-      en: true,
+      title: L('التسويق', 'Marketing'),
       badge: true,
       icon: iconMarketers,
       desc: L('نرتّب لك تسويقك الرقمي من قوقل إلى السوشال ميديا ، بخطة شهرية واضحة', 'We run your digital marketing from Google to social media, with a clear monthly plan'),
@@ -399,7 +398,7 @@ function Services() {
               ) : null}
               <div className="expander-head">
                 <img className="expander-icon" src={s.icon} alt="" width={132} height={132} />
-                <h3 lang={s.en ? 'en' : undefined}>{s.title}</h3>
+                <h3>{s.title}</h3>
               </div>
               <div className="expander-body">
                 <p>{s.desc}</p>

@@ -84,7 +84,7 @@ export function Footer() {
 
           <nav className="footer-col" aria-label={L('اكتشف', 'Discover')}>
             <p className="footer-head">{L('اكتشف', 'Discover')}</p>
-            <a className="footer-link" href="/marketers">Marketers</a>
+            <a className="footer-link" href="/marketers">{L('التسويق', 'Marketing')}</a>
             <a className="footer-link" href="/platform">{L('الحلول الرقمية', 'Digital Solutions')}</a>
             <a className="footer-link" href="/jobs">{L('الوظائف', 'Careers')}</a>
             <a className="footer-link" href="/#contact">{L('استشارة مجانية', 'Free Consultation')}</a>

@@ -126,9 +126,8 @@ const SERVICES: Service[] = [
   },
   {
     slug: 'marketers',
-    ar: 'Marketers',
-    en: 'Marketers',
-    latin: true,
+    ar: 'التسويق',
+    en: 'Marketing',
     badge: true,
     icon: iconMarketers,
     fx: 1,

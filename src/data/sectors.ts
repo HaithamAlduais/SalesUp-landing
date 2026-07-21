@@ -26,8 +26,8 @@ export const SECTORS: Record<
       'The SalesUp platform delivers innovative technology solutions — custom software development, data management, cloud services, and information security. We work with IT companies to help them reach their goals.',
   },
   fintech: {
-    ar: 'فنتك',
-    en: 'Fintech',
+    ar: 'تقنية مالية',
+    en: 'Financial Technology',
     icon: iconFintech,
     fx: 4,
     descAr:
