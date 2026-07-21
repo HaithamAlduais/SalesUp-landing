@@ -3561,6 +3561,11 @@ html[dir='ltr'] .jobs-contact-btn:hover .cta-arrow {
 .mk-hero {
   min-height: 0;
   padding: 72px clamp(20px, 5vw, 96px);
+  /* the shared .contact-panel stays unclipped so the contact form's
+     dropdown can escape it; this hero has no dropdown, so clip it — its
+     glow image is taller than the panel and was bleeding green into the
+     page behind the cards below */
+  overflow: hidden;
 }
 
 .mk-hero-inner {
