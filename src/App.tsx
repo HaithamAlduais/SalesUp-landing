@@ -105,7 +105,7 @@ function Hero({ dark }: { dark: boolean }) {
             <p className="stat-label">{L('فرصة مبيعات', 'Sales Opportunities')}</p>
           </div>
           <div className="stat">
-            <p className="stat-number"><CountUp target={80} />+</p>
+            <p className="stat-number"><CountUp target={12} />+</p>
             <p className="stat-label">{L('عدد القطاعات', 'Sectors Served')}</p>
           </div>
         </div>
