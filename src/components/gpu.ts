@@ -35,6 +35,11 @@ export type FxMode = 'webgpu' | 'webgl' | 'css'
 
 const VERDICT_KEY = 'salesup:gpu-broken'
 const VERDICT_TTL_MS = 3 * 24 * 60 * 60 * 1000
+/* set once a phone has rendered a real engine frame (see EngineProof):
+   from then on coarse devices run the SAME WebGPU engine as the web,
+   not the WebGL replica */
+const PROVEN_KEY = 'salesup:webgpu-proven'
+const PROVEN_TTL_MS = 7 * 24 * 60 * 60 * 1000
 const WATCHDOG_MS = 4000
 
 type GpuLike = {
@@ -87,13 +92,13 @@ function webgl2Available(): boolean {
   return glKnown
 }
 
-function rememberedBroken(): boolean {
+function remembered(key: string, ttl: number): boolean {
   try {
-    const raw = localStorage.getItem(VERDICT_KEY)
+    const raw = localStorage.getItem(key)
     if (!raw) return false
     const t = Number(raw)
-    if (!Number.isFinite(t) || Date.now() - t > VERDICT_TTL_MS) {
-      localStorage.removeItem(VERDICT_KEY)
+    if (!Number.isFinite(t) || Date.now() - t > ttl) {
+      localStorage.removeItem(key)
       return false
     }
     return true
@@ -101,6 +106,25 @@ function rememberedBroken(): boolean {
     return false
   }
 }
+
+function remember(key: string) {
+  try {
+    localStorage.setItem(key, String(Date.now()))
+  } catch {
+    /* private browsing — session-only */
+  }
+}
+
+function forget(key: string) {
+  try {
+    localStorage.removeItem(key)
+  } catch {
+    /* ignore */
+  }
+}
+
+const rememberedBroken = () => remembered(VERDICT_KEY, VERDICT_TTL_MS)
+const provenRemembered = () => remembered(PROVEN_KEY, PROVEN_TTL_MS)
 
 async function probeWebGpu(): Promise<{ ok: boolean; reason: string }> {
   try {
@@ -127,8 +151,18 @@ async function boot(): Promise<FxMode> {
     setMode(forced === 'webgl' && !webgl2Available() ? 'css' : forced, 'forced')
     return mode as FxMode
   }
-  /* phones/tablets: decide synchronously — shaders visible immediately */
+  /* phones/tablets: instant WebGL by default, but a device that has
+     already PROVEN it renders the real engine (EngineProof) gets the
+     same WebGPU engine as the web — watchdog still guards it */
   if (COARSE_POINTER) {
+    if (!rememberedBroken() && provenRemembered()) {
+      const { ok } = await probeWebGpu()
+      if (ok) {
+        setMode('webgpu', 'coarse-proven')
+        return mode as FxMode
+      }
+      forget(PROVEN_KEY)
+    }
     setMode(glTier(), 'coarse-default')
     return mode as FxMode
   }
@@ -178,29 +212,24 @@ function armWatchdog() {
       armWatchdog()
       return
     }
-    try {
-      localStorage.setItem(VERDICT_KEY, String(Date.now()))
-    } catch {
-      /* private browsing — session-only verdict */
-    }
+    remember(VERDICT_KEY)
+    forget(PROVEN_KEY)
     setMode(glTier(), 'dead-engine')
   }, WATCHDOG_MS)
 }
 
-/* first rendered frame anywhere — the vendor engine works here */
+/* first rendered frame anywhere — the vendor engine works here. Also
+   the success signal for EngineProof's hidden test render. */
 export function fxFrameRendered() {
   if (hasParam('fxdead')) return
   proven = true
-  document.documentElement.dataset.gpu = 'webgpu:proven'
+  if (mode === 'webgpu') document.documentElement.dataset.gpu = 'webgpu:proven'
   if (watchdog !== undefined) {
     window.clearTimeout(watchdog)
     watchdog = undefined
   }
-  try {
-    localStorage.removeItem(VERDICT_KEY)
-  } catch {
-    /* ignore */
-  }
+  forget(VERDICT_KEY)
+  remember(PROVEN_KEY)
 }
 
 /* a webgpu scene mounted: give the engine WATCHDOG_MS to produce a
@@ -221,6 +250,30 @@ export function fxSceneMounted(): () => void {
 export function reportGlFailure() {
   if (mode === 'css') return
   setMode('css', 'webgl-failed')
+}
+
+/* ---------- engine proof (phones) ----------
+   Coarse devices boot on the instant WebGL tier; EngineProof then
+   test-renders the real engine off in a corner. A frame within the
+   timeout marks the device proven (next visits run the web engine);
+   no frame marks it broken for a while so the heavy engine chunk is
+   not re-downloaded every visit. */
+
+export function isEngineProven(): boolean {
+  return proven
+}
+
+export async function shouldAttemptEngineProof(): Promise<boolean> {
+  if (!COARSE_POINTER || mode !== 'webgl') return false
+  if (proven || provenRemembered() || rememberedBroken()) return false
+  const conn = (navigator as unknown as { connection?: { saveData?: boolean } }).connection
+  if (conn && conn.saveData) return false
+  const { ok } = await probeWebGpu()
+  return ok
+}
+
+export function engineProofFailed() {
+  remember(VERDICT_KEY)
 }
 
 /* reactive view of the engine tier for the fx lifecycle components —

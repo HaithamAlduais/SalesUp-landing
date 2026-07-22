@@ -78,7 +78,15 @@ export function Footer() {
             </div>
             <div className="footer-block">
               <a className="footer-link" href="mailto:hi@salesup.sa">hi@salesup.sa</a>
-              <a className="footer-link" href="tel:+966538136228" dir="ltr">+966 53 813 6228</a>
+              <a
+                className="footer-link"
+                href="https://wa.me/966538136228"
+                target="_blank"
+                rel="noopener noreferrer"
+                dir="ltr"
+              >
+                +966 53 813 6228
+              </a>
             </div>
           </div>
 
