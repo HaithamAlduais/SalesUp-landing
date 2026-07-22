@@ -3,7 +3,6 @@ import { ThemeProvider, useTheme } from './theme'
 import { LangProvider, useLang } from './i18n'
 import { Header, NavKey } from './Header'
 import { Footer } from './Footer'
-import { EngineProof } from '../components/EngineProof'
 
 /* Floating WhatsApp button — bottom-left on every page, opens a chat
    with the SalesUp number. wa.me wants digits only (no +, spaces). */
@@ -38,7 +37,6 @@ function Shell({ active, children }: { active?: NavKey; children: ReactNode }) {
         <main id="main-content">{children}</main>
         <Footer />
         <WhatsAppFab />
-        <EngineProof />
       </div>
     </ThemeProvider>
   )

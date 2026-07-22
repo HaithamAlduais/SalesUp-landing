@@ -1962,16 +1962,23 @@ html[dir='ltr'] .featured-badge { right: auto; left: 20px; }
   100% { background-position: 0% 50%; }
 }
 
-html.no-webgpu .hero-shader {
+/* .fx-unproven = a touch device is attempting the real engine but no
+   frame has landed yet (chunk download / compile / possibly a broken
+   GPU) — the same living gradients bridge that window, and the engine
+   canvas covers them the moment it renders */
+html.no-webgpu .hero-shader,
+html.fx-unproven .hero-shader {
   background: linear-gradient(115deg, #ffffff 0%, #eafaf2 22%, #c9f3e0 45%, #eefaf4 68%, #ffffff 100%);
   background-size: 280% 280%;
   animation: fx-drift 16s ease-in-out infinite;
 }
-html.no-webgpu[data-theme='dark'] .hero-shader {
+html.no-webgpu[data-theme='dark'] .hero-shader,
+html.fx-unproven[data-theme='dark'] .hero-shader {
   background: linear-gradient(115deg, #0b1b1c 0%, #124547 30%, #0f5a47 52%, #124144 72%, #0b1b1c 100%);
   background-size: 280% 280%;
 }
 
+html.fx-unproven .card-fx,
 html.no-webgpu .card-fx {
   background: linear-gradient(
     135deg,
@@ -1987,23 +1994,28 @@ html.no-webgpu .card-fx {
 /* the engine scenes read at low container opacity; the flat gradients
    need more presence to feel alive at the same setting */
 html.no-webgpu .card-fx--inview,
-html.no-webgpu .sector-card .card-fx--inview {
+html.no-webgpu .sector-card .card-fx--inview,
+html.fx-unproven .card-fx--inview,
+html.fx-unproven .sector-card .card-fx--inview {
   opacity: 0.45;
 }
-html.no-webgpu .card-fx--state.is-on {
+html.no-webgpu .card-fx--state.is-on,
+html.fx-unproven .card-fx--state.is-on {
   opacity: 0.5;
 }
 html.no-webgpu .sector-card:hover .card-fx {
   opacity: 0.55;
 }
 
-html.no-webgpu .contact-fx {
+html.no-webgpu .contact-fx,
+html.fx-unproven .contact-fx {
   background: linear-gradient(120deg, #177e6f 0%, #133f40 35%, #1b8a78 65%, #123c3d 100%);
   background-size: 260% 260%;
   animation: fx-drift 14s ease-in-out infinite;
 }
 
-html.no-webgpu .footer-logo-fx-inner {
+html.no-webgpu .footer-logo-fx-inner,
+html.fx-unproven .footer-logo-fx-inner {
   background: linear-gradient(120deg, #04cb79 0%, #076c61 40%, #05ffa6 70%, #04cb79 100%);
   background-size: 300% 300%;
   animation: fx-drift 9s ease-in-out infinite;
@@ -2410,7 +2422,11 @@ html.no-webgpu .footer-logo-fx-inner {
   html.no-webgpu .hero-shader,
   html.no-webgpu .card-fx,
   html.no-webgpu .contact-fx,
-  html.no-webgpu .footer-logo-fx-inner {
+  html.no-webgpu .footer-logo-fx-inner,
+  html.fx-unproven .hero-shader,
+  html.fx-unproven .card-fx,
+  html.fx-unproven .contact-fx,
+  html.fx-unproven .footer-logo-fx-inner {
     animation: none;
   }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
