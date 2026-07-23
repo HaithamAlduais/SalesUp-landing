@@ -6,3 +6,6 @@ vite.config.d.ts
 .figma-cache/
 tools/__pycache__/
 *.pyc
+dist-wp/
+wp-theme/salesup/assets/
+wp-theme/salesup/manifest.json

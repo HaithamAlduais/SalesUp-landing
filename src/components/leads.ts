@@ -52,9 +52,14 @@ function abortAfter(ms: number): AbortSignal | undefined {
    aborting early would report a failure for a lead that was created */
 const CLIENT_TIMEOUT_MS = 25000
 
+/* On Vercel the function is same-origin; served as the WordPress theme
+   the frontend lives on salesup.sa, so the WP build points this at the
+   Vercel deployment (see .env.wp) and the function answers with CORS. */
+const LEAD_ENDPOINT: string = import.meta.env.VITE_LEAD_API || '/api/lead'
+
 export async function submitLead(payload: LeadPayload): Promise<boolean> {
   try {
-    const resp = await fetch('/api/lead', {
+    const resp = await fetch(LEAD_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify(payload),

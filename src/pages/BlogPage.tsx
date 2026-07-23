@@ -1,21 +1,38 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PageShell } from '../shared/PageShell'
 import { useLang } from '../shared/i18n'
 import { CardFx, COARSE_POINTER, InViewFx } from '../components/CardFx'
-import { ARTICLES, BLOG_POSTS } from '../data/blog'
+import { fetchPosts, formatDate, WpPost } from '../data/wp'
 
 /*
- * المدونة — blog index (Figma frame 5:1392).
- * Heading + live search + post cards with the site's hover-reveal
- * language. Built per docs/handoffs/screen-blog.md.
+ * المدونة — blog index (design per Figma frame 5:1392, content live
+ * from WordPress). Posts are authored in salesup.sa/wp-admin and read
+ * over the REST API — the same cards, search, and hover-reveal
+ * language as before, now on the real editorial pipeline.
  */
 function BlogIndex() {
   const { lang, L } = useLang()
   const [query, setQuery] = useState('')
+  const [posts, setPosts] = useState<WpPost[] | null>(null)
+  const [failed, setFailed] = useState(false)
+
+  useEffect(() => {
+    let alive = true
+    fetchPosts()
+      .then((list) => {
+        if (alive) setPosts(list)
+      })
+      .catch(() => {
+        if (alive) setFailed(true)
+      })
+    return () => {
+      alive = false
+    }
+  }, [])
 
   const q = query.trim().toLowerCase()
-  const posts = BLOG_POSTS.filter((p) =>
-    q === '' ? true : (lang === 'ar' ? p.title.ar : p.title.en).toLowerCase().includes(q)
+  const shown = (posts ?? []).filter((p) =>
+    q === '' ? true : (p.title + ' ' + p.excerpt).toLowerCase().includes(q)
   )
 
   return (
@@ -42,34 +59,53 @@ function BlogIndex() {
         />
       </form>
 
-      {posts.length === 0 ? (
+      {failed ? (
+        <p className="blog-empty" role="status">
+          {L('تعذّر تحميل المقالات حالياً — حاول تحديث الصفحة', "Couldn't load articles right now — try refreshing the page")}
+        </p>
+      ) : posts === null ? (
+        <div className="blog-grid" aria-busy="true">
+          {[0, 1, 2].map((i) => (
+            <div className="blog-card blog-card--skeleton" key={i}>
+              <div className="blog-card-inner">
+                <div className="blog-thumb blog-thumb--photo skeleton-box" />
+                <div className="skeleton-line" style={{ width: '40%' }} />
+                <div className="skeleton-line" />
+                <div className="skeleton-line" style={{ width: '80%' }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : shown.length === 0 ? (
         <p className="blog-empty" role="status">
           {L('لا توجد مقالات تطابق بحثك', 'No articles match your search')}
         </p>
       ) : (
         <div className="blog-grid">
-          {posts.map((p) => (
-            <a className="blog-card" href={`/blog/${p.slug}`} key={p.slug}>
+          {shown.map((p) => (
+            <a className="blog-card" href={`/blog/${encodeURIComponent(p.slug)}`} key={p.id}>
               {COARSE_POINTER ? <InViewFx variant={p.fx} /> : <CardFx variant={p.fx} />}
               <div className="blog-card-inner">
-                <div className="blog-thumb">
-                  <img className="blog-card-icon" src={p.icon} alt="" loading="lazy" />
+                <div className={`blog-thumb${p.image ? ' blog-thumb--photo' : ''}`}>
+                  {p.image ? (
+                    <img className="blog-photo" src={p.image} alt="" loading="lazy" />
+                  ) : (
+                    <span className="blog-thumb-mark" aria-hidden="true">S</span>
+                  )}
                 </div>
                 <div className="blog-meta">
-                  <span className="blog-chip">{L(p.category.ar, p.category.en)}</span>
-                  {/* only advertise a reading time when the body exists */}
+                  <span className="blog-chip">{p.category ?? L('مقالة', 'Article')}</span>
                   <span className="blog-read">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <circle cx="12" cy="12" r="9" />
-                      <path d="M12 7v5l3 3" />
+                      <path d="M8 3h8m-4 0v4m-7 5a7 7 0 1 0 14 0 7 7 0 0 0-14 0Z" />
                     </svg>
-                    {ARTICLES[p.slug]
-                      ? L(`${p.readMins} دقائق قراءة`, `${p.readMins} min read`)
-                      : L('المقال قريباً', 'Coming soon')}
+                    {formatDate(p.date, lang)}
                   </span>
                 </div>
-                <h3>{lang === 'ar' ? p.title.ar : p.title.en}</h3>
-                <p className="blog-excerpt">{L(p.excerpt.ar, p.excerpt.en)}</p>
+                {/* titles come rendered from WordPress (entities included) */}
+                <h3 dir="auto" dangerouslySetInnerHTML={{ __html: p.title }} />
+                <p className="blog-excerpt" dir="auto">{p.excerpt}</p>
                 <span className="sector-cta blog-cta" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
                   {L('اقرأ المقال', 'Read Article')}
                   <svg className="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

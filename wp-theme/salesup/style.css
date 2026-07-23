@@ -1,0 +1,12 @@
+/*
+Theme Name: SalesUp
+Theme URI: https://salesup.sa
+Description: SalesUp's interface as a WordPress theme — the React app is the skin, WordPress stays the brain (posts, SEO via Rank Math, tracking). Assets are built from https://github.com/HaithamAlduais/SalesUp-landing via `npm run build:wp`.
+Author: SalesUp
+Version: 1.0.0
+Requires PHP: 7.4
+Text Domain: salesup
+*/
+
+/* All real styles ship in the built assets enqueued by functions.php.
+   This file exists for the theme header WordPress requires. */

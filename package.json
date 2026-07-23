@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc --noEmit -p tsconfig.app.json && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json --pretty false"
+    "typecheck": "tsc --noEmit -p tsconfig.app.json --pretty false",
+    "build:wp": "node scripts/build-wp-theme.mjs"
   },
   "dependencies": {
     "@paper-design/shaders-react": "^0.0.77",

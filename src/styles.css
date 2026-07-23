@@ -4107,3 +4107,137 @@ html[dir='ltr'] .mk-tabs-thumb.is-end { transform: translateX(100%); }
   .mk-contact { padding: 44px 16px; }
   .mk-success { padding: 60px 16px; }
 }
+
+/* ===== screen:wp-blog — WordPress-driven blog content ===== */
+
+/* photo thumbnails from WP featured images replace the icon panels */
+.blog-thumb--photo {
+  padding: 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+.blog-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.blog-card:hover .blog-photo { transform: scale(1.04); }
+/* fallback mark for a post without a featured image */
+.blog-thumb-mark {
+  font-size: 64px;
+  font-weight: 700;
+  color: rgba(4, 203, 121, 0.5);
+}
+
+/* loading skeletons for the index grid */
+.blog-card--skeleton { pointer-events: none; }
+.skeleton-box,
+.skeleton-line {
+  background: linear-gradient(100deg, rgba(19, 63, 64, 0.07) 40%, rgba(19, 63, 64, 0.14) 50%, rgba(19, 63, 64, 0.07) 60%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  border-radius: 12px;
+}
+.skeleton-line { height: 16px; margin-top: 14px; }
+@keyframes skeleton-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+[data-theme='dark'] .skeleton-box,
+[data-theme='dark'] .skeleton-line {
+  background: linear-gradient(100deg, rgba(232, 246, 239, 0.06) 40%, rgba(232, 246, 239, 0.12) 50%, rgba(232, 246, 239, 0.06) 60%);
+  background-size: 200% 100%;
+}
+
+/* related cards: WP featured image instead of the old icon */
+.related-photo {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 4px;
+}
+
+/* WordPress-rendered article body: cover the HTML wp-admin produces */
+.article-body--wp { text-align: start; }
+.article-body--wp > * + * { margin-top: 18px; }
+.article-body--wp h2,
+.article-body--wp h3,
+.article-body--wp h4 {
+  color: var(--ink);
+  font-weight: 700;
+  line-height: 1.5;
+  margin-top: 34px;
+  padding-inline-start: 14px;
+  border-inline-start: 4px solid var(--green);
+}
+.article-body--wp h2 { font-size: 26px; }
+.article-body--wp h3 { font-size: 22px; }
+.article-body--wp h4 { font-size: 19px; }
+.article-body--wp p,
+.article-body--wp li {
+  font-size: 18px;
+  line-height: 2;
+  color: rgba(19, 63, 64, 0.88);
+}
+.article-body--wp ul,
+.article-body--wp ol { padding-inline-start: 26px; }
+.article-body--wp li + li { margin-top: 8px; }
+.article-body--wp a { color: #04906a; text-decoration: underline; }
+.article-body--wp strong { color: var(--ink); }
+.article-body--wp img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  margin-block: 10px;
+}
+.article-body--wp figure { margin: 18px 0; }
+.article-body--wp figcaption {
+  font-size: 14.5px;
+  color: rgba(19, 63, 64, 0.6);
+  margin-top: 8px;
+  text-align: center;
+}
+.article-body--wp blockquote {
+  margin: 22px 0;
+  padding: 16px 22px;
+  border-inline-start: 4px solid var(--green);
+  background: rgba(4, 203, 121, 0.06);
+  border-radius: 12px;
+}
+.article-body--wp table {
+  width: 100%;
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  margin-block: 18px;
+}
+.article-body--wp th,
+.article-body--wp td {
+  border: 1px solid rgba(19, 63, 64, 0.18);
+  padding: 10px 14px;
+  font-size: 16.5px;
+  text-align: start;
+}
+.article-body--wp th { background: rgba(4, 203, 121, 0.08); }
+
+[data-theme='dark'] .article-body--wp p,
+[data-theme='dark'] .article-body--wp li { color: rgba(232, 246, 239, 0.88); }
+[data-theme='dark'] .article-body--wp h2,
+[data-theme='dark'] .article-body--wp h3,
+[data-theme='dark'] .article-body--wp h4,
+[data-theme='dark'] .article-body--wp strong { color: #e8f6ef; }
+[data-theme='dark'] .article-body--wp a { color: #35e3ad; }
+[data-theme='dark'] .article-body--wp figcaption { color: rgba(232, 246, 239, 0.6); }
+[data-theme='dark'] .article-body--wp th,
+[data-theme='dark'] .article-body--wp td { border-color: rgba(232, 246, 239, 0.2); }
+[data-theme='dark'] .article-body--wp blockquote,
+[data-theme='dark'] .article-body--wp th { background: rgba(4, 203, 121, 0.12); }
+
+@media (max-width: 700px) {
+  .article-body--wp h2 { font-size: 22px; }
+  .article-body--wp h3 { font-size: 19px; }
+  .article-body--wp p,
+  .article-body--wp li { font-size: 16.5px; }
+}

@@ -135,10 +135,37 @@ function clean(value) {
   return /^[=+\-@\t\r]/.test(v) ? `'${v}` : v
 }
 
-function json(status, body) {
+/* The frontend also runs as the WordPress theme on salesup.sa, posting
+   here cross-origin — answer CORS for exactly those origins. */
+const CORS_ORIGINS = new Set([
+  'https://salesup.sa',
+  'https://www.salesup.sa',
+])
+
+function corsForOrigin(origin) {
+  if (!CORS_ORIGINS.has(origin)) return {}
+  return {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400',
+    Vary: 'Origin',
+  }
+}
+
+/* cors is threaded per request — a module-level origin would race
+   between concurrent invocations on a warm instance */
+function json(status, body, cors = {}) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    headers: { 'Content-Type': 'application/json; charset=utf-8', ...cors },
+  })
+}
+
+export async function OPTIONS(request) {
+  return new Response(null, {
+    status: 204,
+    headers: corsForOrigin(request.headers.get('origin') || ''),
   })
 }
 
@@ -188,40 +215,41 @@ async function biginInsert(module, record, deadline) {
 /* per-method export — Vercel's Node runtime only routes the web
    Request/Response signature through named method exports */
 export async function POST(request) {
+  const cors = corsForOrigin(request.headers.get('origin') || '')
   const deadline = Date.now() + BUDGET_MS
 
   let body
   try {
     body = await request.json()
   } catch {
-    return json(400, { ok: false, error: 'invalid-json' })
+    return json(400, { ok: false, error: 'invalid-json' }, cors)
   }
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
-    return json(400, { ok: false, error: 'invalid-json' })
+    return json(400, { ok: false, error: 'invalid-json' }, cors)
   }
 
   /* bots that fill every field trip the honeypot; answer success so
      they move on, but never forward the record */
   if (clean(body.website)) {
     console.warn('[lead] honeypot drop', clean(body.form))
-    return json(200, { ok: true })
+    return json(200, { ok: true }, cors)
   }
 
   const form = clean(body.form)
   const name = clean(body.name)
   const phone = clean(body.phone)
   if (!FORMS.has(form) || !name || !phone) {
-    return json(400, { ok: false, error: 'missing-fields' })
+    return json(400, { ok: false, error: 'missing-fields' }, cors)
   }
 
   const ip = (request.headers.get('x-forwarded-for') || '').split(',')[0].trim()
   if (rateLimited(ip)) {
     console.warn('[lead] rate limited', ip)
-    return json(429, { ok: false, error: 'too-many-requests' })
+    return json(429, { ok: false, error: 'too-many-requests' }, cors)
   }
 
   if (!process.env.ZOHO_CLIENT_ID || !process.env.ZOHO_CLIENT_SECRET || !process.env.ZOHO_REFRESH_TOKEN) {
-    return json(503, { ok: false, error: 'zoho-not-configured' })
+    return json(503, { ok: false, error: 'zoho-not-configured' }, cors)
   }
 
   const sourceByForm = {
@@ -303,9 +331,9 @@ export async function POST(request) {
        so report success rather than provoke a duplicate submission */
     if (contactId === undefined) {
       console.error('[lead] outcome unknown, not retrying', form)
-      return json(200, { ok: true })
+      return json(200, { ok: true }, cors)
     }
-    if (contactId === null) return json(502, { ok: false, error: 'zoho-rejected' })
+    if (contactId === null) return json(502, { ok: false, error: 'zoho-rejected' }, cors)
 
     /* deal routing: the selection picks the pipeline, falling back to a
        per-form route for submissions that carry no selection */
@@ -329,9 +357,9 @@ export async function POST(request) {
       if (!dealId) console.error('[lead] deal not created for contact', contactId, routeKey)
     }
 
-    return json(200, { ok: true })
+    return json(200, { ok: true }, cors)
   } catch (err) {
     console.error('[lead] error:', err)
-    return json(500, { ok: false, error: 'lead-failed' })
+    return json(500, { ok: false, error: 'lead-failed' }, cors)
   }
 }
