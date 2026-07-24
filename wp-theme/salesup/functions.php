@@ -119,6 +119,28 @@ add_action( 'template_redirect', function () {
 		}
 	}
 
+	/* 2b. OLD post URLs at the domain root (salesup.sa/<slug>/) match
+	      no rewrite rule after the permalink change, so they arrive as
+	      plain 404s — is_single() never fires for them. Google has 35
+	      of them indexed: find the post by slug and 301 it (and every
+	      visitor from search) to its new /blog/ home. Arabic slugs are
+	      stored percent-encoded, so try both encodings. */
+	if ( is_404() && '' !== $decoded && false === strpos( $decoded, '/' ) ) {
+		foreach ( array_unique( array( rawurlencode( $decoded ), $decoded ) ) as $name ) {
+			$ids = get_posts( array(
+				'name'        => $name,
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+				'numberposts' => 1,
+				'fields'      => 'ids',
+			) );
+			if ( $ids ) {
+				wp_redirect( home_url( '/blog/' . get_post_field( 'post_name', $ids[0] ) . '/' ), 301 );
+				exit;
+			}
+		}
+	}
+
 	/* 3. app-owned routes that WordPress would 404 (they have no WP
 	      object behind them) must still serve the shell with a 200 */
 	if ( is_404() ) {
