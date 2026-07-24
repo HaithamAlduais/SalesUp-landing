@@ -33,6 +33,16 @@ add_action( 'wp_enqueue_scripts', function () {
 		wp_enqueue_style( 'salesup-app-' . $i, get_theme_file_uri( $css ), array(), $ver );
 	}
 	wp_enqueue_script( 'salesup-app', get_theme_file_uri( $entry['file'] ), array(), $ver, true );
+
+	/* tell the app where WordPress lives ('/' in production, '/test/'
+	   on a subdirectory staging clone) so routes and links adapt —
+	   one theme zip works in both places */
+	$home_path = (string) parse_url( home_url( '/' ), PHP_URL_PATH );
+	wp_add_inline_script(
+		'salesup-app',
+		'window.__SALESUP_BASE__ = ' . wp_json_encode( $home_path ) . ';',
+		'before'
+	);
 } );
 
 /* Vite output is an ES module */
@@ -81,6 +91,17 @@ add_action( 'template_redirect', function () {
 	$path    = trim( (string) parse_url( $_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH ), '/' );
 	$decoded = rawurldecode( $path );
 
+	/* subdirectory installs (staging clones): match paths relative to
+	   the WordPress home, not the domain root */
+	$home_path = trim( (string) parse_url( home_url( '/' ), PHP_URL_PATH ), '/' );
+	if ( '' !== $home_path ) {
+		if ( $decoded === $home_path ) {
+			$decoded = '';
+		} elseif ( 0 === strpos( $decoded, $home_path . '/' ) ) {
+			$decoded = substr( $decoded, strlen( $home_path ) + 1 );
+		}
+	}
+
 	/* 1. explicit old→new map */
 	$map = salesup_redirect_map();
 	if ( isset( $map[ $decoded ] ) ) {
@@ -90,7 +111,7 @@ add_action( 'template_redirect', function () {
 
 	/* 2. posts still reached at a non-/blog permalink (old structure)
 	      → their canonical /blog/<slug> home */
-	if ( is_single() && 0 !== strpos( $decoded, 'blog/' ) ) {
+	if ( is_single() && ! is_admin() && 0 !== strpos( $decoded, 'blog/' ) ) {
 		$name = get_post_field( 'post_name', get_queried_object_id() );
 		if ( $name ) {
 			wp_redirect( home_url( '/blog/' . $name . '/' ), 301 );

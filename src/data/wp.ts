@@ -23,9 +23,13 @@ export type WpPost = {
   fx: number
 }
 
+import { ROUTE_BASE } from '../shared/base'
+
+/* same-origin (including a /test staging subdirectory) when served by
+   that WordPress; the live site's API otherwise (previews, local dev) */
 const WP_ORIGIN =
   typeof window !== 'undefined' && window.location.hostname.endsWith('salesup.sa')
-    ? ''
+    ? ROUTE_BASE
     : 'https://salesup.sa'
 
 const LIST_FIELDS = 'id,slug,date,title,excerpt,_links,_embedded'

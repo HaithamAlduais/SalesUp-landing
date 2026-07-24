@@ -10,6 +10,11 @@ import './styles.css'
 import { gpuReady } from './components/gpu'
 void gpuReady
 
+/* subdirectory installs (WordPress staging clones) need root-absolute
+   links corrected at click time; inert everywhere else */
+import { installLinkInterceptor } from './shared/base'
+installLinkInterceptor()
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Root />

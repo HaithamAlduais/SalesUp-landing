@@ -1,5 +1,6 @@
 import { lazy, ReactNode, Suspense } from 'react'
 import { SECTORS } from '../data/sectors'
+import { appPath } from '../shared/base'
 
 /*
  * Route-level code splitting: each screen ships as its own chunk (and
@@ -54,5 +55,6 @@ export function resolvePage(pathname: string): ReactNode {
 }
 
 export default function Root() {
-  return <Suspense fallback={null}>{resolvePage(window.location.pathname)}</Suspense>
+  /* appPath strips the install base (subdirectory WordPress installs) */
+  return <Suspense fallback={null}>{resolvePage(appPath(window.location.pathname))}</Suspense>
 }

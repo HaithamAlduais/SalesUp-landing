@@ -22,7 +22,10 @@ const run = (cmd) => {
 const THEME = 'wp-theme/salesup'
 
 run('npx tsc --noEmit -p tsconfig.app.json')
-run('npx vite build --base=/wp-content/themes/salesup/ --mode wp')
+/* relative base: asset URLs resolve against each module's own URL, so
+   the theme works at the domain root AND in a subdirectory install
+   (staging clones) without rebuilding */
+run('npx vite build --base=./ --mode wp')
 
 rmSync(`${THEME}/assets`, { recursive: true, force: true })
 rmSync(`${THEME}/manifest.json`, { force: true })
