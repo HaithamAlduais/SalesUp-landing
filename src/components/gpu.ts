@@ -238,6 +238,39 @@ export function reportGlFailure() {
   setMode('css', 'webgl-failed')
 }
 
+/* ?fxinfo — on-screen tier badge. Phones have no devtools; a
+   screenshot of this badge answers which tier is active, whether any
+   scene canvases exist, and whether the gradient bridge is stuck. */
+if (typeof window !== 'undefined' && hasParam('fxinfo')) {
+  const badge = document.createElement('div')
+  badge.style.cssText =
+    'position:fixed;bottom:8px;right:8px;z-index:2147483647;background:rgba(0,0,0,0.85);' +
+    'color:#35e3ad;font:11px/1.7 monospace;padding:8px 10px;border-radius:8px;' +
+    'direction:ltr;text-align:left;pointer-events:none;max-width:86vw;white-space:pre'
+  let rafTicks = 0
+  const countTick = () => {
+    rafTicks++
+    requestAnimationFrame(countTick)
+  }
+  requestAnimationFrame(countTick)
+  const tick = () => {
+    badge.textContent = [
+      'tier: ' + (document.documentElement.dataset.gpu || 'booting…'),
+      'engine canvases: ' + document.querySelectorAll('canvas[data-renderer="shaders"]').length,
+      'webgl canvases: ' + document.querySelectorAll('canvas[data-renderer="gl-fallback"]').length,
+      'gradient bridge: ' + document.documentElement.classList.contains('fx-unproven'),
+      'frames: ' + rafTicks,
+    ].join('\n')
+  }
+  const start = () => {
+    document.body.appendChild(badge)
+    tick()
+    setInterval(tick, 1000)
+  }
+  if (document.body) start()
+  else window.addEventListener('DOMContentLoaded', start)
+}
+
 
 /* reactive view of the engine tier for the fx lifecycle components —
    null while the boot probe is still in flight */

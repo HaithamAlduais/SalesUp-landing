@@ -1706,6 +1706,15 @@ h1, h2, h3, p { margin: 0; }
 }
 html[dir='ltr'] .footer-link:hover { transform: translateX(4px); }
 
+/* the old site's GetButton chat widget is still injected by a leftover
+   snippet (WPCode); the theme ships its own WhatsApp button, so the
+   duplicate is suppressed until the snippet is removed at the source */
+div[id^='gb-widget'],
+.gb-widget,
+#WhatsHelp {
+  display: none !important;
+}
+
 /* ---------- floating WhatsApp button ---------- */
 
 .whatsapp-fab {
