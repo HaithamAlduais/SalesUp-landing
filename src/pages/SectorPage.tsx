@@ -3,6 +3,7 @@ import { PageShell } from '../shared/PageShell'
 import { useLang } from '../shared/i18n'
 import { ActiveFx } from '../components/CardFx'
 import { SECTORS } from '../data/sectors'
+import { withBase } from '../shared/base'
 
 /*
  * القطاعات — sector pages (Figma 5:1530, 5:1944, 5:2089, 5:2234).
@@ -38,7 +39,7 @@ function SectorsBody({ initial }: { initial: string }) {
   const select = (slug: string) => {
     setOpen(slug)
     /* keep the query string ("?coarse", utm tags) and hash intact */
-    window.history.replaceState(null, '', `/sectors/${slug}${window.location.search}${window.location.hash}`)
+    window.history.replaceState(null, '', withBase(`/sectors/${slug}`) + window.location.search + window.location.hash)
   }
 
   const current = SECTORS[open]
