@@ -12,7 +12,7 @@
  */
 import { execSync } from 'node:child_process'
 import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs'
-import { platform } from 'node:os'
+import { zipDirectory } from './make-zip.mjs'
 
 const run = (cmd) => {
   console.log(`\n> ${cmd}`)
@@ -39,12 +39,11 @@ if (!existsSync(manifest)) {
 cpSync(manifest, `${THEME}/manifest.json`)
 
 mkdirSync('dist-wp', { recursive: true })
-if (platform() === 'win32') {
-  run(
-    `powershell -NoProfile -Command "Compress-Archive -Path '${THEME}' -DestinationPath 'dist-wp/salesup-theme.zip' -Force"`
-  )
-} else {
-  run(`cd wp-theme && zip -rq ../dist-wp/salesup-theme.zip salesup && cd ..`)
-}
+rmSync('dist-wp/salesup-theme.zip', { force: true })
+/* pure-Node zip: every Windows-native zipper here (Compress-Archive,
+   .NET Framework ZipFile) writes backslash entry names, which Linux
+   servers unpack as literal "salesup\\style.css" filenames and
+   WordPress rejects the theme as missing style.css */
+const count = zipDirectory(THEME, 'salesup', 'dist-wp/salesup-theme.zip')
 
-console.log('\n✓ theme zip ready: dist-wp/salesup-theme.zip')
+console.log(`\n✓ theme zip ready: dist-wp/salesup-theme.zip (${count} files)`)
