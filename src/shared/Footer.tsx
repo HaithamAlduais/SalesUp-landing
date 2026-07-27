@@ -72,7 +72,7 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span>{L('حي الصحافة – الرياض', 'As Sahafah District – Riyadh')}</span>
+                <span>{L('حي المونسية – الرياض', 'Al Munsiyah District – Riyadh')}</span>
                 <span>{L('المملكة العربية السعودية', 'Saudi Arabia')}</span>
               </a>
             </div>
@@ -127,7 +127,9 @@ export function Footer() {
 
         <div className="footer-bottom">
           <p className="copyright">
-            {L('جميع الحقوق محفوظة © 2026 سيلز أب', '© 2026 SalesUp. All rights reserved.')}
+            {/* the year is isolated so RTL never reorders it mid-sentence */}
+            {L('جميع الحقوق محفوظة لسيلز أب ', 'All rights reserved, SalesUp ')}
+            <span dir="ltr">© 2026</span>
           </p>
           <div className="footer-legal">
             <a href="#footer">{L('اتفاقية الخدمة', 'Service Agreement')}</a>

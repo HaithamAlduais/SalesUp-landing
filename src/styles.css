@@ -1261,10 +1261,16 @@ h1, h2, h3, p { margin: 0; }
   font-weight: 700;
 }
 
+/* the step body was bold at up to 30px, so it competed with the green
+   step title instead of supporting it — lighter, smaller, and given a
+   readable measure so each step reads title-then-detail */
 .step-copy p {
   color: var(--ink);
-  font-size: clamp(18px, 2.1vw, 30px);
-  font-weight: 700;
+  font-size: clamp(16px, 1.7vw, 23px);
+  font-weight: 500;
+  line-height: 1.75;
+  max-width: 62ch;
+  opacity: 0.92;
 }
 
 .step-marker {
