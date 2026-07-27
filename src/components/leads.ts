@@ -91,7 +91,10 @@ export function leadFromForm(form: HTMLFormElement, base: { form: LeadForm }): L
      routing keys off); its human-readable label lives in the trigger,
      and CRM records are far easier to read with the label alongside */
   const label = (name: string) => {
-    const input = form.querySelector(`input[name="${name}"]`)
+    const input = form.querySelector<HTMLInputElement>(`input[name="${name}"]`)
+    /* the trigger shows the PLACEHOLDER when nothing is chosen — without
+       this guard an unselected picker would report its prompt as a value */
+    if (!input || !input.value) return ''
     const text = input?.closest('.su-select')?.querySelector('.su-select-label')?.textContent
     return typeof text === 'string' ? text.trim() : ''
   }

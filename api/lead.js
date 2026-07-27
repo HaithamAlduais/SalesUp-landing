@@ -75,6 +75,8 @@ const TOKEN_MS = 4000
 const INSERT_MS = 5000
 
 let cachedToken = null
+/* last Zoho rejection code, read by the retry to choose what to drop */
+let lastErrorCode = ''
 
 /* Naive per-instance flood guard. Serverless instances are many and
    short-lived, so this is a speed bump for casual abuse, not real rate
@@ -205,10 +207,14 @@ async function biginInsert(module, record, deadline) {
     }
     const row = result && result.data && result.data[0]
     if (row && row.status === 'success') return (row.details && row.details.id) || null
-    console.error(`[lead] ${module} insert failed:`, resp.status, JSON.stringify(result))
+    console.error(`[lead] ${module} insert failed:`, resp.status, row && row.code, JSON.stringify(result))
     /* a parsed error body means Zoho judged the record; anything else
        (unreadable body, 5xx) leaves the outcome genuinely unknown */
-    return row && row.status === 'error' ? null : undefined
+    if (row && row.status === 'error') {
+      lastErrorCode = row.code || ''
+      return null
+    }
+    return undefined
   }
   return undefined
 }
@@ -238,7 +244,7 @@ export async function POST(request) {
 
   const form = clean(body.form)
   const name = clean(body.name)
-  const phone = clean(body.phone)
+  const phone = cleanPhone(body.phone)
   if (!FORMS.has(form) || !name || !phone) {
     return json(400, { ok: false, error: 'missing-fields' }, cors)
   }
@@ -320,6 +326,18 @@ export async function POST(request) {
          picklist, the custom field, Email — is a thing an admin can
          rename or delete in Bigin, so none of it goes in the retry;
          the values survive inside the description instead. */
+      /* an existing contact with this email is the common rejection:
+         retry with everything EXCEPT the email so the applicant keeps
+         their tags, source and full details instead of a bare record */
+      if (lastErrorCode === 'DUPLICATE_DATA' && contact.Email) {
+        console.error('[lead] duplicate email, retrying without it', form)
+        const withoutEmail = { ...contact }
+        delete withoutEmail.Email
+        withoutEmail.Description = `${contact.Description}
+الايميل (مسجل مسبقاً): ${contact.Email}`
+        contactId = await biginInsert('Contacts', withoutEmail, deadline)
+        if (contactId) return json(200, { ok: true }, cors)
+      }
       console.error('[lead] rich insert rejected, retrying minimal', form)
       const minimal = {
         Last_Name: contact.Last_Name,

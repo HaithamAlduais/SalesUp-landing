@@ -55,7 +55,14 @@ export function resolvePage(pathname: string): ReactNode {
   if (path === '/jobs') return <JobsPage />
   const jobsSeg = path.match(/^\/jobs\/([^/]+)$/)?.[1]
   if (jobsSeg) {
-    const seg = decodeURIComponent(jobsSeg)
+    /* a malformed escape (e.g. /jobs/%E0%A4%A) would throw here and
+       blank the page — an undecodable slug simply matches no role */
+    let seg = jobsSeg
+    try {
+      seg = decodeURIComponent(jobsSeg)
+    } catch {
+      /* keep the raw segment */
+    }
     if (seg === 'students' || seg === 'graduates') return <JobsPage view="track" slug={seg} />
     if (seg === 'apply') return <JobsPage view="apply" />
     return <JobsPage view="detail" slug={seg} />

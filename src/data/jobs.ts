@@ -184,6 +184,7 @@ export function postedLabel(iso: string, lang: 'ar' | 'en'): string {
   if (days < 30) {
     return lang === 'ar' ? arCount(days, 'يومين', 'أيام', 'يومًا') : `${days} days ago`
   }
+  if (days >= 365) return lang === 'ar' ? 'منذ أكثر من سنة' : 'Over a year ago'
   const months = Math.floor(days / 30)
   if (months === 1) return lang === 'ar' ? 'منذ شهر' : 'A month ago'
   if (months < 12) {

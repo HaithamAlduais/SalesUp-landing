@@ -4382,7 +4382,6 @@ html[dir='ltr'] .mk-tabs-thumb.is-end { transform: translateX(100%); }
   font-size: clamp(24px, 3vw, 34px);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  order: 3;
 }
 
 .jobs-row-main {
@@ -4391,7 +4390,6 @@ html[dir='ltr'] .mk-tabs-thumb.is-end { transform: translateX(100%); }
   display: flex;
   flex-direction: column;
   gap: 6px;
-  order: 2;
 }
 
 .jobs-row-title {
@@ -4404,7 +4402,7 @@ html[dir='ltr'] .mk-tabs-thumb.is-end { transform: translateX(100%); }
   display: flex;
   align-items: center;
   gap: 10px;
-  color: rgba(19, 63, 64, 0.62);
+  color: rgba(19, 63, 64, 0.8);
   font-size: 15.5px;
 }
 
@@ -4416,17 +4414,21 @@ html[dir='ltr'] .mk-tabs-thumb.is-end { transform: translateX(100%); }
   font-size: 15.5px;
   font-weight: 600;
   white-space: nowrap;
-  order: 1;
+  margin-inline-start: auto;
 }
 .jobs-row-cta .cta-arrow { width: 17px; height: 17px; }
 html[dir='ltr'] .jobs-row-cta .cta-arrow { transform: scaleX(-1); }
 
 /* ---- role detail (Figma 208:838) ---- */
 
-.job-detail { position: relative; }
+.job-detail {
+  position: relative;
+  --job-gutter: 214px;
+}
 
 .job-apply-float {
   position: sticky;
+  max-width: 196px;
   top: 104px;
   float: inline-start;
   z-index: 4;
@@ -4456,7 +4458,7 @@ html[dir='ltr'] .jobs-row-cta .cta-arrow { transform: scaleX(-1); }
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
-  margin-inline-start: clamp(0px, 12vw, 210px);
+  margin-inline-start: var(--job-gutter);
 }
 
 .job-head-badges { display: flex; gap: 8px; }
@@ -4495,8 +4497,18 @@ html[dir='ltr'] .jobs-row-cta .cta-arrow { transform: scaleX(-1); }
 }
 
 .job-posted {
-  color: rgba(19, 63, 64, 0.5);
-  font-size: 14px;
+  color: rgba(19, 63, 64, 0.75);
+  font-size: 14.5px;
+}
+
+.job-body,
+.job-detail-actions {
+  /* the apply pill is a sticky float: its exclusion box stays at the top
+     of the article, so without a reserved column it paints over the
+     first words of every body line while scrolling. The column is a
+     fixed 214px — wider than the pill at any supported label — because
+     a vw-based clamp collapses below the button's own width. */
+  margin-inline-start: var(--job-gutter);
 }
 
 .job-body {
@@ -4633,7 +4645,8 @@ html[dir='ltr'] .jobs-row-cta .cta-arrow { transform: scaleX(-1); }
 /* ---- responsive ---- */
 
 @media (max-width: 980px) {
-  .job-head { margin-inline-start: 0; }
+  .job-detail { --job-gutter: 0px; }
+  .job-apply-float { max-width: none; }
   .job-apply-float { position: static; float: none; margin-bottom: 20px; }
 }
 
@@ -4644,9 +4657,9 @@ html[dir='ltr'] .jobs-row-cta .cta-arrow { transform: scaleX(-1); }
   .jobs-apply-section { padding-block: 110px 32px; }
   .jobs-track-grid { grid-template-columns: 1fr; gap: 18px; }
   .jobs-row-link { flex-wrap: wrap; gap: 10px; padding: 20px 6px; }
-  .jobs-row-index { order: 1; font-size: 20px; }
-  .jobs-row-main { order: 2; flex-basis: 70%; }
-  .jobs-row-cta { order: 3; flex-basis: 100%; }
+  .jobs-row-index { font-size: 20px; }
+  .jobs-row-main { flex-basis: 70%; }
+  .jobs-row-cta { flex-basis: 100%; margin-inline-start: 0; }
   .job-body h2 { font-size: 19px; }
   .job-body p, .job-tasks li { font-size: 16px; }
 }

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import { PageShell } from '../shared/PageShell'
 import { useLang } from '../shared/i18n'
 import { usePageTheme } from '../shared/theme'
@@ -94,7 +94,7 @@ function Listings({ track }: { track: JobTrack }) {
       ) : (
         <>
           <p className="jobs-filter-chip">{L('الأحدث', 'Newest')}</p>
-          <ol className="jobs-list">
+          <ol className="jobs-list" role="list">
             {jobs.map((job, i) => (
               <li className="jobs-row" key={job.slug}>
                 <a className="jobs-row-link" href={`/jobs/${job.slug}`}>
@@ -141,7 +141,7 @@ function Detail({ job }: { job: Job }) {
           ) : null}
         </div>
         <h1>{L(job.title.ar, job.title.en)}</h1>
-        <p className="job-head-en">{job.titleEn}</p>
+        <p className="job-head-en">{L(job.titleEn, job.title.ar)}</p>
         <div className="job-meta-chips">
           <span>{L(job.location.ar, job.location.en)}</span>
           <span>{L(job.type.ar, job.type.en)}</span>
@@ -174,7 +174,7 @@ function Detail({ job }: { job: Job }) {
         <h2>{L('تصنيف الوظيفة:', 'Category:')}</h2>
         <p>{L(job.category.ar, job.category.en)}</p>
 
-        <h2>{L('المهارات المطلوبة :', 'Skills required:')}</h2>
+        <h2>{L('المهارات المطلوبة:', 'Skills required:')}</h2>
         <div className="job-skills">
           {job.skills.map((s) => (
             <span className="job-skill" key={s.ar}>
@@ -188,7 +188,7 @@ function Detail({ job }: { job: Job }) {
         <a className="button button--submit" href={`/jobs/apply?job=${job.slug}`}>
           {L('قدّم على هذه الوظيفة', 'Apply for this role')}
         </a>
-        <a className="jobs-contact-btn" href="/jobs/graduates">
+        <a className="jobs-contact-btn" href={`/jobs/${job.track}`}>
           {L('كل الفرص', 'All openings')}
           <svg className="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M19 12H5m0 0 6-6m-6 6 6 6" />
@@ -203,6 +203,14 @@ function ApplyForm() {
   const { dark } = usePageTheme()
   const { L } = useLang()
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const successRef = useRef<HTMLHeadingElement>(null)
+
+  /* disabling the submit button drops focus to <body>; move it to the
+     confirmation so screen readers announce it and keyboard users keep
+     a place in the page */
+  useEffect(() => {
+    if (status === 'sent') successRef.current?.focus()
+  }, [status])
 
   const params = new URLSearchParams(window.location.search)
   const preset = params.get('job') ?? ''
@@ -230,7 +238,7 @@ function ApplyForm() {
                 <path d="m4.5 12.5 5 5 10-11" />
               </svg>
             </span>
-            <h1>{L('تم استلام طلبك بنجاح', 'Your application has been received')}</h1>
+            <h1 ref={successRef} tabIndex={-1}>{L('تم استلام طلبك بنجاح', 'Your application has been received')}</h1>
             <p>
               {L(
                 'وصلنا طلبك، وراح يراجعه فريق SalesUp ويتواصل معك قريبًا',
@@ -256,7 +264,7 @@ function ApplyForm() {
         <div className="contact-inner">
           <p className="jobs-apply-lead">
             {L(
-              'عبّ النموذج،و تأكد من بياناتك و يتم التواصل معك قريباً',
+              'عبّ النموذج، وتأكد من بياناتك ويتم التواصل معك قريبًا',
               "Fill in the form and check your details — we'll be in touch soon"
             )}
           </p>
@@ -270,9 +278,10 @@ function ApplyForm() {
               <Select
                 name="job"
                 ariaLabel={L('الوظيفة', 'Role')}
-                placeholder={L('اختر الوظيفة', 'Choose a role')}
+                placeholder={L('اختر الوظيفة*', 'Choose a role*')}
                 options={JOBS.map((j) => ({ value: j.slug, label: L(j.title.ar, j.title.en) }))}
                 defaultValue={JOBS.some((j) => j.slug === preset) ? preset : ''}
+                required
               />
             </div>
             <div className="field-row">
