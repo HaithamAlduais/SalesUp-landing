@@ -21,7 +21,7 @@
  * the values live on in the description regardless.
  */
 
-const FORMS = new Set(['contact', 'service-request', 'marketers-apply'])
+const FORMS = new Set(['contact', 'service-request', 'marketers-apply', 'job-apply'])
 const MAX_LEN = 3000
 
 /*
@@ -44,13 +44,14 @@ const tagByForm = {
   contact: 'استشارة',
   'service-request': 'طلب خدمة',
   'marketers-apply': 'مسوقين',
+  'job-apply': 'توظيف',
 }
 const CHOICE_TAGS = {
   'outside-sales': 'المبيعات الخارجية',
   'inside-sales': 'المبيعات الداخلية',
   'sales-development': 'تطوير المبيعات',
   'lead-generation': 'توليد العملاء المحتملين',
-  'ai-sales': 'الـ AI للمبيعات',
+  'ai-sales': 'أدوات الذكاء الاصطناعي',
   marketers: 'التسويق',
   seo: 'تحسين محركات البحث SEO',
   campaigns: 'إدارة الحملات الإعلانية',
@@ -256,11 +257,13 @@ export async function POST(request) {
     contact: 'موقع SalesUp — استشارة مجانية',
     'service-request': 'موقع SalesUp — طلب خدمة',
     'marketers-apply': 'موقع SalesUp — طلب مسوقين',
+    'job-apply': 'موقع SalesUp — طلب توظيف',
   }
   /* selects carry a slug for routing plus a readable label — prefer the
      label so the CRM record says "المبيعات الداخلية", not "inside-sales" */
   const service = clean(body.serviceLabel) || clean(body.service)
   const plan = clean(body.planLabel) || clean(body.plan)
+  const jobChoice = clean(body.jobLabel) || clean(body.job)
 
   /* Zoho rejects a record outright if Email isn't a real address, and
      the browser's own type="email" check passes things it won't accept
@@ -281,6 +284,11 @@ export async function POST(request) {
     clean(body.planType) && `النوع: ${clean(body.planType)}`,
     clean(body.link) && `رابط المنتج: ${clean(body.link)}`,
     clean(body.notes) && `ملاحظات: ${clean(body.notes)}`,
+    jobChoice && `الوظيفة: ${jobChoice}`,
+    clean(body.linkedin) && `لينكدإن: ${clean(body.linkedin)}`,
+    clean(body.cv) && `السيرة الذاتية: ${clean(body.cv)}`,
+    clean(body.portfolio) && `ملف الأعمال: ${clean(body.portfolio)}`,
+    clean(body.about) && `عن المتقدم: ${clean(body.about)}`,
     badEmail && `الايميل كما كتبه العميل (غير مكتمل): ${badEmail}`,
   ].filter(Boolean)
   const details = detailLines.join('\n') || '—'

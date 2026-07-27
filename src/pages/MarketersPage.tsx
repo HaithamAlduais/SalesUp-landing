@@ -36,7 +36,7 @@ const T = {
   heroTitleA: { ar: 'خلّ حضورك الرقمي ', en: 'Take your digital presence ' },
   heroTitleB: { ar: 'يوصل أبعد', en: 'further' },
   heroDesc: {
-    ar: 'من خلال الخدمات والباقات التسويقية راح نساعدك تفوّق ظهورك في محركات البحث، ونطلق حملات إعلانية أوضح تناسب هدفك ومرحلتك',
+    ar: 'من خلال الخدمات والباقات التسويقية راح نساعدك تحسن ظهورك في محركات البحث عن طريق الـ SEO، ونطلق حملات إعلانية تناسب هدفك وتوصلك للعملاء المناسبين لك',
     en: 'With our marketing services and packages we lift your search visibility and run clearer ad campaigns that fit your goal and stage',
   },
   tabServices: { ar: 'الخدمات', en: 'Services' },
@@ -78,14 +78,14 @@ const SERVICES: Plan[] = [
   {
     key: 'seo',
     kicker: { ar: 'الخدمة الأولى', en: 'First Service' },
-    name: { ar: 'تحسين محركات البحث SEO', en: 'Search Engine Optimization (SEO)' },
+    name: { ar: 'تحسين الظهور في محركات البحث', en: 'Search Engine Optimization (SEO)' },
     note: { ar: 'اشتراك لمدة ٣ شهور', en: '3-month subscription' },
     features: [
       { ar: 'تحليل الموقع والمنافسين', en: 'Site and competitor analysis' },
       { ar: 'بحث الكلمات المفتاحية', en: 'Keyword research' },
       { ar: 'تحسين الصفحات والمحتوى', en: 'Page and content optimization' },
       { ar: 'تحسين الصور والروابط', en: 'Image and link optimization' },
-      { ar: 'مقالات للمدونة', en: 'Blog articles' },
+      { ar: 'مقالات للمدونة متوافقة مع الـ SEO', en: 'SEO-optimized blog articles' },
       { ar: 'مراجعة الأداء والسرعة', en: 'Performance and speed reviews' },
       { ar: 'تحديث Sitemap و robots.txt', en: 'Sitemap and robots.txt upkeep' },
     ],

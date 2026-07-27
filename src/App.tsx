@@ -180,7 +180,7 @@ function About() {
               <p className="eyebrow">{L('من نحن ', 'About Us')}</p>
               <div className="heading-group">
                 <h2>{L('شريك يساعدك تحوّل الفرص إلى نمو واضح', 'A partner who turns opportunities into clear growth')}</h2>
-                <p>{L('ركّز على تطوير منتجك، واترك لنا إدارة مبيعاتك من التخطيط إلى تحقيق نمو شهري مستدام, ندير رحلة العميل كاملة، من الوصول إلى العملاء المحتملين وحتى اتخاذ قرار الشراء.', 'Focus on building your product and leave your sales to us — from planning to sustainable monthly growth. We manage the full customer journey, from reaching prospects to the buying decision.')}</p>
+                <p>{L('ركّز على تطوير منتجك، واترك لنا إدارة مبيعاتك وتحسين ظهورك لجمهورك المناسب، من التخطيط إلى تحقيق نمو شهري مستدام، ندير رحلة العميل كاملة من الوصول للعملاء المحتملين وحتى اتخاذ قرار الشراء', 'Focus on building your product and leave us your sales — and your visibility to the right audience — from planning to sustainable monthly growth. We manage the full customer journey, from reaching prospects to the buying decision.')}</p>
               </div>
             </div>
             <div className="about-stage">
@@ -229,8 +229,8 @@ function Sectors() {
       <div className="section-heading">
         <p className="eyebrow">{L('القطاعات', 'Sectors')}</p>
         <div className="heading-group">
-          <h2>{L('نشتغل مع قطاعات تحتاج مبيعات أوضح ونمو قابل للقياس', 'We work with sectors that need clearer sales and measurable growth')}</h2>
-          <p className="heading-desc">{L('كل قطاع له طريقته في البيع والوصول للعميل، عشان كذا نشتغل معك بحلول تناسب طبيعة نشاطك وسوقك', 'Every sector sells and reaches customers differently — so we work with you on solutions that fit your business and your market')}</p>
+          <h2>{L('نشتغل مع قطاعات تحتاج مبيعات ونمو قابل للقياس', 'We work with sectors that need sales and measurable growth')}</h2>
+          <p className="heading-desc">{L('كل قطاع له طريقته في البيع والوصول للعميل، واحنا نشتغل معك ونقدم لك حلول تناسب طبيعة نشاطك وسوقك', 'Every sector sells and reaches customers differently — we work with you and provide solutions that fit your business and your market')}</p>
         </div>
       </div>
       <div className="sector-grid" dir="ltr">
@@ -255,7 +255,9 @@ function Sectors() {
             <div className="sector-card-inner">
               <img className="sector-icon" src={c.icon} alt="" width={134} height={134} />
               <h3>{c.title}</h3>
-              <p className="sector-desc">{L(SECTORS[c.slug].descAr, SECTORS[c.slug].descEn)}</p>
+              {/* the short teaser: the full description overflowed the
+                  card and clipped mid-sentence */}
+              <p className="sector-desc">{L(SECTORS[c.slug].cardAr, SECTORS[c.slug].cardEn)}</p>
               <a
                 className="sector-cta"
                 href={c.href}
@@ -283,7 +285,7 @@ function Services() {
       title: L('التسويق', 'Marketing'),
       badge: true,
       icon: iconMarketers,
-      desc: L('نرتّب لك تسويقك الرقمي من قوقل إلى السوشال ميديا ، بخطة شهرية واضحة', 'We run your digital marketing from Google to social media, with a clear monthly plan'),
+      desc: L('ندير لك حملاتك الإعلانية ونحسن ظهورك في محركات البحث من خلال الـ SEO', 'We run your ad campaigns and grow your search visibility through SEO'),
       href: '/marketers',
       fx: 1,
     },
@@ -291,7 +293,7 @@ function Services() {
       key: 'inside',
       title: L('المبيعات الداخلية', 'Inside Sales'),
       icon: iconInsideSales,
-      desc: L('نتابع التواصل مع العملاء المهتمين، ونحوّل اهتمامهم لفرص مبيعات حقيقة', 'We follow up with interested customers and turn their interest into real sales opportunities'),
+      desc: L('نتابع التواصل مع العملاء المهتمين، ونحوّل اهتمامهم لفرص مبيعات حقيقية', 'We follow up with interested customers and turn their interest into real sales opportunities'),
       href: '/services',
       fx: 3,
     },
@@ -353,8 +355,8 @@ function Services() {
         <div className="section-heading">
           <p className="eyebrow">{L('الخدمات', 'Services')}</p>
           <div className="heading-group">
-            <h2>{L('حلول تساعدك تزيد المبيعات وتفتح فرص نمو أوضح', 'Solutions that grow your sales and open clearer opportunities')}</h2>
-            <p className="heading-desc">{L('نشتغل معك حسب احتياجك، سواء كنت تحتاج فريق يدعم مبيعاتك، توليد عملاء محتملين، تطوير عملية البيع، أو حلول تساعدك تقيس وتحسّن الأداء', 'We work around your needs — a team to support your sales, lead generation, sales-process development, or tools to measure and improve performance')}</p>
+            <h2>{L('حلول تساعدك تزيد مبيعاتك وتفتح فرص نمو أكبر', 'Solutions that grow your sales and open bigger opportunities')}</h2>
+            <p className="heading-desc">{L('نشتغل معك حسب احتياجك، سواء كنت تحتاج فريق مبيعات يساعدك في توليد العملاء المحتملين، إدارة عملية البيع وقياس وتحسين الأداء، أو فريق تسويق يدير حملاتك الإعلانية ويحسّن ظهورك في محركات البحث من خلال الـ SEO', 'We work around your needs — a sales team to generate leads, run your sales process and measure and improve performance, or a marketing team to run your ad campaigns and grow your search visibility through SEO')}</p>
           </div>
         </div>
         <div className="services-expander" ref={listRef}>
@@ -459,7 +461,7 @@ function Process() {
             <p className="eyebrow">{L('ليش سيلز أب ؟', 'Why SalesUp?')}</p>
             <div className="heading-group">
               <h2>{L('لأننا نربط بين المبيعات والتسويق', 'Because we connect sales with marketing')}</h2>
-              <p className="heading-desc">{L('نساعدك تشوف فرص النمو بوضوح، وتعرف وش تحتاج في المبيعات والتسويق عشان توصل لعملاء اكثر وتحقق نتائج افضل', 'We help you see growth opportunities clearly, and know what your sales and marketing need to reach more customers and better results')}</p>
+              <p className="heading-desc">{L('نساعدك تشوف فرص النمو، ونعطيك خطة واضحة حسب احتياجك في المبيعات والتسويق عشان توصل لعملاء أكثر وتحقق نتائج أفضل مع وسائل مختلفة لقياس الأداء بوضوح', 'We help you spot growth opportunities and give you a clear plan for your sales and marketing needs — so you reach more customers and get better results, with clear ways to measure performance')}</p>
             </div>
           </div>
           <div className="process-stage" dir="ltr">

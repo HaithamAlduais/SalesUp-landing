@@ -13,13 +13,27 @@ import iconTech from '../assets/icon-tech.png'
  */
 export const SECTORS: Record<
   string,
-  { ar: string; en: string; icon: string; fx: number; descAr: string; descEn: string }
+  {
+    ar: string
+    en: string
+    icon: string
+    fx: number
+    /** one-line teaser for the landing cards (the long desc clipped) */
+    cardAr: string
+    cardEn: string
+    descAr: string
+    descEn: string
+  }
 > = {
   technology: {
     ar: 'تقنية المعلومات',
     en: 'Information Technology',
     icon: iconTech,
     fx: 7,
+    cardAr:
+      'حلول تقنية تشمل تطوير البرمجيات، إدارة البيانات، والحلول السحابية',
+    cardEn:
+      'Technology solutions: custom software, data management, and cloud',
     descAr:
       'تقدم منصة Salesup حلولًا تقنية مبتكرة تشمل تطوير البرمجيات المخصصة، إدارة البيانات، الحلول السحابية، وأمن المعلومات. ونعمل مع العملاء في مجال تقنية المعلومات لتحقيق أهدافهم',
     descEn:
@@ -30,6 +44,10 @@ export const SECTORS: Record<
     en: 'Financial Technology',
     icon: iconFintech,
     fx: 4,
+    cardAr:
+      'نساعد شركات التقنية المالية توصل لعملائها بثقة وتسرّع قرار الاشتراك',
+    cardEn:
+      'We help fintech companies reach customers with confidence and speed up sign-ups',
     descAr:
       'نساعد شركات التقنية المالية توصل لعملائها بثقة — من بناء مسار المبيعات وتوليد العملاء المحتملين، إلى شرح المنتج المالي بشكل واضح يكسب ثقة العميل ويسرّع قرار الاشتراك.',
     descEn:
@@ -40,6 +58,10 @@ export const SECTORS: Record<
     en: 'SaaS',
     icon: iconSaas,
     fx: 5,
+    cardAr:
+      'حلول برمجية مرنة عبر الإنترنت: CRM، إدارة المشاريع، والتعاون',
+    cardEn:
+      'Flexible online software: CRM, project management, and collaboration',
     descAr:
       'من خلال خدمات البرمجيات كخدمة (SaaS)، توفر Salesup حلولًا برمجية مرنة ومبتكرة عبر الإنترنت تشمل نظم إدارة العلاقات مع العملاء (CRM)، وأنظمة إدارة المشاريع، وحلول الاتصال والتعاون.',
     descEn:
@@ -50,6 +72,10 @@ export const SECTORS: Record<
     en: 'Ad Agencies',
     icon: iconAgencies,
     fx: 6,
+    cardAr:
+      'شريك للوكالات: تطوير الحملات، إدارة السوشال، وتحليل البيانات',
+    cardEn:
+      'A partner for agencies: campaigns, social management, and data analysis',
     descAr:
       'نحن شركاء للوكالات الإعلانية، حيث نقدم حلولًا تسويقية مبتكرة وإبداعية تشمل تطوير الحملات الإعلانية، وإدارة الوسائط الاجتماعية، وتحليل البيانات لتحقيق أهداف التسويق بنجاح.',
     descEn:

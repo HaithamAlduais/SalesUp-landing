@@ -94,7 +94,7 @@ export function Footer() {
             <p className="footer-head">{L('اكتشف', 'Discover')}</p>
             <a className="footer-link" href="/marketers">{L('التسويق', 'Marketing')}</a>
             <a className="footer-link" href="/platform">{L('الحلول الرقمية', 'Digital Solutions')}</a>
-            <a className="footer-link" href="/jobs">{L('الوظائف', 'Careers')}</a>
+            <a className="footer-link" href="/jobs">{L('انضم لنا', 'Join Us')}</a>
             <a className="footer-link" href="/#contact">{L('استشارة مجانية', 'Free Consultation')}</a>
           </nav>
         </div>
@@ -127,7 +127,7 @@ export function Footer() {
 
         <div className="footer-bottom">
           <p className="copyright">
-            {L('كافة الحقوق محفوظة © 2026 لصالح سيلز أب', '© 2026 SalesUp. All rights reserved.')}
+            {L('جميع الحقوق محفوظة © 2026 سيلز أب', '© 2026 SalesUp. All rights reserved.')}
           </p>
           <div className="footer-legal">
             <a href="#footer">{L('اتفاقية الخدمة', 'Service Agreement')}</a>

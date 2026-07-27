@@ -103,7 +103,7 @@ const SERVICES: Service[] = [
     en: 'Sales Development',
     icon: iconOutsideSales,
     fx: 0,
-    descAr: 'نراجع طريقة البيع الحالية، ونرتّب خطوات المتابعة، والإغلاق بشكل أوضح',
+    descAr: 'نراجع طريقة البيع الحالية، ونطوّر خطوات المتابعة، والإغلاق بشكل أوضح',
     descEn: 'We review how you sell today and structure clearer follow-up and closing steps',
   },
   {
@@ -117,7 +117,7 @@ const SERVICES: Service[] = [
   },
   {
     slug: 'ai-sales',
-    ar: 'الـ AI للمبيعات',
+    ar: 'أدوات الذكاء الاصطناعي',
     en: 'AI for Sales',
     icon: iconOutsideSales,
     fx: 6,
@@ -132,7 +132,7 @@ const SERVICES: Service[] = [
     icon: iconMarketers,
     fx: 1,
     href: '/marketers',
-    descAr: 'نرتّب لك تسويقك الرقمي من قوقل إلى السوشال، بخطة شهرية واضحة',
+    descAr: 'ندير لك حملاتك الإعلانية ونحسن ظهورك في محركات البحث من خلال الـ SEO',
     descEn: 'We run your digital marketing from Google to social media, with a clear monthly plan',
   },
 ]
@@ -214,8 +214,8 @@ function ServicesIndex() {
       <div className="section-heading">
         <p className="eyebrow">{L('الخدمات', 'Services')}</p>
         <div className="heading-group">
-          <h2>{L('حلول تساعدك ترتّب المبيعات وتفتح فرص نمو أوضح', 'Solutions that organize your sales and open clearer growth opportunities')}</h2>
-          <p className="heading-desc">{L('نشتغل معك حسب احتياجك، سواء كنت تحتاج فريق يدعم مبيعاتك، توليد عملاء محتملين، تطوير عملية البيع، أو حلول تساعدك تقيس وتحسّن الأداء', 'We work around your needs — a team to support your sales, lead generation, sales-process development, or tools to measure and improve performance')}</p>
+          <h2>{L('حلول تساعدك تزيد مبيعاتك وتفتح فرص نمو أكبر', 'Solutions that grow your sales and open bigger opportunities')}</h2>
+          <p className="heading-desc">{L('نشتغل معك حسب احتياجك، سواء كنت تحتاج فريق مبيعات يساعدك في توليد العملاء المحتملين، إدارة عملية البيع وقياس وتحسين الأداء، أو فريق تسويق يدير حملاتك الإعلانية ويحسّن ظهورك في محركات البحث من خلال الـ SEO', 'We work around your needs — a sales team to generate leads, run your sales process and measure and improve performance, or a marketing team to run your ad campaigns and grow your search visibility through SEO')}</p>
         </div>
       </div>
       <div className="svc-deck" ref={deckRef}>
