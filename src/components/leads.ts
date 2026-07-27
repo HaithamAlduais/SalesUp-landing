@@ -5,7 +5,7 @@
  * forms never show a fake success state.
  */
 
-export type LeadForm = 'contact' | 'service-request' | 'marketers-apply'
+export type LeadForm = 'contact' | 'service-request' | 'marketers-apply' | 'job-apply'
 
 /* `type="email"` alone accepts "a@b" — Zoho requires a real domain and
    rejects the whole record without one, so the field carries this
@@ -24,6 +24,13 @@ export type LeadPayload = {
   plan?: string
   planLabel?: string
   planType?: string
+  /* job application (/jobs/apply) */
+  job?: string
+  jobLabel?: string
+  linkedin?: string
+  cv?: string
+  portfolio?: string
+  about?: string
   link?: string
   notes?: string
   website?: string /* honeypot */
@@ -101,6 +108,12 @@ export function leadFromForm(form: HTMLFormElement, base: { form: LeadForm }): L
     planLabel: label('plan'),
     link: field('link'),
     notes: field('notes'),
+    job: field('job'),
+    jobLabel: label('job'),
+    linkedin: field('linkedin'),
+    cv: field('cv'),
+    portfolio: field('portfolio'),
+    about: field('about'),
     website: field('website'),
   }
 }

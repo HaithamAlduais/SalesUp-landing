@@ -13,7 +13,7 @@ const NAV_LINKS: { key: NavKey; ar: string; en: string; href: string; menu?: boo
   { key: 'services', ar: 'الخدمات', en: 'Services', href: '/services', menu: true },
   { key: 'platform', ar: 'الحلول الرقمية', en: 'Digital Solutions', href: '/platform' },
   { key: 'blog', ar: 'المدونة', en: 'Blog', href: '/blog' },
-  { key: 'jobs', ar: 'الوظائف', en: 'Careers', href: '/jobs' },
+  { key: 'jobs', ar: 'انضم لنا', en: 'Join Us', href: '/jobs' },
 ]
 
 export function Header({

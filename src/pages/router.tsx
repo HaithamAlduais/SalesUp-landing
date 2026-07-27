@@ -48,7 +48,18 @@ export function resolvePage(pathname: string): ReactNode {
   if (articleSlug) return <BlogArticlePage slug={articleSlug} />
 
   if (path === '/platform') return <PlatformPage />
+
+  /* انضم لنا: hub, per-track listings, the application form, and role
+     detail — 'students'/'graduates'/'apply' are reserved, anything else
+     is a role slug */
   if (path === '/jobs') return <JobsPage />
+  const jobsSeg = path.match(/^\/jobs\/([^/]+)$/)?.[1]
+  if (jobsSeg) {
+    const seg = decodeURIComponent(jobsSeg)
+    if (seg === 'students' || seg === 'graduates') return <JobsPage view="track" slug={seg} />
+    if (seg === 'apply') return <JobsPage view="apply" />
+    return <JobsPage view="detail" slug={seg} />
+  }
 
   /* unknown routes land on the home page */
   return <LandingPage />
