@@ -6,6 +6,9 @@
  * rankings transfer.
  */
 
+/* الوظائف post type — the team manages roles from wp-admin */
+require_once __DIR__ . '/inc/jobs-cpt.php';
+
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );        /* Rank Math owns titles */
 	add_theme_support( 'post-thumbnails' );  /* featured images, used by the app via REST */
@@ -142,15 +145,86 @@ add_action( 'template_redirect', function () {
 	}
 
 	/* 3. app-owned routes that WordPress would 404 (they have no WP
-	      object behind them) must still serve the shell with a 200 */
+	      object behind them) must still serve the shell with a 200 —
+	      AND stop looking like an error page. Flipping only the status
+	      header left $wp_query->is_404 true, so Rank Math titled every
+	      one of them "Page Not Found" and stamped them noindex; Google
+	      would have refused to index /services, /marketers, /jobs … */
 	if ( is_404() ) {
-		$first = explode( '/', $decoded )[0];
+		$first      = explode( '/', $decoded )[0];
 		$app_routes = array( 'services', 'marketers', 'sectors', 'blog', 'platform', 'jobs' );
 		if ( '' === $decoded || in_array( $first, $app_routes, true ) ) {
+			global $wp_query;
+			$wp_query->is_404 = false;
 			status_header( 200 );
+			$GLOBALS['salesup_app_route'] = $decoded;
 		}
 	}
 } );
+
+/**
+ * Titles for the app-owned routes (they have no WP post to inherit
+ * one from). Longest match wins, so /services/inside-sales gets its
+ * own title and an unmapped /services/<x> still falls back to الخدمات.
+ */
+function salesup_route_titles() {
+	return array(
+		'services'                   => 'الخدمات',
+		'services/inside-sales'      => 'المبيعات الداخلية',
+		'services/outside-sales'     => 'المبيعات الخارجية',
+		'services/sales-development' => 'تطوير المبيعات',
+		'services/lead-generation'   => 'توليد العملاء المحتملين',
+		'services/ai-sales'          => 'أدوات الذكاء الاصطناعي',
+		'marketers'                  => 'التسويق',
+		'sectors'                    => 'القطاعات',
+		'sectors/technology'         => 'تقنية المعلومات',
+		'sectors/fintech'            => 'تقنية مالية',
+		'sectors/saas'               => 'SaaS',
+		'sectors/agencies'           => 'الوكالات الإعلانية',
+		'blog'                       => 'المدونة',
+		'platform'                   => 'الحلول الرقمية',
+		'jobs'                       => 'انضم لنا',
+		'jobs/students'              => 'التدريب التعاوني',
+		'jobs/graduates'             => 'وظائف الخريجين',
+		'jobs/apply'                 => 'التقديم على وظيفة',
+	);
+}
+
+function salesup_current_route_title() {
+	$route = $GLOBALS['salesup_app_route'] ?? '';
+	if ( '' === $route ) {
+		return null;
+	}
+	$titles = salesup_route_titles();
+	if ( isset( $titles[ $route ] ) ) {
+		return $titles[ $route ];
+	}
+	$first = explode( '/', $route )[0];
+	return $titles[ $first ] ?? null;
+}
+
+/* both filters: Rank Math owns the title when active, WordPress core
+   when it isn't */
+function salesup_filter_title( $title ) {
+	$name = salesup_current_route_title();
+	return $name ? $name . ' - ' . get_bloginfo( 'name' ) : $title;
+}
+add_filter( 'pre_get_document_title', 'salesup_filter_title', 999 );
+add_filter( 'rank_math/frontend/title', 'salesup_filter_title', 999 );
+
+/* these routes are real pages — never noindex them */
+add_filter( 'rank_math/frontend/robots', function ( $robots ) {
+	if ( salesup_current_route_title() ) {
+		unset( $robots['noindex'] );
+		$robots['index'] = 'index';
+	}
+	return $robots;
+}, 999 );
+
+add_filter( 'rank_math/frontend/canonical', function ( $canonical ) {
+	$route = $GLOBALS['salesup_app_route'] ?? '';
+	return $route ? home_url( '/' . $route ) : $canonical;
+}, 999 );
 
 /* The app is the only renderer — page/post content reaches it over the
    REST API, so nothing else needs template parts. Keep REST and
