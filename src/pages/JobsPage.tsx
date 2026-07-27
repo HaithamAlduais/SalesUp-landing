@@ -5,7 +5,8 @@ import { usePageTheme } from '../shared/theme'
 import { Select } from '../shared/Select'
 import { ContactFx, InViewFx } from '../components/CardFx'
 import { EMAIL_PATTERN, leadFromForm, submitLead } from '../components/leads'
-import { findJob, Job, JobTrack, JOBS, jobsInTrack, isNew, postedLabel, TRACKS } from '../data/jobs'
+import { Job, JobTrack, isNew, postedLabel, TRACKS } from '../data/jobs'
+import { fetchJobs, inTrack } from '../data/wpJobs'
 import contactGlow from '../assets/contact-glow.svg'
 
 /*
@@ -17,6 +18,31 @@ import contactGlow from '../assets/contact-glow.svg'
  *   /jobs/apply      application form + success (210:973 / 210:1087)
  * Copy is verbatim from Figma; roles live in src/data/jobs.ts.
  */
+
+/* roles are authored in wp-admin ("الوظائف"); fetched once per page
+   view, with the seeded roles as the offline fallback */
+function useJobs() {
+  const [jobs, setJobs] = useState<Job[] | null>(null)
+  useEffect(() => {
+    let alive = true
+    fetchJobs().then((list) => {
+      if (alive) setJobs(list)
+    })
+    return () => {
+      alive = false
+    }
+  }, [])
+  return jobs
+}
+
+function Loading() {
+  const { L } = useLang()
+  return (
+    <section className="placeholder-section" aria-busy="true">
+      <p className="blog-empty" role="status">{L('جاري التحميل…', 'Loading…')}</p>
+    </section>
+  )
+}
 
 function Hub() {
   const { L } = useLang()
@@ -55,7 +81,8 @@ function Hub() {
 function Listings({ track }: { track: JobTrack }) {
   const { lang, L } = useLang()
   const meta = TRACKS.find((t) => t.key === track)
-  const jobs = jobsInTrack(track)
+  const all = useJobs()
+  const jobs = all ? inTrack(all, track) : null
 
   return (
     <section className="jobs-list-section">
@@ -67,7 +94,9 @@ function Listings({ track }: { track: JobTrack }) {
         </div>
       </div>
 
-      {jobs.length === 0 ? (
+      {jobs === null ? (
+        <Loading />
+      ) : jobs.length === 0 ? (
         <div className="jobs-panel jobs-panel--empty">
           <InViewFx variant={2} />
           <div className="jobs-panel-inner">
@@ -212,6 +241,7 @@ function ApplyForm() {
     if (status === 'sent') successRef.current?.focus()
   }, [status])
 
+  const jobs = useJobs()
   const params = new URLSearchParams(window.location.search)
   const preset = params.get('job') ?? ''
 
@@ -254,6 +284,8 @@ function ApplyForm() {
     )
   }
 
+  if (jobs === null) return <Loading />
+
   return (
     <section className="jobs-apply-section">
       <p className="contact-eyebrow">{L('التقديم على الوظيفة', 'Job application')}</p>
@@ -279,8 +311,8 @@ function ApplyForm() {
                 name="job"
                 ariaLabel={L('الوظيفة', 'Role')}
                 placeholder={L('اختر الوظيفة*', 'Choose a role*')}
-                options={JOBS.map((j) => ({ value: j.slug, label: L(j.title.ar, j.title.en) }))}
-                defaultValue={JOBS.some((j) => j.slug === preset) ? preset : ''}
+                options={(jobs ?? []).map((j) => ({ value: j.slug, label: L(j.title.ar, j.title.en) }))}
+                defaultValue={(jobs ?? []).some((j) => j.slug === preset) ? preset : ''}
                 required
               />
             </div>
@@ -330,14 +362,20 @@ function NotFound() {
   )
 }
 
+function DetailView({ slug }: { slug: string }) {
+  const jobs = useJobs()
+  if (jobs === null) return <Loading />
+  const job = jobs.find((j) => j.slug === slug)
+  return job ? <Detail job={job} /> : <NotFound />
+}
+
 export default function JobsPage({ view = 'hub', slug }: { view?: 'hub' | 'track' | 'detail' | 'apply'; slug?: string }) {
-  const job = view === 'detail' && slug ? findJob(slug) : undefined
   return (
     <PageShell active="jobs">
       {view === 'hub' ? <Hub /> : null}
       {view === 'track' ? <Listings track={(slug as JobTrack) ?? 'graduates'} /> : null}
       {view === 'apply' ? <ApplyForm /> : null}
-      {view === 'detail' ? job ? <Detail job={job} /> : <NotFound /> : null}
+      {view === 'detail' ? <DetailView slug={slug ?? ''} /> : null}
     </PageShell>
   )
 }
