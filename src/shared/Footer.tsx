@@ -8,11 +8,11 @@ import social4 from '../assets/social-4.png'
 import social5 from '../assets/social-5.png'
 
 const SOCIALS = [
-  { src: social1, label: 'Snapchat' },
-  { src: social2, label: 'X' },
-  { src: social3, label: 'TikTok' },
-  { src: social4, label: 'Instagram' },
-  { src: social5, label: 'LinkedIn' },
+  { src: social1, label: 'Snapchat', href: 'https://www.snapchat.com/add/salesupsa' },
+  { src: social2, label: 'X', href: 'https://x.com/SalesUpsa' },
+  { src: social3, label: 'TikTok', href: 'https://www.tiktok.com/@salesup.sa' },
+  { src: social4, label: 'Instagram', href: 'https://www.instagram.com/salesup.sa' },
+  { src: social5, label: 'LinkedIn', href: 'https://www.linkedin.com/company/salesupsa' },
 ]
 
 /* office location — the pin the client shared. The embed URL needs no
@@ -145,7 +145,14 @@ export function Footer() {
           </p>
           <div className="socials" dir="ltr" aria-label={L('حسابات التواصل الاجتماعي', 'Social media accounts')}>
             {SOCIALS.map((s) => (
-              <a href="#footer" key={s.label} aria-label={s.label}>
+              <a
+                href={s.href}
+                key={s.label}
+                aria-label={s.label}
+                title={s.label}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src={s.src} alt="" width={22} height={22} />
               </a>
             ))}
