@@ -138,6 +138,18 @@ function clean(value) {
   return /^[=+\-@\t\r]/.test(v) ? `'${v}` : v
 }
 
+/* Phone numbers legitimately start with "+", which the formula guard
+   above would quote into "'+966…" and send to the CRM that way. Keep
+   the leading +, strip anything else formula-like, and allow only
+   characters a phone number can contain. */
+function cleanPhone(value) {
+  if (typeof value !== 'string') return ''
+  const v = value.trim().slice(0, MAX_LEN)
+  const plus = v.startsWith('+') ? '+' : ''
+  const rest = (plus ? v.slice(1) : v).replace(/[^\d\s()\-.]/g, '')
+  return (plus + rest).trim()
+}
+
 /* The frontend also runs as the WordPress theme on salesup.sa, posting
    here cross-origin — answer CORS for exactly those origins. */
 const CORS_ORIGINS = new Set([
