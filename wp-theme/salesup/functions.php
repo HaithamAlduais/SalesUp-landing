@@ -190,9 +190,38 @@ function salesup_route_titles() {
 	);
 }
 
+/**
+ * The app route for this request, relative to the WordPress home (so
+ * a /test staging clone resolves the same as production). Falls back
+ * to reading the URL directly: relying only on the global set during
+ * template_redirect makes the title depend on hook ordering, and any
+ * plugin that short-circuits earlier would leave the 404 title in
+ * place.
+ */
+function salesup_app_route() {
+	if ( isset( $GLOBALS['salesup_app_route'] ) ) {
+		return $GLOBALS['salesup_app_route'];
+	}
+	$decoded   = rawurldecode( trim( (string) parse_url( $_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH ), '/' ) );
+	$home_path = trim( (string) parse_url( home_url( '/' ), PHP_URL_PATH ), '/' );
+	if ( '' !== $home_path ) {
+		if ( $decoded === $home_path ) {
+			$decoded = '';
+		} elseif ( 0 === strpos( $decoded, $home_path . '/' ) ) {
+			$decoded = substr( $decoded, strlen( $home_path ) + 1 );
+		}
+	}
+	return $decoded;
+}
+
 function salesup_current_route_title() {
-	$route = $GLOBALS['salesup_app_route'] ?? '';
+	$route = salesup_app_route();
 	if ( '' === $route ) {
+		return null;
+	}
+	/* never take the title from a URL WordPress has a real object for
+	   (a page, post or term owns its own title) */
+	if ( ! isset( $GLOBALS['salesup_app_route'] ) && ! is_404() && get_queried_object() ) {
 		return null;
 	}
 	$titles = salesup_route_titles();
@@ -222,9 +251,15 @@ add_filter( 'rank_math/frontend/robots', function ( $robots ) {
 }, 999 );
 
 add_filter( 'rank_math/frontend/canonical', function ( $canonical ) {
-	$route = $GLOBALS['salesup_app_route'] ?? '';
+	$route = salesup_current_route_title() ? salesup_app_route() : '';
 	return $route ? home_url( '/' . $route ) : $canonical;
 }, 999 );
+
+/* Rank Math also carries the title into the OG/Twitter tags; without
+   these the share preview would still read "Page Not Found" even once
+   the tab is right. */
+add_filter( 'rank_math/opengraph/facebook/og_title', 'salesup_filter_title', 999 );
+add_filter( 'rank_math/opengraph/twitter/twitter_title', 'salesup_filter_title', 999 );
 
 /* The app is the only renderer — page/post content reaches it over the
    REST API, so nothing else needs template parts. Keep REST and
