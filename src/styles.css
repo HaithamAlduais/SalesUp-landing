@@ -3188,22 +3188,24 @@ html[dir='ltr'] .article-back:hover .cta-arrow { transform: scaleX(-1) translate
 .article-meta { margin-top: 14px; }
 
 /* framed hero card (Figma: centered art in a bordered r22 card) */
+/* An image frame, not an illustration stage: article heroes are now
+   WordPress featured images (real photos of any dimension), so the
+   card holds a fixed 16/9 frame and the photo covers it. The old
+   rules centred a 300px-wide illustration inside a 380px-tall card,
+   which left every uploaded photo floating in empty space. */
 .article-hero {
-  display: grid;
-  place-items: center;
-  min-height: clamp(220px, 30vw, 380px);
+  aspect-ratio: 16 / 9;
   border-radius: 22px;
   border: 1px solid var(--grey-line);
-  background:
-    radial-gradient(90% 130% at 50% 0%, rgba(4, 203, 121, 0.09) 0%, rgba(255, 255, 255, 0) 62%),
-    rgba(255, 255, 255, 0.96);
+  background: rgba(4, 203, 121, 0.06);
   box-shadow: var(--card-shadow);
   overflow: clip;
 }
 .article-hero img {
-  width: clamp(180px, 24vw, 300px);
-  height: auto;
-  filter: drop-shadow(20px 16px 19px rgba(0, 0, 0, 0.17));
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 /* long-form body */
@@ -3360,8 +3362,8 @@ html[dir='ltr'] .related-card:hover .cta-arrow { transform: scaleX(-1) translate
 @media (max-width: 700px) {
   .article-page { padding-top: 28px; gap: 28px; }
   .article-body { font-size: 17px; line-height: 1.9; }
-  .article-hero { min-height: 220px; }
-  .article-hero img { width: 150px; }
+  /* a touch taller than 16/9 so phone-shot photos keep their subject */
+  .article-hero { aspect-ratio: 4 / 3; }
   .related-card { padding: 24px 18px; }
   .related-icon { height: 76px; }
   .related-card h3 { font-size: 17px; }
@@ -4176,6 +4178,28 @@ html[dir='ltr'] .mk-tabs-thumb.is-end { transform: translateX(100%); }
 }
 
 /* WordPress-rendered article body: cover the HTML wp-admin produces */
+/*
+ * Theme-aware article text. The posts carry hard-coded colours from
+ * the old editor — 2,980 inline `color:#ffffff` declarations across 35
+ * of the 37 articles — which are invisible on the light theme (and
+ * would flip to invisible on dark if anyone "corrected" them to
+ * black). Rather than ask the team to restyle every article, the body
+ * ignores inline colours entirely so text always follows the active
+ * theme; links keep the brand green in both. New posts written with
+ * no colour set inherit correctly and need nothing.
+ */
+.article-body--wp [style*='color'] {
+  color: inherit !important;
+}
+.article-body--wp a,
+.article-body--wp a[style*='color'] {
+  color: #04906a !important;
+}
+[data-theme='dark'] .article-body--wp a,
+[data-theme='dark'] .article-body--wp a[style*='color'] {
+  color: #35e3ad !important;
+}
+
 .article-body--wp { text-align: start; }
 .article-body--wp > * + * { margin-top: 18px; }
 .article-body--wp h2,
