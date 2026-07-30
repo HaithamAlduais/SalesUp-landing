@@ -26,6 +26,7 @@ import badgeStar from '../assets/badge-star.svg'
  */
 
 type Faq = { qAr: string; qEn: string; aAr: string; aEn: string }
+type Line = { ar: string; en: string }
 
 type Service = {
   slug: string
@@ -40,6 +41,10 @@ type Service = {
   descEn: string
   detailAr?: string
   detailEn?: string
+  /** long-form body on the service page (client deck, Arabic verbatim) */
+  intro?: Line[]
+  includes?: Line[]
+  suitedFor?: Line[]
   faqs?: Faq[]
 }
 
@@ -55,6 +60,48 @@ const SERVICES: Service[] = [
     descEn: 'We reach new customers and help you expand into new markets and regions',
     detailAr: 'نستقطب العميل المناسب بشكل مباشر واستهداف مناطق جديدة للتوسع من خلال الزيارات الميدانية المباشرة .',
     detailEn: 'We attract the right customers directly and target new regions for expansion through direct field visits.',
+    intro: [
+      {
+        ar: 'إذا كانت عملية البيع تحتاج زيارات ميدانية ومقابلة مباشرة للعملاء، فريق المبيعات الخارجية في سيلزأب يتولى هذي المهمة عنك ويمثل علامتك التجارية باحترافية.',
+        en: "If your sale needs field visits and meeting customers face to face, SalesUp's outside sales team takes that on for you and represents your brand professionally.",
+      },
+      {
+        ar: 'نروح زيارات ميدانية، نقدم عروض ونبني علاقات قوية مع العملاء ونشتغل على إغلاق الصفقات وتحقيق أهدافك في المبيعات.',
+        en: 'We make the visits, present your offer, build strong customer relationships, and work to close deals and hit your sales targets.',
+      },
+    ],
+    includes: [
+      {
+        ar: 'الزيارات الميدانية والاجتماعات مع العملاء.',
+        en: 'Field visits and meetings with customers.',
+      },
+      { ar: 'التعريف بعلامتك التجارية وخدماتك.', en: 'Introducing your brand and your services.' },
+      {
+        ar: 'تقديم العروض والإجابة على استفسارات العملاء.',
+        en: 'Presenting offers and answering customer questions.',
+      },
+      { ar: 'التفاوض وإدارة جميع مراحل البيع.', en: 'Negotiating and managing every stage of the sale.' },
+      {
+        ar: 'متابعة فرص البيع حتى توقيع الاتفاقيات.',
+        en: 'Following opportunities through to signed agreements.',
+      },
+      {
+        ar: 'تقارير دورية عن الزيارات والنتائج المحققة.',
+        en: 'Regular reports on visits and the results achieved.',
+      },
+    ],
+    suitedFor: [
+      { ar: 'توصل لعملائك بشكل مباشر.', en: 'Reach your customers directly.' },
+      {
+        ar: 'تزيد مبيعاتك من خلال الزيارات الميدانية.',
+        en: 'Grow your sales through field visits.',
+      },
+      { ar: 'تتوسع في أسواق ومناطق جديدة.', en: 'Expand into new markets and regions.' },
+      {
+        ar: 'يكون عندك فريق يمثل علامتك التجارية باحترافية.',
+        en: 'Have a team that represents your brand professionally.',
+      },
+    ],
     faqs: [
       {
         qAr: 'وش المقصود بخدمة المبيعات الخارجية؟',
@@ -96,6 +143,44 @@ const SERVICES: Service[] = [
     fx: 3,
     descAr: 'نتابع التواصل مع العملاء المهتمين، ونحوّل اهتمامهم لفرص مبيعات أوضح',
     descEn: 'We follow up with interested customers and turn their interest into clearer sales opportunities',
+    intro: [
+      {
+        ar: 'فريق المبيعات الداخلية في سيلزأب يتواصل مع عملائك عن بُعد عبر الهاتف أو الرسائل، ويتابعهم من أول تواصل حتى إتمام عملية البيع.',
+        en: "SalesUp's inside sales team reaches your customers remotely by phone or message, and follows them from the first contact through to the closed sale.",
+      },
+      {
+        ar: 'ما نكتفي بالتواصل بس، نرد على الاستفسارات و نفهم احتياج كل عميل و نقدم له الحل المناسب، مع المتابعة المستمرة عشان نزيد فرص إغلاق الصفقات، وكل تفاصيل الأداء تقدم لك في تقارير دورية تخليك مطلع على سير العمل.',
+        en: 'We do more than make contact: we answer questions, understand what each customer needs and offer the right solution, with continuous follow-up to raise your close rate — and every detail of performance reaches you in regular reports that keep you across the work.',
+      },
+    ],
+    includes: [
+      { ar: 'التواصل مع العملاء المحتملين.', en: 'Reaching out to potential customers.' },
+      { ar: 'المتابعة والرد على الاستفسارات.', en: 'Following up and answering enquiries.' },
+      { ar: 'متابعة العملاء حتى إتمام البيع.', en: 'Following customers through to the closed sale.' },
+      { ar: 'إغلاق الصفقات ورفع نسبة التحويل.', en: 'Closing deals and lifting the conversion rate.' },
+      { ar: 'تحديث بيانات العملاء.', en: 'Keeping customer records up to date.' },
+      {
+        ar: 'تواصل مستمر مع فريقك لضمان جودة وسلاسة سير العمل.',
+        en: 'Continuous contact with your team to keep the work smooth and consistent.',
+      },
+      { ar: 'تقارير دورية توضح الأداء والنتائج.', en: 'Regular reports showing performance and results.' },
+    ],
+    suitedFor: [
+      {
+        ar: 'تزيد مبيعاتك بدون ما توظف فريق مبيعات داخلي.',
+        en: 'Grow your sales without hiring an in-house sales team.',
+      },
+      { ar: 'تضمن سرعة الرد على جميع العملاء.', en: 'Guarantee a fast response to every customer.' },
+      { ar: 'ترفع نسبة التحويل.', en: 'Raise your conversion rate.' },
+      {
+        ar: 'تخفف تكاليف توظيف وتدريب فريق مبيعات خاص فيك.',
+        en: 'Cut the cost of hiring and training your own sales team.',
+      },
+      {
+        ar: 'يكون عندك فريق مبيعات احترافي يحقق أهدافك.',
+        en: 'Have a professional sales team working to your targets.',
+      },
+    ],
   },
   {
     slug: 'sales-development',
@@ -332,15 +417,65 @@ function Faqs({ faqs }: { faqs: Faq[] }) {
   )
 }
 
+/* checklist card: what the service includes / who it suits */
+function DetailList({ title, items }: { title: string; items: Line[] }) {
+  const { L } = useLang()
+  return (
+    <article className="svc-detail-card">
+      <h3>{title}</h3>
+      <ul className="svc-detail-list">
+        {items.map((item) => (
+          <li key={item.ar}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="m5 12.5 4.5 4.5L19 7.5" />
+            </svg>
+            <span>{L(item.ar, item.en)}</span>
+          </li>
+        ))}
+      </ul>
+    </article>
+  )
+}
+
 function ServiceDetail({ service }: { service: Service }) {
   const { L } = useLang()
+  const name = L(service.ar, service.en)
   return (
     <section className="svc-section svc-section--detail">
       <div className="svc-detail-heading">
         <p className="eyebrow">{L('الخدمات', 'Services')}</p>
-        <h2>{L(service.ar, service.en)}</h2>
+        <h2>{name}</h2>
         <p className="svc-detail-desc">{L(service.detailAr ?? service.descAr, service.detailEn ?? service.descEn)}</p>
       </div>
+
+      {service.intro ? (
+        <div className="svc-detail-body">
+          {service.intro.map((p) => (
+            <p key={p.ar}>{L(p.ar, p.en)}</p>
+          ))}
+        </div>
+      ) : null}
+
+      {service.includes || service.suitedFor ? (
+        <div className="svc-detail-cards">
+          {service.includes ? (
+            <DetailList
+              title={L(`تشمل خدمة ${service.ar}:`, `What ${service.en} includes:`)}
+              items={service.includes}
+            />
+          ) : null}
+          {service.suitedFor ? (
+            <DetailList
+              title={L(
+                `خدمة ${service.ar} مناسبة لك إذا كنت تبغى:`,
+                `${service.en} is right for you if you want to:`
+              )}
+              items={service.suitedFor}
+            />
+          ) : null}
+        </div>
+      ) : null}
+
       <RequestForm service={service} />
       {service.faqs ? <Faqs faqs={service.faqs} /> : null}
     </section>
