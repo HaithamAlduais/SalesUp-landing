@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Theme, ThemeOrigin, ThemeToggle } from './theme'
 import { useLang } from './i18n'
 import navChevron from '../assets/nav-chevron.svg'
-import logoHeader from '../assets/logo-header.png'
-import logoHeaderDark from '../assets/logo-header-dark.png'
+import logoHeader from '../assets/logo-header.webp'
+import logoHeaderDark from '../assets/logo-header-dark.webp'
 
 export type NavKey = 'home' | 'about' | 'services' | 'platform' | 'blog' | 'jobs'
 

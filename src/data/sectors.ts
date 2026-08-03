@@ -1,7 +1,7 @@
-import iconFintech from '../assets/icon-fintech.png'
-import iconSaas from '../assets/icon-saas.png'
-import iconAgencies from '../assets/icon-agencies.png'
-import iconTech from '../assets/icon-tech.png'
+import iconFintech from '../assets/icon-fintech.webp'
+import iconSaas from '../assets/icon-saas.webp'
+import iconAgencies from '../assets/icon-agencies.webp'
+import iconTech from '../assets/icon-tech.webp'
 
 /*
  * Sector identities shared by the landing cards, the sector pages, and

@@ -34,8 +34,16 @@ import { COARSE_POINTER } from './pointer'
 export type FxMode = 'webgpu' | 'webgl' | 'css'
 
 const VERDICT_KEY = 'salesup:gpu-broken'
-const VERDICT_TTL_MS = 3 * 24 * 60 * 60 * 1000
-const WATCHDOG_MS = 4000
+/* A phone must download ~184KB (gzipped) of engine and then compile
+   the WGSL pipelines before its first frame — on a mid-range device
+   over mobile data that can take well past 4s. The old 4s deadline
+   convicted capable phones, and the 3-day memory meant one slow first
+   visit locked that device onto the WebGL replica for days: exactly
+   the "iPhones never show the real shaders" report. Touch devices now
+   get a far more generous deadline, and a negative verdict is only
+   trusted for an hour. */
+const VERDICT_TTL_MS = 60 * 60 * 1000
+const WATCHDOG_MS = COARSE_POINTER ? 15000 : 5000
 
 type GpuLike = {
   requestAdapter(): Promise<null | {

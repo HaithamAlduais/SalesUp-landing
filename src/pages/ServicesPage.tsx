@@ -6,9 +6,9 @@ import { Select } from '../shared/Select'
 import { ActiveFx, ContactFx } from '../components/CardFx'
 import { EMAIL_PATTERN, leadFromForm, submitLead } from '../components/leads'
 
-import iconInsideSales from '../assets/icon-inside-sales.png'
-import iconOutsideSales from '../assets/icon-outside-sales.png'
-import iconMarketers from '../assets/icon-marketers.png'
+import iconInsideSales from '../assets/icon-inside-sales.webp'
+import iconOutsideSales from '../assets/icon-outside-sales.webp'
+import iconMarketers from '../assets/icon-marketers.webp'
 import badgeStar from '../assets/badge-star.svg'
 
 /*

@@ -1,11 +1,11 @@
 import { useLang } from './i18n'
 import { usePageTheme } from './theme'
 import { MegaLogoFx } from '../components/CardFx'
-import social1 from '../assets/social-1.png'
-import social2 from '../assets/social-2.png'
-import social3 from '../assets/social-3.png'
-import social4 from '../assets/social-4.png'
-import social5 from '../assets/social-5.png'
+import social1 from '../assets/social-1.webp'
+import social2 from '../assets/social-2.webp'
+import social3 from '../assets/social-3.webp'
+import social4 from '../assets/social-4.webp'
+import social5 from '../assets/social-5.webp'
 
 const SOCIALS = [
   { src: social1, label: 'Snapchat', href: 'https://www.snapchat.com/add/salesupsa' },
