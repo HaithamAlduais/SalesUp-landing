@@ -9,3 +9,11 @@ tools/__pycache__/
 dist-wp/
 wp-theme/salesup/assets/
 wp-theme/salesup/manifest.json
+
+# env files - never committed
+.env*
+!.env.example
+
+# Claude Code local state
+.claude/worktrees/
+.claude/settings.local.json

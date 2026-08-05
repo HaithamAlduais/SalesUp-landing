@@ -4,14 +4,47 @@
     {
       "name": "salesup-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 5173
     },
     {
-      "name": "salesup-preview",
+      "name": "salesup-preview-b",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "preview", "--port", "4173", "--strictPort"],
-      "port": 4173
+      "runtimeArgs": [
+        "vite",
+        "preview",
+        "--port",
+        "4174",
+        "--strictPort"
+      ],
+      "port": 4174
+    },
+    {
+      "name": "salesup-preview-c",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "preview",
+        "--port",
+        "4176",
+        "--strictPort"
+      ],
+      "port": 4176
+    },
+    {
+      "name": "salesup-preview-d",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "preview",
+        "--port",
+        "4181",
+        "--strictPort"
+      ],
+      "port": 4181
     }
   ]
 }
