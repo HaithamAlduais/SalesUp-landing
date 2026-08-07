@@ -8,7 +8,10 @@ export function useTheme(): [Theme, (origin?: ThemeOrigin) => void] {
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem('salesup-theme')
     if (saved === 'light' || saved === 'dark') return saved
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    /* light is how the brand presents itself, so every first visit lands
+       on white regardless of the OS setting — dark is a choice the
+       visitor makes with the header toggle, and it sticks from then on */
+    return 'light'
   })
 
   useEffect(() => {
