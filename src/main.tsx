@@ -15,6 +15,11 @@ void gpuReady
 import { installLinkInterceptor } from './shared/base'
 installLinkInterceptor()
 
+/* capture ?utm_* before any in-app navigation drops it, so the leads
+   sheet can credit the campaign that actually brought the visitor in */
+import { rememberCampaign } from './components/leads'
+rememberCampaign()
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Root />

@@ -1,7 +1,12 @@
 /*
- * POST /api/lead — forwards site form submissions into Bigin by Zoho
- * as Contacts. Runs as a Vercel serverless function so the Zoho OAuth
- * credentials never reach the browser.
+ * POST /api/lead — forwards site form submissions into Bigin by Zoho as
+ * Contacts, and into the SalesUp leads workbook as a row (lib/sheets.js,
+ * one tab per form). Runs as a Vercel serverless function so neither
+ * set of credentials ever reaches the browser.
+ *
+ * The two destinations are independent: whichever one accepts the
+ * submission is enough to answer the visitor with success, and the
+ * sheet row records how the CRM write actually went.
  *
  * Required environment variables (Vercel dashboard → Settings →
  * Environment Variables; see docs/ZOHO.md for the full setup):
@@ -20,6 +25,9 @@
  * Zoho might reject is either validated away or dropped on retry, and
  * the values live on in the description regardless.
  */
+
+import crypto from 'node:crypto'
+import { appendLead, sheetsConfigured, warmToken } from '../lib/sheets.js'
 
 const FORMS = new Set(['contact', 'service-request', 'marketers-apply', 'job-apply'])
 const MAX_LEN = 3000
@@ -68,9 +76,12 @@ const LIMITS = { name: 80, phone: 30, email: 100 }
 const EMAIL_RE = /^[^@\s]+@[^@\s.]+(\.[^@\s.]+)+$/
 
 /* Total server budget, kept comfortably under the function's ceiling
-   and well under the client's abort so the browser always hears an
-   answer rather than assuming failure for a lead that was created. */
+   (vercel.json: maxDuration 20) and well under the client's abort so the
+   browser always hears an answer rather than assuming failure for a lead
+   that was created. The sheet gets its own slice AFTER the CRM's, since
+   it records the CRM outcome and so cannot start until that resolves. */
 const BUDGET_MS = 12000
+const SHEET_MS = 4500
 const TOKEN_MS = 4000
 const INSERT_MS = 5000
 
@@ -235,7 +246,9 @@ async function biginInsert(module, record, deadline) {
    Request/Response signature through named method exports */
 export async function POST(request) {
   const cors = corsForOrigin(request.headers.get('origin') || '')
-  const deadline = Date.now() + BUDGET_MS
+  const receivedAt = Date.now()
+  const deadline = receivedAt + BUDGET_MS
+  const sheetDeadline = receivedAt + BUDGET_MS + SHEET_MS
 
   let body
   try {
@@ -267,9 +280,21 @@ export async function POST(request) {
     return json(429, { ok: false, error: 'too-many-requests' }, cors)
   }
 
-  if (!process.env.ZOHO_CLIENT_ID || !process.env.ZOHO_CLIENT_SECRET || !process.env.ZOHO_REFRESH_TOKEN) {
+  const zohoReady = Boolean(
+    process.env.ZOHO_CLIENT_ID && process.env.ZOHO_CLIENT_SECRET && process.env.ZOHO_REFRESH_TOKEN
+  )
+  /* only refuse when the submission has nowhere at all to go — with one
+     destination configured the lead is still captured, and which one it
+     was is the team's problem to fix, not the visitor's to absorb */
+  if (!zohoReady && !sheetsConfigured()) {
     return json(503, { ok: false, error: 'zoho-not-configured' }, cors)
   }
+  /* independent of the CRM call, so mint the Google token alongside it */
+  warmToken(sheetDeadline)
+
+  /* short, human-quotable id: the team can say "SU-3F9A2C41" on a call,
+     and it ties a sheet row to its line in the Vercel function logs */
+  const submissionId = `SU-${crypto.randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase()}`
 
   const sourceByForm = {
     contact: 'موقع SalesUp — استشارة مجانية',
@@ -277,11 +302,29 @@ export async function POST(request) {
     'marketers-apply': 'موقع SalesUp — طلب مسوقين',
     'job-apply': 'موقع SalesUp — طلب توظيف',
   }
+  /* every free-text field, cleaned once — the CRM description and the
+     sheet row are two renderings of the same values */
+  const f = {
+    message: clean(body.message),
+    org: clean(body.org),
+    notes: clean(body.notes),
+    service: clean(body.service),
+    plan: clean(body.plan),
+    planType: clean(body.planType),
+    link: clean(body.link),
+    job: clean(body.job),
+    linkedin: clean(body.linkedin),
+    cv: clean(body.cv),
+    portfolio: clean(body.portfolio),
+    about: clean(body.about),
+  }
   /* selects carry a slug for routing plus a readable label — prefer the
-     label so the CRM record says "المبيعات الداخلية", not "inside-sales" */
-  const service = clean(body.serviceLabel) || clean(body.service)
-  const plan = clean(body.planLabel) || clean(body.plan)
-  const jobChoice = clean(body.jobLabel) || clean(body.job)
+     label so the CRM record says "المبيعات الداخلية", not "inside-sales".
+     The sheet keeps both: the label reads in whichever language the
+     visitor browsed in, the slug is what the summary tab counts. */
+  const service = clean(body.serviceLabel) || f.service
+  const plan = clean(body.planLabel) || f.plan
+  const jobChoice = clean(body.jobLabel) || f.job
 
   /* Zoho rejects a record outright if Email isn't a real address, and
      the browser's own type="email" check passes things it won't accept
@@ -295,18 +338,18 @@ export async function POST(request) {
   const badEmail = rawEmail && !email ? rawEmail : ''
 
   const detailLines = [
-    clean(body.org) && `الجهة: ${clean(body.org)}`,
-    clean(body.message) && `الرسالة: ${clean(body.message)}`,
+    f.org && `الجهة: ${f.org}`,
+    f.message && `الرسالة: ${f.message}`,
     service && `الخدمة: ${service}`,
     plan && `الباقة/الخدمة المختارة: ${plan}`,
-    clean(body.planType) && `النوع: ${clean(body.planType)}`,
-    clean(body.link) && `رابط المنتج: ${clean(body.link)}`,
-    clean(body.notes) && `ملاحظات: ${clean(body.notes)}`,
+    f.planType && `النوع: ${f.planType}`,
+    f.link && `رابط المنتج: ${f.link}`,
+    f.notes && `ملاحظات: ${f.notes}`,
     jobChoice && `الوظيفة: ${jobChoice}`,
-    clean(body.linkedin) && `لينكدإن: ${clean(body.linkedin)}`,
-    clean(body.cv) && `السيرة الذاتية: ${clean(body.cv)}`,
-    clean(body.portfolio) && `ملف الأعمال: ${clean(body.portfolio)}`,
-    clean(body.about) && `عن المتقدم: ${clean(body.about)}`,
+    f.linkedin && `لينكدإن: ${f.linkedin}`,
+    f.cv && `السيرة الذاتية: ${f.cv}`,
+    f.portfolio && `ملف الأعمال: ${f.portfolio}`,
+    f.about && `عن المتقدم: ${f.about}`,
     badEmail && `الايميل كما كتبه العميل (غير مكتمل): ${badEmail}`,
   ].filter(Boolean)
   const details = detailLines.join('\n') || '—'
@@ -323,81 +366,142 @@ export async function POST(request) {
        can be filtered without relying on tags */
     salesup_website: 'yes',
   }
-  const choice = CHOICE_TAGS[clean(body.plan)] || CHOICE_TAGS[clean(body.service)]
+  const choice = CHOICE_TAGS[f.plan] || CHOICE_TAGS[f.service]
   if (choice) contact.Tag.push({ name: choice })
   if (email) contact.Email = email
 
-  try {
-    let contactId = await biginInsert('Contacts', contact, deadline)
+  /* ---- destination 1: the CRM ---------------------------------- */
+  /* `contactId` is a string when Bigin took it, null when Bigin refused
+     it, and undefined when we never learned — the same three states the
+     sheet's CRM-status column reports to the team. */
+  let contactId
+  let crmStatus = 'not-configured'
+  if (zohoReady) {
+    try {
+      contactId = await biginInsert('Contacts', contact, deadline)
 
-    if (contactId === null) {
-      /* Zoho judged the rich record unacceptable. Retry with only what
-         a contact cannot exist without: Last_Name is the single
-         mandatory field, and Description depends on no org
-         configuration. Everything else — tags, the Lead Source
-         picklist, the custom field, Email — is a thing an admin can
-         rename or delete in Bigin, so none of it goes in the retry;
-         the values survive inside the description instead. */
-      /* an existing contact with this email is the common rejection:
-         retry with everything EXCEPT the email so the applicant keeps
-         their tags, source and full details instead of a bare record */
-      if (lastErrorCode === 'DUPLICATE_DATA' && contact.Email) {
-        console.error('[lead] duplicate email, retrying without it', form)
-        const withoutEmail = { ...contact }
-        delete withoutEmail.Email
-        withoutEmail.Description = `${contact.Description}
+      if (contactId === null) {
+        /* Zoho judged the rich record unacceptable. Retry with only what
+           a contact cannot exist without: Last_Name is the single
+           mandatory field, and Description depends on no org
+           configuration. Everything else — tags, the Lead Source
+           picklist, the custom field, Email — is a thing an admin can
+           rename or delete in Bigin, so none of it goes in the retry;
+           the values survive inside the description instead. */
+        /* an existing contact with this email is the common rejection:
+           retry with everything EXCEPT the email so the applicant keeps
+           their tags, source and full details instead of a bare record */
+        if (lastErrorCode === 'DUPLICATE_DATA' && contact.Email) {
+          console.error('[lead] duplicate email, retrying without it', form)
+          const withoutEmail = { ...contact }
+          delete withoutEmail.Email
+          withoutEmail.Description = `${contact.Description}
 الايميل (مسجل مسبقاً): ${contact.Email}`
-        contactId = await biginInsert('Contacts', withoutEmail, deadline)
-        if (contactId) return json(200, { ok: true }, cors)
+          contactId = await biginInsert('Contacts', withoutEmail, deadline)
+        }
+        if (!contactId) {
+          console.error('[lead] rich insert rejected, retrying minimal', form)
+          const minimal = {
+            Last_Name: contact.Last_Name,
+            Description: [
+              `المصدر: ${sourceByForm[form]}`,
+              `الجوال: ${contact.Phone}`,
+              email && `الايميل: ${email}`,
+              details,
+            ]
+              .filter(Boolean)
+              .join('\n'),
+          }
+          contactId = await biginInsert('Contacts', minimal, deadline)
+        }
       }
-      console.error('[lead] rich insert rejected, retrying minimal', form)
-      const minimal = {
-        Last_Name: contact.Last_Name,
-        Description: [
-          `المصدر: ${sourceByForm[form]}`,
-          `الجوال: ${contact.Phone}`,
-          email && `الايميل: ${email}`,
-          details,
-        ]
-          .filter(Boolean)
-          .join('\n'),
-      }
-      contactId = await biginInsert('Contacts', minimal, deadline)
-    }
 
-    /* undefined = we never learned the outcome; the record may exist,
-       so report success rather than provoke a duplicate submission */
-    if (contactId === undefined) {
-      console.error('[lead] outcome unknown, not retrying', form)
-      return json(200, { ok: true }, cors)
-    }
-    if (contactId === null) return json(502, { ok: false, error: 'zoho-rejected' }, cors)
+      /* undefined = we never learned the outcome; the record may exist,
+         so treat it as saved rather than provoke a duplicate submission */
+      crmStatus = contactId === undefined ? 'unknown' : contactId === null ? 'rejected' : 'ok'
+      if (contactId === undefined) console.error('[lead] outcome unknown, not retrying', form)
 
-    /* deal routing: the selection picks the pipeline, falling back to a
-       per-form route for submissions that carry no selection */
-    const routeKey = clean(body.plan) || clean(body.service) || `form:${form}`
-    const route = PIPELINE_ROUTES[routeKey] || PIPELINE_ROUTES[`form:${form}`]
-    if (route && Date.now() < deadline - 1000) {
-      const title = plan || service || sourceByForm[form]
-      const deal = {
-        Deal_Name: `${name} — ${title}`.slice(0, 120),
-        Sub_Pipeline: route.subPipeline,
-        Stage: route.stage,
-        Contact_Name: { id: contactId },
-        Description: details,
+      /* deal routing: the selection picks the pipeline, falling back to a
+         per-form route for submissions that carry no selection */
+      const routeKey = f.plan || f.service || `form:${form}`
+      const route = PIPELINE_ROUTES[routeKey] || PIPELINE_ROUTES[`form:${form}`]
+      if (contactId && route && Date.now() < deadline - 1000) {
+        const title = plan || service || sourceByForm[form]
+        const deal = {
+          Deal_Name: `${name} — ${title}`.slice(0, 120),
+          Sub_Pipeline: route.subPipeline,
+          Stage: route.stage,
+          Contact_Name: { id: contactId },
+          Description: details,
+        }
+        if (route.teamPipeline && route.teamPipelineId) {
+          deal.Pipeline = { name: route.teamPipeline, id: route.teamPipelineId }
+        }
+        /* the contact is already saved, so a failed deal must not fail the
+           submission — the lead is captured either way; log and move on */
+        const dealId = await biginInsert('Pipelines', deal, deadline)
+        if (!dealId) console.error('[lead] deal not created for contact', contactId, routeKey)
       }
-      if (route.teamPipeline && route.teamPipelineId) {
-        deal.Pipeline = { name: route.teamPipeline, id: route.teamPipelineId }
-      }
-      /* the contact is already saved, so a failed deal must not fail the
-         submission — the lead is captured either way; log and move on */
-      const dealId = await biginInsert('Pipelines', deal, deadline)
-      if (!dealId) console.error('[lead] deal not created for contact', contactId, routeKey)
+    } catch (err) {
+      console.error('[lead] crm error:', err)
+      crmStatus = 'error'
     }
-
-    return json(200, { ok: true }, cors)
-  } catch (err) {
-    console.error('[lead] error:', err)
-    return json(500, { ok: false, error: 'lead-failed' }, cors)
   }
+
+  /* ---- destination 2: the leads sheet --------------------------- */
+  /* Runs after the CRM so the row can record how that went, and never
+     throws: a spreadsheet outage must not turn a saved contact into an
+     error the visitor sees. */
+  let sheetSaved = false
+  if (sheetsConfigured()) {
+    try {
+      sheetSaved = await appendLead({
+        form,
+        deadline: sheetDeadline,
+        receivedAt,
+        submissionId,
+        /* rawEmail, not the validated one — the sheet is where a typo'd
+           address should still be visible next to the person's phone */
+        lead: { name, phone, email: rawEmail },
+        fields: {
+          message: f.message,
+          org: f.org,
+          notes: f.notes,
+          serviceLabel: service,
+          service: f.service,
+          planType: f.planType,
+          planLabel: plan,
+          plan: f.plan,
+          link: f.link,
+          jobLabel: jobChoice,
+          job: f.job,
+          linkedin: f.linkedin,
+          cv: f.cv,
+          portfolio: f.portfolio,
+          about: f.about,
+        },
+        meta: {
+          lang: clean(body.lang),
+          page: clean(body.page),
+          referrer: clean(body.referrer),
+          utmSource: clean(body.utm_source),
+          utmMedium: clean(body.utm_medium),
+          utmCampaign: clean(body.utm_campaign),
+          userAgent: request.headers.get('user-agent') || '',
+          crmStatus,
+          biginId: contactId || '',
+        },
+      })
+    } catch (err) {
+      console.error('[lead] sheet error:', String(err))
+    }
+  }
+
+  /* Either destination holding the lead is a success for the visitor —
+     re-submitting would only duplicate what was already captured. */
+  const crmSaved = crmStatus === 'ok' || crmStatus === 'unknown'
+  if (crmSaved || sheetSaved) return json(200, { ok: true }, cors)
+
+  console.error('[lead] lost:', form, 'crm:', crmStatus, 'sheet:', sheetSaved)
+  return json(502, { ok: false, error: crmStatus === 'rejected' ? 'zoho-rejected' : 'lead-failed' }, cors)
 }
