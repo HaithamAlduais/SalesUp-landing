@@ -1,10 +1,15 @@
 # Bigin by Zoho integration
 
-The three site forms (landing contact, services request, marketers
-apply) POST to `/api/lead` — a Vercel serverless function
+The four site forms (landing contact, services request, marketers apply,
+job apply) POST to `/api/lead` — a Vercel serverless function
 ([api/lead.js](../api/lead.js)) that creates a **Contact** in Bigin by Zoho.
 The forms show a real error state (with a direct-email fallback) until
 the function is configured, so nothing silently pretends to send.
+
+The same function also files every submission in the leads workbook —
+see [SHEETS.md](SHEETS.md). The two destinations are independent: a
+submission that only one of them accepts is still a success for the
+visitor, and the sheet's CRM-status column records which it was.
 
 The site code is done. What remains needs the SalesUp Zoho account —
 follow these steps once:

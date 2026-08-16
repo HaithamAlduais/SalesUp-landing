@@ -34,6 +34,49 @@ export type LeadPayload = {
   link?: string
   notes?: string
   website?: string /* honeypot */
+  /* context columns in the leads sheet — never sent to the CRM */
+  lang?: string
+  page?: string
+  referrer?: string
+  utm_source?: string
+  utm_medium?: string
+  utm_campaign?: string
+}
+
+/*
+ * Campaign tags ride on the URL the visitor first landed on. The site is
+ * an SPA, so by the time they reach a form the query string is usually a
+ * different page's — remember the tags for the session on first load.
+ */
+const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign'] as const
+const UTM_STORE = 'salesup-utm'
+
+export function rememberCampaign(): void {
+  try {
+    const params = new URLSearchParams(window.location.search)
+    const found: Record<string, string> = {}
+    for (const key of UTM_KEYS) {
+      const value = params.get(key)
+      if (value) found[key] = value.slice(0, 120)
+    }
+    /* first touch wins: the campaign that brought them to the site is the
+       one that earned the lead, not the page they happened to submit from */
+    if (Object.keys(found).length > 0 && !sessionStorage.getItem(UTM_STORE)) {
+      sessionStorage.setItem(UTM_STORE, JSON.stringify(found))
+    }
+  } catch {
+    /* Safari private mode throws on sessionStorage — a campaign tag is
+       nice to have and never a reason to break a form */
+  }
+}
+
+function campaign(): Record<string, string> {
+  try {
+    const stored = JSON.parse(sessionStorage.getItem(UTM_STORE) || '{}')
+    return stored && typeof stored === 'object' ? stored : {}
+  } catch {
+    return {}
+  }
 }
 
 /*
@@ -118,5 +161,10 @@ export function leadFromForm(form: HTMLFormElement, base: { form: LeadForm }): L
     portfolio: field('portfolio'),
     about: field('about'),
     website: field('website'),
+    /* where and how this lead reached us — sheet columns only */
+    lang: document.documentElement.lang || 'ar',
+    page: window.location.pathname + window.location.search,
+    referrer: document.referrer,
+    ...campaign(),
   }
 }

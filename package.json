@@ -8,7 +8,8 @@
     "build": "tsc --noEmit -p tsconfig.app.json && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json --pretty false",
-    "build:wp": "node scripts/build-wp-theme.mjs"
+    "build:wp": "node scripts/build-wp-theme.mjs",
+    "check:sheet": "node scripts/check-sheet-columns.mjs"
   },
   "dependencies": {
     "@paper-design/shaders-react": "^0.0.77",

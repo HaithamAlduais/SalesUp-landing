@@ -492,28 +492,47 @@ function Process() {
 function Contact({ dark }: { dark: boolean }) {
   const { L } = useLang()
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const successRef = useRef<HTMLHeadingElement>(null)
+
+  /* the form the visitor was typing in is gone once it succeeds, so send
+     focus to the heading that replaced it rather than leave it nowhere */
+  useEffect(() => {
+    if (status === 'sent') successRef.current?.focus()
+  }, [status])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (status === 'sending' || status === 'sent') return
-    const el = event.currentTarget
-    const payload = leadFromForm(el, { form: 'contact' })
+    const payload = leadFromForm(event.currentTarget, { form: 'contact' })
     setStatus('sending')
     const ok = await submitLead(payload)
     setStatus(ok ? 'sent' : 'error')
-    /* clear on success so a second click can't file the same lead twice
-       (this form stays on screen rather than swapping to a panel) */
-    if (ok) el.reset()
   }
 
   return (
     <section className="contact-section" id="contact">
       <p className="contact-eyebrow">{L('احصل على استشارة مجانية', 'Get a Free Consultation')}</p>
-      <div className="contact-panel">
+      <div className="contact-panel" role={status === 'sent' ? 'status' : undefined}>
         <ContactFx dark={dark} />
         <div className="contact-clip" aria-hidden="true">
           <img className="contact-glow" src={contactGlow} alt="" />
         </div>
+        {status === 'sent' ? (
+          <div className="contact-success-inner">
+            <span className="mk-check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m4.5 12.5 5 5 10-11" />
+              </svg>
+            </span>
+            <h2 ref={successRef} tabIndex={-1}>{L('شكرًا لتواصلك معنا', 'Thank you for reaching out')}</h2>
+            <p>
+              {L(
+                'وصلنا طلبك، وراح يتواصل معك فريق SalesUp خلال ٣ أيام عمل بإذن الله.',
+                "We've received your request — the SalesUp team will be in touch within 3 business days."
+              )}
+            </p>
+          </div>
+        ) : (
         <div className="contact-inner">
           <div className="contact-copy">
             <h2>{L('احصل على استشارة مجانية', 'Get a Free Consultation')}</h2>
@@ -528,14 +547,14 @@ function Contact({ dark }: { dark: boolean }) {
             <textarea className="field field--full field--message" name="message" placeholder={L('الرسالة', 'Message')} aria-label={L('الرسالة', 'Message')} />
             <input className="hp-field" name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" />
             <div className="form-action">
-              <button className="button button--submit" type="submit" disabled={status === 'sending' || status === 'sent'}>
+              <button className="button button--submit" type="submit" disabled={status === 'sending'}>
                 {status === 'sending' ? L('جارٍ الإرسال…', 'Sending…') : L('ارسل طلبك', 'Send Request')}
               </button>
-              {status === 'sent' ? <p className="form-status" role="status">{L('وصلنا طلبك، بنتواصل معك قريبًا.', "We received your request — we'll be in touch soon.")}</p> : null}
               {status === 'error' ? <p className="form-status form-status--error" role="alert">{L('تعذّر إرسال الطلب. حاول مرة أخرى، أو راسلنا مباشرة على hi@salesup.sa', "Couldn't send your request. Please try again, or email us directly at hi@salesup.sa")}</p> : null}
             </div>
           </form>
         </div>
+        )}
       </div>
     </section>
   )
