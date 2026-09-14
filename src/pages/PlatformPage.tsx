@@ -61,7 +61,7 @@ function PlatformHero() {
         <span className="platform-kicker">{L('منصة سيلز أب', 'SalesUp Platform')}</span>
         <h1>{L('الشركات والمسوّقين', 'Companies and marketers')} <em>{L('في مكان واحد', 'in one place')}</em></h1>
         <p>{L('اعرض منتجاتك، اكتشف فرص التسويق بعمولة، وأدر الصفقات والعمولات بسهولة عبر منصة تجمع الطرفين.', 'List your products, discover commission opportunities and manage deals in one shared platform.')}</p>
-        <a className="platform-primary" href="#platform-roles">{L('اكتشف المنصة', 'Explore the platform')}<Arrow /></a>
+        <a className="platform-primary" href="#platform-roles">{L('ابدأ مجاناً', 'Start for free')}<Arrow /></a>
         <div className="platform-proof"><span><Check />{L('بدون رسوم للبدء', 'No fee to get started')}</span><span><Check />{L('كل شيء في مكان واحد', 'Everything in one place')}</span></div>
       </div>
       <div className="platform-visual"><div className="platform-orbit platform-orbit-a" /><div className="platform-orbit platform-orbit-b" /><CommissionBoard /></div>
@@ -89,12 +89,12 @@ const marketerFeatures = [
   ['bell', 'تنبيهات تسبقك', 'صفقة اعتُمدت، عمولة نُزّلت، أو صفقة وقفت، يوصلك أول بأول.'],
 ] as const
 const companyFeatures = [
-  ['box', 'منتجك بواجهة واضحة', 'اعرض تفاصيل المنتج، شروطه، وعمولته بطريقة سهلة للمسوّقين.'],
-  ['users', 'شبكة مسوّقين', 'تستقبل طلبات الانضمام وتبني شبكة تناسب منتجك وسوقك.'],
-  ['wallet', 'مدفوعات منظّمة', 'اعتمد الصفقات وخلّ مستحقات كل مسوّق واضحة من البداية.'],
-  ['chart', 'تقارير مبيعات', 'تابع أداء المنتجات والمسوّقين والفرص التي تحتاج تركيزك.'],
-  ['brief', 'إدارة الصفقات', 'كل صفقة تحت عينك من أول تسجيل إلى الاعتماد.'],
-  ['shield', 'عمولات موثّقة', 'شروط واضحة وسجل كامل لكل خطوة في رحلة البيع.'],
+  ['box', 'انشر منتجك', 'تضيف منتجك بوصفه وشروطه وتحدّد عمولته، ويظهر للمسوّقين في ثوانٍ.'],
+  ['users', 'فريق بيع جاهز', 'مسوّقون ينضمون لمنتجك ويبدأون البيع، بدون توظيف ولا رواتب ثابتة.'],
+  ['wallet', 'تدفع على النتيجة', 'العمولة تُستحق فقط عند إقفال الصفقة، والمنصة تتولّى الاحتساب.'],
+  ['chart', 'أداء منتجاتك', 'تشوف أي منتج يتحرّك، وكم صفقة وصلتك، ومن أي مسوّق جات.'],
+  ['brief', 'صفقات موثّقة', 'كل صفقة تصلك بتفاصيل عميلها ومرحلتها، وتعتمدها بضغطة.'],
+  ['shield', 'شروط تحميك', 'أنت تكتب شروط العمولة.'],
 ] as const
 
 function FeatureSwitch() {
@@ -110,9 +110,12 @@ function Faq() {
   const { L } = useLang()
   const items = [
     [L('كيف تشتغل المنصة؟', 'How does the platform work?'), L('الشركات تعرض منتجاتها وفرصها، والمسوقون يختارون الفرص المناسبة لهم. ومن خلال المنصة يقدر الطرفان يتابعون الصفقات والعمولات من مكان واحد.', 'Companies list their offers and marketers choose the opportunities that fit them. Both sides can follow deals and commissions in one place.')],
-    [L('كيف تنحسب العمولة؟', 'How are commissions calculated?'), L('كل شركة تحدد العمولة وشروط استحقاقها بوضوح قبل انضمام المسوّق للمنتج.', 'Every company clearly sets the commission and its eligibility terms before a marketer joins.')],
-    [L('كيف يتم اعتماد الصفقة؟', 'How is a deal approved?'), L('تظهر الصفقة للشركة مع تفاصيلها، وبعد مراجعتها واعتمادها تتحدّث حالة العمولة للمسوّق.', 'The company reviews the deal details and, once approved, the marketer sees the commission status update.')],
-    [L('هل أقدر أتعامل مع أكثر من منتج؟', 'Can I work with more than one product?'), L('نعم، تقدر تنضم للمنتجات التي تناسب خبرتك وتتابع كل واحد من نفس اللوحة.', 'Yes. Join the products that suit your expertise and follow each one from the same dashboard.')],
+    [L('كيف تنحسب العمولة؟', 'How are commissions calculated?'), L('كل منتج أو فرصة يكون لها عمولة محددة وواضحة من البداية، بحيث يعرف المسوّق عمولته وتعرف الشركة تكلفة كل صفقة قبل بدء التسويق.', 'Every product or opportunity has a clear commission from the start, so marketers know their earnings and companies know each deal cost before promotion begins.')],
+    [L('كيف يتم اعتماد الصفقة؟', 'How is a deal approved?'), L('بعد تسجيل الصفقة، تتم مراجعتها واعتمادها حسب تفاصيل العملية. وبعد الاعتماد تظهر حالة الصفقة والعمولة بشكل واضح للطرفين.', 'After a deal is recorded, it is reviewed and approved according to its details. Both sides then see its deal and commission status clearly.')],
+    [L('متى تُصرف العمولة؟', 'When is a commission paid?'), L('بعد اعتماد الصفقة تنتقل العمولة إلى حالة الاستحقاق، ويتم صرفها بحسب دورة الدفع المحددة في المنصة.', 'Once a deal is approved, its commission becomes payable and is issued according to the platform payment cycle.')],
+    [L('هل أقدر أتعامل مع أكثر من منتج أو مسوّق؟', 'Can I work with more than one product or marketer?'), L('نعم. المسوّق يقدر يشارك في أكثر من فرصة، والشركة تقدر تعرض أكثر من منتج وتتعامل مع عدة مسوقين من خلال حساب واحد.', 'Yes. Marketers can join more than one opportunity, while companies can list multiple products and work with several marketers from one account.')],
+    [L('كيف أتابع الصفقات والعمولات؟', 'How do I follow deals and commissions?'), L('كل طرف عنده لوحة تحكم توضح له الصفقات وحالتها والعمولات المرتبطة فيها، عشان تكون رحلة البيع واضحة من البداية للنهاية.', 'Each side has a dashboard that shows deals, their status and related commissions, keeping the sales journey clear from start to finish.')],
+    [L('وش أحتاج عشان أبدأ؟', 'What do I need to start?'), L('اختر نوع حسابك، أكمل بياناتك، وبعدها تقدر تبدأ بعرض منتجاتك كشركة أو اكتشاف فرص التسويق كمسوّق.', 'Choose your account type, complete your details, then start listing products as a company or discovering marketing opportunities as a marketer.')],
   ]
   const [open, setOpen] = useState(0)
   return <section className="platform-faq"><div className="platform-faq-copy"><span>{L('أسئلة قبل ما تبدأ', 'Before you start')}</span><h2>{L('كل شيء واضح من أول خطوة', 'Clear from the first step')}</h2><p>{L('بنينا المنصة عشان يكون البيع والتعاون أبسط للطرفين.', 'We built the platform to make selling and collaboration simpler for both sides.')}</p></div><div className="platform-faq-list">{items.map(([question, answer], index) => <article className={open === index ? 'is-open' : ''} key={question}><button onClick={() => setOpen(open === index ? -1 : index)} aria-expanded={open === index}><span>{question}</span><b>+</b></button><div><p>{answer}</p></div></article>)}</div></section>
@@ -120,7 +123,7 @@ function Faq() {
 
 function FinalCta() {
   const { L } = useLang()
-  return <section className="platform-final"><div><span>{L('جاهز تبدأ؟', 'Ready to begin?')}</span><h2>{L('سجّل بخطوة وحدة، واختر أول منتج', 'Sign up, then choose your first product')}</h2><p>{L('وابدأ تكسب من أول صفقة تقفلها.', 'Start earning from your first closed deal.')}</p><a href="/#contact" className="platform-primary">{L('تواصل معنا', 'Contact us')}<Arrow /></a></div></section>
+  return <section className="platform-final"><div><span>{L('جاهز تبدأ؟', 'Ready to begin?')}</span><h2>{L('سجّل بخطوة وحدة، واختر أول منتج', 'Sign up, then choose your first product')}</h2><p>{L('وابدأ تكسب من أول صفقة تقفلها.', 'Start earning from your first closed deal.')}</p><a href="/#contact" className="platform-primary">{L('ابدأ مجاناً', 'Start for free')}<Arrow /></a></div></section>
 }
 
 export default function PlatformPage() {
