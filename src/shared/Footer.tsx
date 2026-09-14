@@ -143,6 +143,18 @@ export function Footer() {
           <p className="footer-tagline">
             {L('تمكين المبيعات ، خطوة بخطوة', 'Sales enablement, step by step')}
           </p>
+          {/* legal registration numbers — each figure sits in an LTR
+              island so RTL never reorders it mid-line */}
+          <div className="footer-ids">
+            <p>
+              {L('رقم السجل التجاري ', 'Commercial Registration ')}
+              <span dir="ltr">7038219270</span>
+            </p>
+            <p>
+              {L('الرقم الضريبي ', 'VAT Number ')}
+              <span dir="ltr">314622247100003</span>
+            </p>
+          </div>
           <div className="socials" dir="ltr" aria-label={L('حسابات التواصل الاجتماعي', 'Social media accounts')}>
             {SOCIALS.map((s) => (
               <a

@@ -1682,6 +1682,19 @@ h1, h2, h3, p { margin: 0; }
   font-size: 19px;
 }
 
+/* CR + VAT numbers — quiet legal text, one notch below the tagline */
+.footer-ids {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: -8px;
+  color: var(--ink);
+  font-size: 15px;
+  opacity: 0.6;
+}
+.footer-ids span { unicode-bidi: isolate; }
+
 /* brand logo = the living-glass wordmark at brand size; the gradient
    beneath the mask is the no-WebGPU / pre-init fallback fill */
 .footer-logo-fx {
@@ -2269,6 +2282,7 @@ html.fx-unproven .footer-logo-fx-inner {
 
 [data-theme='dark'] .footer-legal { color: #e8f6ef; }
 [data-theme='dark'] .footer-tagline { color: #e8f6ef; }
+[data-theme='dark'] .footer-ids { color: #e8f6ef; }
 [data-theme='dark'] .footer-bottom { border-top-color: rgba(255, 255, 255, 0.08); }
 
 [data-theme='dark'] .to-top {
@@ -2461,6 +2475,7 @@ html.fx-unproven .footer-logo-fx-inner {
   }
   .footer-logo-fx { width: 215px; }
   .footer-end { padding: 40px 16px 44px; }
+  .footer-ids { font-size: 14px; margin-top: -6px; }
   .to-top { top: 24px; width: 44px; height: 44px; }
 }
 
@@ -3412,6 +3427,16 @@ html[dir='ltr'] .related-card:hover .cta-arrow { transform: scaleX(-1) translate
   align-items: center;
   justify-content: center;
   padding: 60px 16px 110px;
+}
+
+/* The full platform experience supplies its own document-level styling.
+   Keep its frame flush with the application so the route reads as one page. */
+.platform-frame {
+  display: block;
+  width: 100%;
+  min-height: 100dvh;
+  border: 0;
+  background: #fff;
 }
 
 .platform-fx {
@@ -4793,3 +4818,51 @@ html[dir='ltr'] .jobs-row-cta .cta-arrow { transform: scaleX(-1); }
   .svc-detail-cards { grid-template-columns: 1fr; gap: 16px; }
   .svc-detail-body p { line-height: 1.85; }
 }
+
+/* ============================================================
+   Digital platform — native SalesUp product story
+   ============================================================ */
+.platform-native-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: min(810px, 94vh);
+  display: grid;
+  align-items: center;
+  padding: 126px max(24px, calc((100vw - 1190px) / 2)) 92px;
+  background: linear-gradient(118deg, #f5fffa 0%, #e8fbf2 50%, #fafffd 100%);
+}
+.platform-native-fx { position: absolute; inset: 0; opacity: .12; pointer-events: none; }
+.platform-native-wrap { position: relative; z-index: 1; display: grid; grid-template-columns: 1.02fr .98fr; gap: clamp(38px, 7vw, 106px); align-items: center; width: min(1190px, 100%); margin: auto; }
+.platform-hero-copy { max-width: 570px; }
+.platform-kicker, .platform-section-head > span, .platform-faq-copy > span, .platform-final span { display: inline-flex; align-items: center; gap: 8px; color: #07885e; font-size: 14px; font-weight: 700; }
+.platform-kicker::before, .platform-section-head > span::before, .platform-faq-copy > span::before, .platform-final span::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 0 5px rgba(4,203,121,.12); }
+.platform-hero-copy h1 { margin: 19px 0 16px; color: #123f40; font-size: clamp(39px, 4.2vw, 61px); line-height: 1.23; letter-spacing: -.035em; }
+.platform-hero-copy h1 em { display: block; font-style: normal; color: var(--green); }
+.platform-hero-copy > p { max-width: 520px; color: #628278; font-size: clamp(16px, 1.5vw, 19px); line-height: 1.95; }
+.platform-primary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; margin-top: 29px; padding: 0 25px; border-radius: 999px; background: linear-gradient(125deg, #076c61, #08a77c 68%, #2acb99); color: #fff; font-size: 15px; font-weight: 700; text-decoration: none; box-shadow: 0 14px 28px rgba(7, 108, 97, .2); transition: transform .2s ease, box-shadow .2s ease; }
+.platform-primary:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 18px 30px rgba(7,108,97,.31); }
+.platform-arrow { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; transform: scaleX(-1); }
+.platform-proof { display: flex; flex-wrap: wrap; gap: 14px 20px; margin-top: 24px; color: #638074; font-size: 13px; }
+.platform-proof span, .platform-role-card li { display: flex; align-items: flex-start; gap: 7px; }
+.platform-check { flex: 0 0 auto; width: 17px; height: 17px; margin-top: 2px; fill: none; stroke: var(--green); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.platform-visual { position: relative; display: grid; place-items: center; min-height: 410px; }
+.platform-orbit { position: absolute; border: 1px solid rgba(4,203,121,.27); border-radius: 50%; }
+.platform-orbit-a { width: min(440px, 98%); height: min(440px, 98%); }
+.platform-orbit-b { width: min(330px, 75%); height: min(330px, 75%); border-style: dashed; transform: rotate(35deg); }
+.commission-board { position: relative; width: min(370px, 90%); padding: 21px; border: 1px solid rgba(255,255,255,.17); border-radius: 24px; background: linear-gradient(155deg, #11392f, #061b15); color: #fff; box-shadow: 0 33px 65px -29px rgba(2,60,35,.68); transform: rotate(-3deg); }
+.board-top { display: flex; align-items: center; gap: 6px; margin-bottom: 19px; color: rgba(255,255,255,.85); font-size: 13px; font-weight: 700; }
+.board-top span { margin-inline-end: auto; }.board-top i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.2); }
+.board-total { display: flex; align-items: end; justify-content: space-between; padding: 13px 14px; border: 1px solid rgba(112,245,193,.29); border-radius: 15px; background: rgba(39,211,148,.15); }
+.board-total span { color: #9eeed0; font-size: 11px; }.board-total b { font-size: 28px; line-height: 1; }.board-total small { color: #9eeed0; font-size: 11px; font-weight: 500; }
+.board-live { display: flex; justify-content: space-between; margin: 15px 2px 7px; color: rgba(255,255,255,.54); font-size: 10px; }.board-live span { color: #7cf2c5; }.board-live span i { display: inline-block; width: 6px; height: 6px; margin-inline-end: 4px; border-radius: 50%; background: #35e4aa; }
+.board-live em { font-style: normal; }.board-list { border-top: 1px solid rgba(255,255,255,.1); }.board-row { display: grid; grid-template-columns: 28px 1fr auto; gap: 9px; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.09); font-size: 10px; }.board-avatar { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 8px; background: rgba(117,244,195,.15); color: #a2f6d7; font-weight: 700; }.board-row > span:nth-child(2) { color: rgba(255,255,255,.8); }.board-row small { display: block; margin-top: 2px; color: #82e6c4; font-size: 8px; }.board-row b { color: #7cf2c5; font-size: 11px; }.board-badge { position: absolute; bottom: -18px; inset-inline-start: -26px; display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; border: 1px solid #d7ede3; border-radius: 99px; background: #fff; color: #1a5d50; font-size: 11px; font-weight: 700; box-shadow: 0 11px 22px rgba(7,80,55,.16); transform: rotate(3deg); }.board-badge .platform-icon { width: 14px; height: 14px; }
+.platform-icon { width: 25px; height: 25px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.platform-roles, .platform-features, .platform-faq { width: min(1190px, calc(100% - 48px)); margin: auto; padding: clamp(78px, 10vw, 130px) 0; }
+.platform-section-head { max-width: 635px; margin: 0 auto 44px; text-align: center; }.platform-section-head > span { justify-content: center; }.platform-section-head h2, .platform-faq h2, .platform-final h2 { margin-top: 13px; color: var(--ink); font-size: clamp(29px, 3.3vw, 43px); line-height: 1.35; letter-spacing: -.025em; }
+.platform-role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }.platform-role-card { position: relative; min-height: 325px; padding: clamp(27px, 3vw, 40px); overflow: hidden; border: 1px solid #dbece4; border-radius: 23px; background: #fff; box-shadow: 0 20px 45px -38px rgba(4,72,45,.58); }.platform-role-card::after { content: ''; position: absolute; width: 190px; height: 190px; inset: auto -55px -100px auto; border-radius: 50%; background: radial-gradient(circle, rgba(7,192,123,.16), transparent 68%); pointer-events: none; }.platform-role-card:nth-child(2) { background: #f2fbf6; }.platform-icon-shell { display: grid; place-items: center; width: 49px; height: 49px; margin-bottom: 20px; border: 1px solid rgba(4,203,121,.26); border-radius: 15px; background: rgba(4,203,121,.1); color: #07865e; }.platform-role-card h3, .platform-feature-card h3 { color: var(--ink); font-size: 20px; }.platform-role-card > p { margin-top: 8px; color: #07865e; font-size: 15px; font-weight: 700; }.platform-role-card ul { position: relative; z-index: 1; display: grid; gap: 11px; margin-top: 24px; padding: 0; list-style: none; color: #638075; font-size: 13.5px; line-height: 1.6; }
+.platform-features { width: 100%; padding-inline: max(24px, calc((100% - 1190px) / 2)); background: #f0faf5; }.platform-audience { display: flex; width: max-content; margin: -16px auto 30px; padding: 4px; border: 1px solid #d5e8dd; border-radius: 99px; background: #fff; }.platform-audience button { min-width: 108px; padding: 9px 17px; border: 0; border-radius: 99px; background: transparent; color: #789188; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: .2s ease; }.platform-audience button.is-active { background: linear-gradient(120deg, #077460, #0bab7e); color: #fff; box-shadow: 0 6px 12px rgba(7,108,97,.2); }.platform-feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }.platform-feature-card { min-height: 205px; padding: 25px; border: 1px solid #dfede7; border-radius: 20px; background: rgba(255,255,255,.92); transition: transform .24s ease, border-color .24s ease, box-shadow .24s ease; }.platform-feature-card:hover { border-color: rgba(4,203,121,.48); box-shadow: 0 20px 32px -27px rgba(4,104,70,.5); transform: translateY(-4px); }.platform-feature-card .platform-icon-shell { width: 43px; height: 43px; margin-bottom: 16px; border-radius: 13px; }.platform-feature-card .platform-icon { width: 22px; height: 22px; }.platform-feature-card p { margin-top: 9px; color: #68837a; font-size: 13.5px; line-height: 1.8; }
+.platform-faq { display: grid; grid-template-columns: .76fr 1.24fr; gap: clamp(38px, 9vw, 122px); align-items: start; }.platform-faq-copy { position: sticky; top: 100px; }.platform-faq-copy p { max-width: 340px; margin-top: 14px; color: #6c877e; line-height: 1.9; }.platform-faq-list { border-top: 1px solid #dcebe4; }.platform-faq-list article { border-bottom: 1px solid #dcebe4; }.platform-faq-list button { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 15px; padding: 20px 0; border: 0; background: transparent; color: var(--ink); text-align: inherit; font: inherit; font-weight: 700; cursor: pointer; }.platform-faq-list button b { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 50%; background: #e7f7ef; color: #07865e; font-size: 20px; font-weight: 400; transition: transform .2s ease; }.platform-faq-list article.is-open button b { transform: rotate(45deg); background: #07865e; color: #fff; }.platform-faq-list article > div { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease; }.platform-faq-list article.is-open > div { grid-template-rows: 1fr; }.platform-faq-list article p { min-height: 0; overflow: hidden; margin: 0; padding: 0; color: #68837a; line-height: 1.9; transition: padding .25s ease; }.platform-faq-list article.is-open p { padding: 0 0 20px; }
+.platform-final { width: min(1190px, calc(100% - 48px)); margin: 0 auto clamp(76px, 10vw, 122px); padding: clamp(43px, 6vw, 76px); overflow: hidden; border-radius: 29px; background: linear-gradient(120deg, #092f2d, #087357 58%, #11a878); color: #fff; box-shadow: 0 30px 60px -36px rgba(2,72,49,.8); }.platform-final > div { position: relative; max-width: 660px; }.platform-final::after { content: ''; position: absolute; width: 510px; height: 510px; inset: -260px -120px auto auto; border: 1px solid rgba(255,255,255,.25); border-radius: 50%; box-shadow: 0 0 0 42px rgba(255,255,255,.06), 0 0 0 85px rgba(255,255,255,.035); }.platform-final span { color: #a5f5d8; }.platform-final span::before { background: #9df4d5; box-shadow: 0 0 0 5px rgba(191,255,226,.13); }.platform-final h2 { color: #fff; }.platform-final p { margin-top: 10px; color: rgba(255,255,255,.74); font-size: 17px; }.platform-final .platform-primary { position: relative; z-index: 1; background: #fff; color: #087259; box-shadow: none; }
+[data-theme='dark'] .platform-native-hero { background: #071812; }.platform-native-fx { opacity: .2; }.platform-hero-copy h1, [data-theme='dark'] .platform-section-head h2, [data-theme='dark'] .platform-faq h2 { color: #e6f7ef; }.platform-hero-copy > p, [data-theme='dark'] .platform-faq-copy p { color: #abc6ba; }.platform-role-card, [data-theme='dark'] .platform-feature-card { border-color: rgba(255,255,255,.1); background: #10271f; }.platform-role-card:nth-child(2), [data-theme='dark'] .platform-features { background: #0a1c16; }.platform-role-card h3, [data-theme='dark'] .platform-feature-card h3 { color: #e6f7ef; }.platform-role-card ul, [data-theme='dark'] .platform-feature-card p, [data-theme='dark'] .platform-faq-list article p { color: #a8c2b6; }.platform-audience { border-color: rgba(255,255,255,.12); background: #10271f; }.platform-faq-list, .platform-faq-list article { border-color: rgba(255,255,255,.12); }.platform-faq-list button { color: #e6f7ef; }
+@media (max-width: 800px) { .platform-native-hero { min-height: 0; padding-top: 112px; }.platform-native-wrap, .platform-faq { grid-template-columns: 1fr; }.platform-visual { min-height: 350px; order: -1; }.commission-board { width: min(350px, 90%); }.platform-role-grid, .platform-feature-grid { grid-template-columns: 1fr; }.platform-faq-copy { position: static; }.platform-faq-copy p { max-width: none; }.platform-feature-grid { gap: 12px; }.platform-feature-card { min-height: 0; }.platform-section-head { margin-bottom: 33px; } }
+@media (max-width: 480px) { .platform-native-hero { padding-inline: 18px; }.platform-roles, .platform-faq { width: min(100% - 36px, 1190px); }.platform-visual { min-height: 294px; }.commission-board { padding: 17px; }.board-badge { inset-inline-start: -5px; }.platform-role-card { min-height: 0; padding: 26px 22px; }.platform-final { width: calc(100% - 36px); padding: 36px 24px; }.platform-final::after { display: none; } }
