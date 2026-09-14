@@ -106,7 +106,6 @@ function PlatformHero() {
   return (
     <section className="platform-native-hero">
       <div className="platform-native-fx" aria-hidden="true"><HeroFx dark={dark} /></div>
-      <div className="platform-hero-halo platform-hero-halo--one" aria-hidden="true" />
       <div className="platform-hero-halo platform-hero-halo--two" aria-hidden="true" />
       <div className="platform-native-wrap">
         <div className="platform-hero-copy">

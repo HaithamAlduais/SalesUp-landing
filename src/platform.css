@@ -54,14 +54,6 @@
   filter: blur(1px);
 }
 
-.platform-hero-halo--one {
-  width: min(54vw, 720px);
-  aspect-ratio: 1;
-  inset: auto -15% -42% auto;
-  border: 1px solid rgba(4, 203, 121, 0.22);
-  box-shadow: 0 0 0 48px rgba(4, 203, 121, 0.04), 0 0 0 120px rgba(4, 203, 121, 0.025);
-}
-
 .platform-hero-halo--two {
   width: min(38vw, 500px);
   aspect-ratio: 1;
