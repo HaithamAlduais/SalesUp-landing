@@ -7,6 +7,8 @@ import { usePageTheme } from '../shared/theme'
 
 type IconName = 'box' | 'wallet' | 'users' | 'cup' | 'chart' | 'bell' | 'brief' | 'shield' | 'spark'
 type Audience = 'marketer' | 'company'
+type ConsoleKind = 'publish' | 'opportunities' | 'pipeline' | 'approval' | 'payout' | 'analytics'
+type FeatureVisualKind = 'offers' | 'balance' | 'pipeline' | 'leaderboard' | 'report' | 'alerts' | 'publish' | 'team' | 'outcome' | 'approvals' | 'terms'
 type Localize = (arabic: string, english: string) => string
 
 type Feature = {
@@ -23,6 +25,8 @@ type StoryStep = {
   proof: string
   icon: IconName
   fx: number
+  kind: ConsoleKind
+  consoleAction: string
   consoleTitle: string
   consoleStatus: string
   metricLabel: string
@@ -191,6 +195,8 @@ function createStory(L: Localize): StoryStep[] {
       proof: L('لا تحتاج أن تعيد شرح العرض لكل مسوّق.', 'No need to repeat your offer to every marketer.'),
       icon: 'box',
       fx: 0,
+      kind: 'publish',
+      consoleAction: L('نشر المنتج', 'Publish product'),
       consoleTitle: L('إضافة منتج جديد', 'Create a new product'),
       consoleStatus: L('جاهز للنشر', 'Ready to publish'),
       metricLabel: L('عمولة المنتج', 'Product commission'),
@@ -209,6 +215,8 @@ function createStory(L: Localize): StoryStep[] {
       proof: L('العمولة والشروط واضحة قبل أول تواصل.', 'Commission and terms are clear before your first outreach.'),
       icon: 'users',
       fx: 1,
+      kind: 'opportunities',
+      consoleAction: L('استعراض الفرص', 'Browse offers'),
       consoleTitle: L('فرص مناسبة لك', 'Opportunities for you'),
       consoleStatus: L('12 فرصة متاحة', '12 live opportunities'),
       metricLabel: L('أعلى عمولة', 'Highest commission'),
@@ -227,6 +235,8 @@ function createStory(L: Localize): StoryStep[] {
       proof: L('ما تضيع الفرص بين المحادثات والملفات.', 'No opportunities lost between chats and spreadsheets.'),
       icon: 'brief',
       fx: 2,
+      kind: 'pipeline',
+      consoleAction: L('إضافة صفقة', 'Add deal'),
       consoleTitle: L('الصفقات · CRM', 'Deals · CRM'),
       consoleStatus: L('12 صفقة نشطة', '12 active deals'),
       metricLabel: L('نسبة الإقفال', 'Close rate'),
@@ -245,6 +255,8 @@ function createStory(L: Localize): StoryStep[] {
       proof: L('تدفع على النتيجة، وليس على الوعود.', 'You pay for outcomes, not promises.'),
       icon: 'shield',
       fx: 3,
+      kind: 'approval',
+      consoleAction: L('مراجعة الطلبات', 'Review requests'),
       consoleTitle: L('صفقات بانتظار الاعتماد', 'Deals awaiting approval'),
       consoleStatus: L('4 تحتاج قرارك', '4 need your decision'),
       metricLabel: L('قيمة الفرص', 'Opportunity value'),
@@ -263,6 +275,8 @@ function createStory(L: Localize): StoryStep[] {
       proof: L('تعرف بالضبط ماذا لك ومتى يصرف.', 'Know exactly what is yours and when it pays out.'),
       icon: 'wallet',
       fx: 4,
+      kind: 'payout',
+      consoleAction: L('سجل العمولات', 'Commission ledger'),
       consoleTitle: L('العمولات', 'Commissions'),
       consoleStatus: L('محدّثة الآن', 'Updated now'),
       metricLabel: L('إجمالي عمولاتك', 'Total commissions'),
@@ -281,6 +295,8 @@ function createStory(L: Localize): StoryStep[] {
       proof: L('تقاريرك تشرح لك أين تكبر، لا مجرد أرقام.', 'Reports show where to grow, not just a wall of numbers.'),
       icon: 'chart',
       fx: 5,
+      kind: 'analytics',
+      consoleAction: L('عرض التقرير', 'View report'),
       consoleTitle: L('نمو الأداء', 'Performance growth'),
       consoleStatus: L('هذا الشهر', 'This month'),
       metricLabel: L('نمو العمولات', 'Commission growth'),
@@ -348,48 +364,165 @@ function useStoryScroll(count: number) {
   return { trackRef, active, visible, goTo }
 }
 
-function PlatformConsole({ scene }: { scene: StoryStep }) {
+function ConsolePlot({ scene, label, value }: { scene: StoryStep; label: string; value: string }) {
   return (
-    <div className="platform-console" aria-label="معاينة لوحة المنصة">
+    <article className="console-plot">
+      <div className="console-plot-head">
+        <div><span>{label}</span><b dir="ltr">{value}</b></div>
+        <span className="console-period">Apr — Jun</span>
+      </div>
+      <div className="console-plot-grid" aria-hidden="true">
+        <i /><i /><i />
+      </div>
+      <div className="console-plot-bars" dir="ltr" aria-hidden="true">
+        {scene.bars.map((height, index) => <i key={index} style={{ height: height + '%' }} className={index === scene.bars.length - 1 ? 'is-last' : ''} />)}
+      </div>
+      <div className="console-plot-axis" dir="ltr"><span>Apr</span><span>May</span><span>Jun</span></div>
+    </article>
+  )
+}
+
+function ConsoleScene({ scene }: { scene: StoryStep }) {
+  const { L } = useLang()
+
+  if (scene.kind === 'publish') {
+    return (
+      <div className="console-scene console-scene--publish">
+        <article className="console-product-identity">
+          <span className="console-product-symbol">ن</span>
+          <div><span>{L('المنتج', 'Product')}</span><b>{L('نظام نقاط بيع', 'POS system')}</b><small>{L('حلول المتاجر · اشتراك سنوي', 'Retail solutions · annual plan')}</small></div>
+          <em><i />{L('نشط', 'Live')}</em>
+        </article>
+        <article className="console-commission-rule">
+          <span>{scene.metricLabel}</span><b dir="ltr">{scene.metricValue}</b><small>{L('تظهر بوضوح قبل الانضمام', 'Clear before a marketer joins')}</small>
+        </article>
+        <article className="console-field-grid">
+          <p><span>{L('الفئة', 'Category')}</span><b>{L('حلول المتاجر', 'Retail solutions')}</b></p>
+          <p><span>{L('حالة النشر', 'Publishing')}</span><b>{L('مكتمل', 'Complete')}</b></p>
+          <p><span>{L('الشروط', 'Terms')}</span><b>{L('عرض واضح للمسوّق', 'Visible to marketers')}</b></p>
+          <p><span>{L('المهتمون', 'Interested')}</span><b dir="ltr">{scene.secondaryValue}</b></p>
+        </article>
+        <article className="console-ready-card">
+          <span><Icon name="spark" /></span>
+          <div><b>{L('جاهز للنشر', 'Ready to publish')}</b><small>{L('كل بيانات المنتج مكتملة', 'All required information is complete')}</small></div>
+          <i>✓</i>
+        </article>
+      </div>
+    )
+  }
+
+  if (scene.kind === 'opportunities') {
+    return (
+      <div className="console-scene console-scene--offers">
+        <div className="console-scene-toolbar"><span>{L('فرص مقترحة لك', 'Suggested opportunities')}</span><b>{scene.consoleStatus}</b></div>
+        <div className="console-offer-list">
+          {scene.rows.map(([name, commission], index) => (
+            <article key={name}>
+              <span className="console-row-avatar">{String(index + 1).padStart(2, '0')}</span>
+              <div><b>{name}</b><small>{index === 0 ? L('اشتراك سنوي · مبيعات B2B', 'Annual plan · B2B sales') : index === 1 ? L('خدمة جاهزة للتسويق', 'Ready to market') : L('فرصة نشطة الآن', 'Live opportunity')}</small></div>
+              <strong dir="ltr">{commission}</strong><em>{L('مفتوحة', 'Open')}</em>
+            </article>
+          ))}
+        </div>
+        <div className="console-offer-footer"><span>{L('فلتر حسب العمولة أو المجال', 'Filter by commission or sector')}</span><b>{L('استكشف الكل', 'Browse all')} ←</b></div>
+      </div>
+    )
+  }
+
+  if (scene.kind === 'pipeline') {
+    const lanes = [
+      [L('جديد', 'New'), scene.rows[0][0], L('عميل جديد', 'New lead')],
+      [L('متابعة', 'Follow up'), scene.rows[1][0], L('اتصال اليوم', 'Call today')],
+      [L('عرض', 'Proposal'), scene.rows[2][0], L('بانتظار الرد', 'Awaiting reply')],
+    ]
+    return (
+      <div className="console-scene console-scene--pipeline">
+        <div className="console-pipeline-summary"><span>{L('رحلة الصفقات', 'Deal journey')}</span><b>{L('كل شيء مرتب في CRM واحد', 'Everything organized in one CRM')}</b></div>
+        <div className="console-pipeline-board">
+          {lanes.map(([lane, deal, detail], index) => (
+            <article key={lane}>
+              <header><span><i />{lane}</span><b dir="ltr">{index + 2}</b></header>
+              <p><strong>{deal}</strong><small>{detail}</small></p>
+              <p className="is-muted"><strong>{L('فرصة جديدة', 'New opportunity')}</strong><small>{L('آخر تواصل: اليوم', 'Last touch: today')}</small></p>
+            </article>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (scene.kind === 'approval') {
+    return (
+      <div className="console-scene console-scene--approval">
+        <article className="console-approval-summary">
+          <div><span>{L('تحتاج قرارك', 'Need your decision')}</span><b dir="ltr">04</b><small>{L('طلبات موثّقة بالكامل', 'Fully documented requests')}</small></div>
+          <span className="console-approval-seal"><Icon name="shield" /></span>
+        </article>
+        <div className="console-approval-list">
+          {scene.rows.map(([name, status], index) => (
+            <article key={name}>
+              <span className="console-row-avatar">{String(index + 1).padStart(2, '0')}</span>
+              <div><b>{name}</b><small>{L('بيانات العميل والمرحلة مكتملة', 'Customer details and stage complete')}</small></div>
+              <strong>{status}</strong><em>{L('استعراض', 'Review')}</em>
+            </article>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (scene.kind === 'payout') {
+    return (
+      <div className="console-scene console-scene--payout">
+        <article className="console-payout-hero">
+          <span>{scene.metricLabel}</span><b dir="ltr">{scene.metricValue} <small>ر.س</small></b><em><i />{L('محدّث الآن', 'Updated now')}</em>
+          <div><span>{L('المستحق', 'Payable')}<b dir="ltr">8,930</b></span><span>{L('الجاري', 'Pending')}<b dir="ltr">{scene.secondaryValue}</b></span></div>
+        </article>
+        <div className="console-transaction-list">
+          {scene.rows.map(([name, amount]) => <p key={name}><span><i />{name}</span><b dir="ltr">{amount} <small>ر.س</small></b><em>{L('اعتُمدت', 'Approved')}</em></p>)}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="console-scene console-scene--analytics">
+      <div className="console-analytics-stat"><div><span>{scene.metricLabel}</span><b dir="ltr">{scene.metricValue}</b><small>{scene.metricHint}</small></div><span className="console-analytics-badge"><Icon name="chart" /></span></div>
+      <div className="console-analytics-grid">
+        <ConsolePlot scene={scene} label={L('اتجاه الأداء', 'Performance trend')} value={scene.metricValue} />
+        <article className="console-rank-list">
+          <div><span>{L('الأفضل هذا الشهر', 'Top this month')}</span><b>{L('التفاصيل', 'Details')}</b></div>
+          {scene.rows.map(([name, growth], index) => <p key={name}><span><i>{index + 1}</i>{name}</span><b dir="ltr">{growth}</b></p>)}
+        </article>
+      </div>
+    </div>
+  )
+}
+
+function PlatformConsole({ scene }: { scene: StoryStep }) {
+  const { L } = useLang()
+  const navItems: IconName[] = ['box', 'users', 'brief', 'wallet', 'chart']
+  const activeIndex: Record<ConsoleKind, number> = { publish: 0, opportunities: 1, pipeline: 2, approval: 2, payout: 3, analytics: 4 }
+
+  return (
+    <div className="platform-console" aria-label={L('معاينة توضيحية للمنصة', 'Illustrative platform preview')}>
       <div className="platform-console-top">
         <div className="platform-console-brand"><span /><b>SALESUP</b><small>PLATFORM</small></div>
-        <div className="platform-console-window"><i /><i /><i /></div>
+        <div className="console-breadcrumb"><span>{L('منصة سيلز أب', 'SalesUp platform')}</span><i>/</i><b>{scene.audience === 'company' ? L('الشركة', 'Company') : L('المسوّق', 'Marketer')}</b></div>
+        <div className="console-utility"><span className="console-search">⌕ {L('بحث', 'Search')}</span><span className="console-avatar">س</span></div>
       </div>
       <div className="platform-console-layout">
         <aside className="platform-console-nav" aria-hidden="true">
-          <span className="is-active"><Icon name={scene.icon} /></span>
-          <span><Icon name="brief" /></span>
-          <span><Icon name="wallet" /></span>
-          <span><Icon name="chart" /></span>
+          {navItems.map((item, index) => <span className={index === activeIndex[scene.kind] ? 'is-active' : ''} key={item}><Icon name={item} /></span>)}
+          <span className="console-nav-avatar">س</span>
         </aside>
         <div className="platform-console-main">
           <div className="platform-console-heading">
-            <div><span>{scene.consoleStatus}</span><h3>{scene.consoleTitle}</h3></div>
-            <span className="platform-console-action"><span>+</span>{scene.audience === 'company' ? 'إجراء جديد' : 'إضافة صفقة'}</span>
+            <div><span><i />{scene.consoleStatus}</span><h3>{scene.consoleTitle}</h3></div>
+            <span className="platform-console-action"><span>+</span>{scene.consoleAction}</span>
           </div>
-          <div className="platform-console-metrics">
-            <article>
-              <span>{scene.metricLabel}</span>
-              <b dir="ltr">{scene.metricValue}</b>
-              <small>{scene.metricHint}</small>
-            </article>
-            <article>
-              <span>{scene.secondaryLabel}</span>
-              <b dir="ltr">{scene.secondaryValue}</b>
-              <small><i /> مباشر</small>
-            </article>
-          </div>
-          <div className="platform-console-insights">
-            <article className="platform-console-chart">
-              <div className="platform-console-chart-head"><span>{scene.audience === 'company' ? 'نظرة الأداء' : 'اتجاهك هذا الشهر'}</span><b dir="ltr">+24.8%</b></div>
-              <div className="platform-console-bars">{scene.bars.map((height, index) => <i key={index} style={{ height: height + '%' }} className={index === scene.bars.length - 1 ? 'is-last' : ''} />)}</div>
-              <div className="platform-console-axis"><span>أبريل</span><span>مايو</span><span>يونيو</span></div>
-            </article>
-            <article className="platform-console-list">
-              <div><span>{scene.audience === 'company' ? 'آخر المنتجات' : 'آخر النشاطات'}</span><b>عرض الكل</b></div>
-              {scene.rows.map(([name, detail]) => <p key={name}><span><i />{name}</span><b>{detail}</b></p>)}
-            </article>
-          </div>
+          <ConsoleScene scene={scene} />
+          <div className="console-activity"><span><i />{L('تم حفظ آخر تحديث قبل لحظات', 'Last update saved moments ago')}</span><small>{L('معاينة توضيحية', 'Illustrative preview')}</small></div>
         </div>
       </div>
     </div>
@@ -472,42 +605,120 @@ function createFeatures(L: Localize): Record<Audience, Feature[]> {
   }
 }
 
+function featureVisualFor(audience: Audience, index: number): FeatureVisualKind {
+  const marketer: FeatureVisualKind[] = ['offers', 'balance', 'pipeline', 'leaderboard', 'report', 'alerts']
+  const company: FeatureVisualKind[] = ['publish', 'team', 'outcome', 'report', 'approvals', 'terms']
+  return (audience === 'marketer' ? marketer : company)[index]
+}
+
+function FeaturePreview({ kind }: { kind: FeatureVisualKind }) {
+  const { L } = useLang()
+
+  if (kind === 'offers') {
+    return <div className="feature-preview feature-preview--offers" aria-hidden="true">
+      <p><span>CRM</span><b>{L('منصة CRM', 'CRM platform')}</b><em dir="ltr">18%</em></p>
+      <p><span>EC</span><b>{L('متجر إلكتروني', 'E-commerce')}</b><em dir="ltr">14%</em></p>
+    </div>
+  }
+
+  if (kind === 'balance') {
+    return <div className="feature-preview feature-preview--balance" aria-hidden="true">
+      <div><span>{L('إجمالي عمولاتك', 'Total commissions')}</span><b dir="ltr">12,480 <small>ر.س</small></b></div>
+      <p><span><i />{L('مستحق', 'Payable')}<b dir="ltr">8,930</b></span><span>{L('جاري', 'Pending')}<b dir="ltr">3,150</b></span></p>
+    </div>
+  }
+
+  if (kind === 'pipeline') {
+    return <div className="feature-preview feature-preview--pipeline" aria-hidden="true">
+      <p><span>{L('جديد', 'New')}</span><i /><i /></p><p><span>{L('متابعة', 'Follow up')}</span><i /></p><p><span>{L('عرض', 'Proposal')}</span><i /><i /></p>
+    </div>
+  }
+
+  if (kind === 'leaderboard') {
+    return <div className="feature-preview feature-preview--leaderboard" aria-hidden="true">
+      <p><b>01</b><span>{L('رنا العتيبي', 'Rana Alotaibi')}</span><i style={{ width: '78%' }} /></p>
+      <p><b>02</b><span>{L('أنت', 'You')}</span><i style={{ width: '62%' }} /></p>
+      <p><b>03</b><span>{L('سارة حسن', 'Sarah Hassan')}</span><i style={{ width: '48%' }} /></p>
+    </div>
+  }
+
+  if (kind === 'report') {
+    return <div className="feature-preview feature-preview--report" aria-hidden="true">
+      <div><i style={{ height: '36%' }} /><i style={{ height: '58%' }} /><i style={{ height: '43%' }} /><i style={{ height: '76%' }} /><i style={{ height: '94%' }} /></div><p><span>Apr</span><span>May</span><span>Jun</span></p>
+    </div>
+  }
+
+  if (kind === 'alerts') {
+    return <div className="feature-preview feature-preview--alerts" aria-hidden="true">
+      <p><i /><span>{L('تم اعتماد صفقة', 'Deal approved')}</span><b>الآن</b></p>
+      <p><i /><span>{L('عمولة مستحقة', 'Commission payable')}</span><b>2س</b></p>
+    </div>
+  }
+
+  if (kind === 'publish') {
+    return <div className="feature-preview feature-preview--publish" aria-hidden="true">
+      <p><span>{L('المنتج', 'Product')}</span><b>{L('نظام نقاط بيع', 'POS system')}</b></p>
+      <p><span>{L('العمولة', 'Commission')}</span><b dir="ltr">12%</b></p>
+      <em><i />{L('جاهز للنشر', 'Ready to publish')}</em>
+    </div>
+  }
+
+  if (kind === 'team') {
+    return <div className="feature-preview feature-preview--team" aria-hidden="true">
+      <div><span>ر</span><span>ن</span><span>س</span><span>ع</span><i>+32</i></div><p><b dir="ltr">86</b><span>{L('مسوّق مهتم', 'interested marketers')}</span></p>
+    </div>
+  }
+
+  if (kind === 'outcome') {
+    return <div className="feature-preview feature-preview--outcome" aria-hidden="true">
+      <p><span>{L('صفقات مقفلة', 'Closed deals')}</span><b dir="ltr">27</b></p><p><span>{L('يتم احتساب العمولة عند الإقفال', 'Commission is counted on close')}</span><i>✓</i></p>
+    </div>
+  }
+
+  if (kind === 'approvals') {
+    return <div className="feature-preview feature-preview--approvals" aria-hidden="true">
+      <p><span>01</span><b>{L('متجر نُوى', 'Nuwa Store')}</b><em>{L('مراجعة', 'Review')}</em></p>
+      <p><span>02</span><b>{L('مؤسسة أفق', 'Ofoq Co.')}</b><em>{L('جديد', 'New')}</em></p>
+    </div>
+  }
+
+  return <div className="feature-preview feature-preview--terms" aria-hidden="true">
+    <p><i />{L('تحديد الاستحقاق', 'Set eligibility')}</p><p><i />{L('اعتماد واضح للصفقة', 'Clear approval')}</p><p><i />{L('شروط يراها الجميع', 'Terms everyone sees')}</p>
+  </div>
+}
+
 function FeatureSwitch() {
   const { L } = useLang()
   const [audience, setAudience] = useState<Audience>('marketer')
   const features = createFeatures(L)[audience]
-  const spotlight = features[0]
+  const audienceIcon: IconName = audience === 'marketer' ? 'users' : 'brief'
 
   return (
     <section className="platform-features" id="platform-workspace">
-      <div className="platform-section-head">
-        <span>{L('كل أداة تحتاجها موجودة بمنصتنا', 'Every tool you need, in one platform')}</span>
-        <h2>{audience === 'marketer' ? L('تبيع بثقة، وتتابع حقك بوضوح', 'Sell confidently and track every earning') : L('خلّ فريقك يبيع أكثر بدون تعقيد', 'Help your sales network do more')}</h2>
-      </div>
-      <div className="platform-audience" role="tablist" aria-label={L('اختر نوع الحساب', 'Choose account type')}>
-        <button id="marketer-tab" className={audience === 'marketer' ? 'is-active' : ''} onClick={() => setAudience('marketer')} role="tab" aria-selected={audience === 'marketer'} aria-controls="platform-features-panel">{L('للمسوّق', 'For marketers')}</button>
-        <button id="company-tab" className={audience === 'company' ? 'is-active' : ''} onClick={() => setAudience('company')} role="tab" aria-selected={audience === 'company'} aria-controls="platform-features-panel">{L('للشركة', 'For companies')}</button>
+      <div className="platform-workspace-head">
+        <div className="platform-section-head">
+          <span>{L('كل أداة تحتاجها موجودة بمنصتنا', 'Every tool you need, in one platform')}</span>
+          <h2>{audience === 'marketer' ? L('تبيع بثقة، وتتابع حقك بوضوح', 'Sell confidently and track every earning') : L('خلّ فريقك يبيع أكثر بدون تعقيد', 'Help your sales network do more')}</h2>
+          <p>{L('واجهة واحدة مرتبة، لكن تفاصيلها تتغير بحسب دورك في البيع.', 'One orderly workspace, tailored to your role in every sale.')}</p>
+        </div>
+        <div className="platform-audience" role="tablist" aria-label={L('اختر نوع الحساب', 'Choose account type')}>
+          <button id="marketer-tab" className={audience === 'marketer' ? 'is-active' : ''} onClick={() => setAudience('marketer')} role="tab" aria-selected={audience === 'marketer'} aria-controls="platform-features-panel"><Icon name="users" />{L('للمسوّق', 'For marketers')}</button>
+          <button id="company-tab" className={audience === 'company' ? 'is-active' : ''} onClick={() => setAudience('company')} role="tab" aria-selected={audience === 'company'} aria-controls="platform-features-panel"><Icon name="brief" />{L('للشركة', 'For companies')}</button>
+        </div>
       </div>
       <div className="platform-feature-layout" id="platform-features-panel" role="tabpanel" aria-labelledby={audience === 'marketer' ? 'marketer-tab' : 'company-tab'}>
-        <article className="platform-feature-spotlight">
-          <div className="platform-feature-spotlight-icon"><Icon name={spotlight.icon} /></div>
-          <span>{audience === 'marketer' ? L('لوحة المسوّق', 'Marketer workspace') : L('لوحة الشركة', 'Company workspace')}</span>
-          <h3>{spotlight.title}</h3>
-          <p>{spotlight.desc}</p>
-          <div className="platform-feature-preview" aria-hidden="true">
-            <div><i /><span>{audience === 'marketer' ? L('فرص متاحة', 'Live opportunities') : L('منتجات نشطة', 'Active products')}</span><b dir="ltr">{audience === 'marketer' ? '12' : '08'}</b></div>
-            <div><i /><span>{audience === 'marketer' ? L('عمولة هذا الشهر', 'This month') : L('صفقات مقفلة', 'Closed deals')}</span><b dir="ltr">{audience === 'marketer' ? '12,480' : '27'}</b></div>
-          </div>
-        </article>
-        <div className="platform-feature-grid">
-          {features.slice(1).map((feature) => (
-            <article className="platform-feature-card" key={feature.title}>
-              <div className="platform-icon-shell"><Icon name={feature.icon} /></div>
+        {features.map((feature, index) => {
+          const visual = featureVisualFor(audience, index)
+          return (
+            <article className={['platform-feature-card', 'platform-feature-card--' + visual].join(' ')} key={feature.title}>
+              <div className="platform-feature-card-top"><span className="platform-icon-shell"><Icon name={feature.icon} /></span><span>{audience === 'marketer' ? L('لوحة المسوّق', 'Marketer workspace') : L('لوحة الشركة', 'Company workspace')}</span></div>
               <h3>{feature.title}</h3>
               <p>{feature.desc}</p>
+              <FeaturePreview kind={visual} />
+              <span className="platform-feature-preview-label"><Icon name={audienceIcon} />{L('معاينة توضيحية', 'Illustrative preview')}</span>
             </article>
-          ))}
-        </div>
+          )
+        })}
       </div>
     </section>
   )

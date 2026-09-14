@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import Root from './pages/router'
 import './styles.css'
 import './platform.css'
+import './platform-refinement.css'
 
 /* the shader engine is WebGPU-only (no WebGL path). The probe requests
    a real adapter — some browsers (iOS Safari) expose navigator.gpu but
