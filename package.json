@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@paper-design/shaders-react": "^0.0.77",
+    "motion": "^13.2.0",
     "react": "latest",
     "react-dom": "latest",
     "shaders": "^3.0.436"

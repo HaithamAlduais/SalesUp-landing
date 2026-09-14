@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import type { ReactNode } from 'react'
+import type { KeyboardEvent, ReactNode } from 'react'
+import { AnimatePresence, domAnimation, LazyMotion, m, MotionConfig } from 'motion/react'
 import { ActiveFx, HeroFx } from '../components/CardFx'
 import { PageShell } from '../shared/PageShell'
 import { useLang } from '../shared/i18n'
@@ -140,8 +141,14 @@ function RoleCards() {
     {
       icon: 'brief' as const,
       index: '01',
+      tone: 'company',
       title: L('للشركة صاحبة المنتج أو الخدمة', 'For product businesses'),
       lead: L('فريق بيع جاهز، بدون توظيف ولا رواتب ثابتة.', 'A sales network, without fixed hiring overhead.'),
+      journey: [
+        L('انشر منتجك', 'Publish your product'),
+        L('حدّد العمولة', 'Set commission'),
+        L('اعتمد الصفقة', 'Approve the deal'),
+      ],
       points: [
         L('تعرض منتجك وتحدّد العمولة والشروط بنفسك', 'Set your product, commission and terms'),
         L('مسوّقون ينضمون له ويبدأون البيع', 'Marketers join and start selling'),
@@ -151,8 +158,14 @@ function RoleCards() {
     {
       icon: 'users' as const,
       index: '02',
+      tone: 'marketer',
       title: L('للمسوّق', 'For marketers'),
       lead: L('ابدأ من مكانك بدون رأس مال.', 'Start from anywhere, without capital.'),
+      journey: [
+        L('اختر الفرصة', 'Choose an opportunity'),
+        L('سجّل العميل', 'Record the customer'),
+        L('تابع الاستحقاق', 'Track your payout'),
+      ],
       points: [
         L('تتصفّح المنتجات وتشوف عمولة كل واحد قبل ما تنضم', 'Browse products and compare commissions'),
         L('تسجّل عملاءك وصفقاتك في CRM خاص فيك', 'Track customers and deals in your own CRM'),
@@ -167,19 +180,33 @@ function RoleCards() {
         <span>{L('طرفين على نفس المنصة', 'Two sides, one platform')}</span>
         <h2>{L('نفس الرحلة، لكن كل طرف يرى ما يحتاجه بالضبط', 'One journey, with the right view for each side')}</h2>
       </div>
-      <div className="platform-role-grid">
+      <div className="platform-role-journey">
         {roles.map((role) => (
-          <article className="platform-role-card" key={role.title}>
+          <m.article
+            className={['platform-role-card', 'platform-role-card--' + role.tone].join(' ')}
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.42, ease: [0.22, 0.8, 0.2, 1] }}
+            key={role.title}
+          >
             <div className="platform-role-top">
               <span className="platform-role-index" dir="ltr">{role.index}</span>
               <span className="platform-icon-shell"><Icon name={role.icon} /></span>
             </div>
             <h3>{role.title}</h3>
             <p>{role.lead}</p>
+            <ol className="platform-role-path">
+              {role.journey.map((step, index) => <li key={step}><span dir="ltr">{String(index + 1).padStart(2, '0')}</span><b>{step}</b></li>)}
+            </ol>
             <ul>{role.points.map((point) => <li key={point}><Check />{point}</li>)}</ul>
-            <span className="platform-role-line" aria-hidden="true" />
-          </article>
+          </m.article>
         ))}
+        <div className="platform-role-handoff" aria-hidden="true">
+          <span><Icon name="shield" /></span>
+          <b>{L('صفقة موثّقة', 'Documented deal')}</b>
+          <small>{L('اتفاق واضح للطرفين', 'Clear for both sides')}</small>
+        </div>
       </div>
     </section>
   )
@@ -357,7 +384,7 @@ function useStoryScroll(count: number) {
     if (!el) return
     const total = el.offsetHeight - window.innerHeight
     if (total <= 0) return
-    const target = window.scrollY + el.getBoundingClientRect().top + (total * index / count)
+    const target = window.scrollY + el.getBoundingClientRect().top + (total * index / Math.max(count - 1, 1))
     window.scrollTo({ top: target, behavior: 'smooth' })
   }
 
@@ -365,11 +392,12 @@ function useStoryScroll(count: number) {
 }
 
 function ConsolePlot({ scene, label, value }: { scene: StoryStep; label: string; value: string }) {
+  const { L } = useLang()
   return (
     <article className="console-plot">
       <div className="console-plot-head">
         <div><span>{label}</span><b dir="ltr">{value}</b></div>
-        <span className="console-period">Apr — Jun</span>
+        <span className="console-period">{L('أبريل — يونيو', 'Apr — Jun')}</span>
       </div>
       <div className="console-plot-grid" aria-hidden="true">
         <i /><i /><i />
@@ -377,7 +405,7 @@ function ConsolePlot({ scene, label, value }: { scene: StoryStep; label: string;
       <div className="console-plot-bars" dir="ltr" aria-hidden="true">
         {scene.bars.map((height, index) => <i key={index} style={{ height: height + '%' }} className={index === scene.bars.length - 1 ? 'is-last' : ''} />)}
       </div>
-      <div className="console-plot-axis" dir="ltr"><span>Apr</span><span>May</span><span>Jun</span></div>
+      <div className="console-plot-axis"><span>{L('أبريل', 'Apr')}</span><span>{L('مايو', 'May')}</span><span>{L('يونيو', 'Jun')}</span></div>
     </article>
   )
 }
@@ -503,6 +531,14 @@ function PlatformConsole({ scene }: { scene: StoryStep }) {
   const { L } = useLang()
   const navItems: IconName[] = ['box', 'users', 'brief', 'wallet', 'chart']
   const activeIndex: Record<ConsoleKind, number> = { publish: 0, opportunities: 1, pipeline: 2, approval: 2, payout: 3, analytics: 4 }
+  const activity: Record<ConsoleKind, string> = {
+    publish: L('شروط الانضمام والعمولة جاهزة للمراجعة', 'Joining terms and commission are ready to review'),
+    opportunities: L('العمولة والشروط واضحة قبل أول تواصل', 'Commission and terms are clear before outreach'),
+    pipeline: L('آخر تواصل وخطوتك التالية في مكان واحد', 'Last contact and next step in one place'),
+    approval: L('بيانات العميل والمرحلة جاهزة للقرار', 'Customer details and stage are ready to decide'),
+    payout: L('حالة كل استحقاق ظاهرة لك بوضوح', 'Every payout state is clearly visible'),
+    analytics: L('اتجاه الأداء يبيّن أين تركز الآن', 'Performance direction shows where to focus'),
+  }
 
   return (
     <div className="platform-console" aria-label={L('معاينة توضيحية للمنصة', 'Illustrative platform preview')}>
@@ -522,7 +558,7 @@ function PlatformConsole({ scene }: { scene: StoryStep }) {
             <span className="platform-console-action"><span>+</span>{scene.consoleAction}</span>
           </div>
           <ConsoleScene scene={scene} />
-          <div className="console-activity"><span><i />{L('تم حفظ آخر تحديث قبل لحظات', 'Last update saved moments ago')}</span><small>{L('معاينة توضيحية', 'Illustrative preview')}</small></div>
+          <div className="console-activity"><span><i />{activity[scene.kind]}</span><small>{L('حالة موثّقة', 'Documented state')}</small></div>
         </div>
       </div>
     </div>
@@ -534,6 +570,14 @@ function PlatformStory() {
   const steps = createStory(L)
   const { trackRef, active, visible, goTo } = useStoryScroll(steps.length)
   const current = steps[active]
+  const railLabels = [
+    L('منتج', 'Product'),
+    L('فرصة', 'Opportunity'),
+    L('صفقة', 'Deal'),
+    L('قرار', 'Decision'),
+    L('عمولة', 'Payout'),
+    L('نمو', 'Growth'),
+  ]
 
   return (
     <section className="platform-story" id="platform-journey">
@@ -547,33 +591,52 @@ function PlatformStory() {
             <div className="platform-story-copy">
               <div className="platform-story-rail" aria-label={L('خطوات المنصة', 'Platform steps')}>
                 {steps.map((step, index) => (
-                  <button
+                  <m.button
                     type="button"
                     className={index === active ? 'is-active' : ''}
                     aria-current={index === active ? 'step' : undefined}
                     key={step.title}
                     onClick={() => goTo(index)}
+                    whileTap={{ scale: 0.96 }}
                   >
                     <span dir="ltr">{String(index + 1).padStart(2, '0')}</span>
+                    <b>{railLabels[index]}</b>
                     <i />
-                  </button>
+                  </m.button>
                 ))}
               </div>
               <div className="platform-story-steps">
                 {steps.map((step, index) => (
-                  <article className={['platform-story-step', index === active && 'is-active', index < active && 'is-passed'].filter(Boolean).join(' ')} key={step.title}>
+                  <m.article
+                    className={['platform-story-step', index === active && 'is-active', index < active && 'is-passed'].filter(Boolean).join(' ')}
+                    initial={false}
+                    animate={{ opacity: index === active ? 1 : 0, y: index === active ? 0 : index < active ? -12 : 16 }}
+                    transition={{ duration: 0.28, ease: [0.22, 0.8, 0.2, 1] }}
+                    key={step.title}
+                  >
                     <div className="platform-story-step-icon"><Icon name={step.icon} /></div>
                     <span className="platform-story-step-audience">{step.eyebrow}</span>
                     <h2>{step.title}</h2>
                     <p>{step.desc}</p>
                     <div className="platform-story-proof"><Check />{step.proof}</div>
-                  </article>
+                  </m.article>
                 ))}
               </div>
             </div>
             <div className="platform-story-stage">
               <ActiveFx variant={current.fx} active={visible} />
-              <PlatformConsole scene={current} />
+              <AnimatePresence mode="wait" initial={false}>
+                <m.div
+                  className="platform-console-transition"
+                  key={current.kind}
+                  initial={{ opacity: 0, scale: 0.985 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.01 }}
+                  transition={{ duration: 0.3, ease: [0.22, 0.8, 0.2, 1] }}
+                >
+                  <PlatformConsole scene={current} />
+                </m.div>
+              </AnimatePresence>
               <div className="platform-stage-chip"><span><Icon name={current.icon} /></span>{current.audience === 'company' ? L('واجهة الشركة', 'Company view') : L('واجهة المسوّق', 'Marketer view')}</div>
             </div>
           </div>
@@ -608,7 +671,7 @@ function createFeatures(L: Localize): Record<Audience, Feature[]> {
 function featureVisualFor(audience: Audience, index: number): FeatureVisualKind {
   const marketer: FeatureVisualKind[] = ['offers', 'balance', 'pipeline', 'leaderboard', 'report', 'alerts']
   const company: FeatureVisualKind[] = ['publish', 'team', 'outcome', 'report', 'approvals', 'terms']
-  return (audience === 'marketer' ? marketer : company)[index]
+  return (audience === 'marketer' ? marketer : company)[index] ?? 'offers'
 }
 
 function FeaturePreview({ kind }: { kind: FeatureVisualKind }) {
@@ -687,11 +750,42 @@ function FeaturePreview({ kind }: { kind: FeatureVisualKind }) {
   </div>
 }
 
+function featureSignalFor(kind: FeatureVisualKind, L: Localize) {
+  const signals: Record<FeatureVisualKind, { label: string; value: string }> = {
+    offers: { label: L('قرار الانضمام', 'Join decision'), value: L('العمولة والشروط أولاً', 'Terms and commission first') },
+    balance: { label: L('حالة الاستحقاق', 'Payout state'), value: L('مستحق وجاري بوضوح', 'Payable and pending, clearly') },
+    pipeline: { label: L('الخطوة التالية', 'Next action'), value: L('متابعة اليوم', 'Follow up today') },
+    leaderboard: { label: L('مؤشر التقدّم', 'Progress signal'), value: L('اعرف موقعك والفرق', 'Know your rank and gap') },
+    report: { label: L('اتجاه الأداء', 'Performance direction'), value: L('ركّز على ما يتحرّك', 'Focus on what moves') },
+    alerts: { label: L('أولوية العمل', 'Work priority'), value: L('التحديث الأهم يصل أولاً', 'The important update arrives first') },
+    publish: { label: L('جاهزية العرض', 'Offer readiness'), value: L('تفاصيل واضحة قبل النشر', 'Clear details before publishing') },
+    team: { label: L('وصول الفريق', 'Team reach'), value: L('المسوّق المناسب يشوف منتجك', 'The right marketer sees your offer') },
+    outcome: { label: L('منطق الاستحقاق', 'Payout logic'), value: L('تدفع عند إقفال الصفقة', 'Pay only when a deal closes') },
+    approvals: { label: L('قرار موثّق', 'Documented decision'), value: L('كل صفقة جاهزة للمراجعة', 'Every deal is review-ready') },
+    terms: { label: L('حماية الاتفاق', 'Agreement protection'), value: L('شروط يراها الجميع', 'Terms both sides can see') },
+  }
+  return signals[kind]
+}
+
 function FeatureSwitch() {
   const { L } = useLang()
   const [audience, setAudience] = useState<Audience>('marketer')
+  const [activeIndex, setActiveIndex] = useState(0)
   const features = createFeatures(L)[audience]
-  const audienceIcon: IconName = audience === 'marketer' ? 'users' : 'brief'
+  const activeFeature = features[activeIndex] ?? features[0]
+  const visual = featureVisualFor(audience, activeIndex)
+  const signal = featureSignalFor(visual, L)
+
+  const selectAudience = (next: Audience) => {
+    setAudience(next)
+    setActiveIndex(0)
+  }
+
+  const handleAudienceKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return
+    event.preventDefault()
+    selectAudience(event.key === 'Home' ? 'marketer' : event.key === 'End' ? 'company' : audience === 'marketer' ? 'company' : 'marketer')
+  }
 
   return (
     <section className="platform-features" id="platform-workspace">
@@ -702,23 +796,61 @@ function FeatureSwitch() {
           <p>{L('واجهة واحدة مرتبة، لكن تفاصيلها تتغير بحسب دورك في البيع.', 'One orderly workspace, tailored to your role in every sale.')}</p>
         </div>
         <div className="platform-audience" role="tablist" aria-label={L('اختر نوع الحساب', 'Choose account type')}>
-          <button id="marketer-tab" className={audience === 'marketer' ? 'is-active' : ''} onClick={() => setAudience('marketer')} role="tab" aria-selected={audience === 'marketer'} aria-controls="platform-features-panel"><Icon name="users" />{L('للمسوّق', 'For marketers')}</button>
-          <button id="company-tab" className={audience === 'company' ? 'is-active' : ''} onClick={() => setAudience('company')} role="tab" aria-selected={audience === 'company'} aria-controls="platform-features-panel"><Icon name="brief" />{L('للشركة', 'For companies')}</button>
+          <m.button id="marketer-tab" className={audience === 'marketer' ? 'is-active' : ''} onClick={() => selectAudience('marketer')} onKeyDown={handleAudienceKeyDown} role="tab" aria-selected={audience === 'marketer'} aria-controls="platform-features-panel" whileTap={{ scale: 0.97 }}><Icon name="users" />{L('للمسوّق', 'For marketers')}</m.button>
+          <m.button id="company-tab" className={audience === 'company' ? 'is-active' : ''} onClick={() => selectAudience('company')} onKeyDown={handleAudienceKeyDown} role="tab" aria-selected={audience === 'company'} aria-controls="platform-features-panel" whileTap={{ scale: 0.97 }}><Icon name="brief" />{L('للشركة', 'For companies')}</m.button>
         </div>
       </div>
-      <div className="platform-feature-layout" id="platform-features-panel" role="tabpanel" aria-labelledby={audience === 'marketer' ? 'marketer-tab' : 'company-tab'}>
-        {features.map((feature, index) => {
-          const visual = featureVisualFor(audience, index)
-          return (
-            <article className={['platform-feature-card', 'platform-feature-card--' + visual].join(' ')} key={feature.title}>
-              <div className="platform-feature-card-top"><span className="platform-icon-shell"><Icon name={feature.icon} /></span><span>{audience === 'marketer' ? L('لوحة المسوّق', 'Marketer workspace') : L('لوحة الشركة', 'Company workspace')}</span></div>
-              <h3>{feature.title}</h3>
-              <p>{feature.desc}</p>
-              <FeaturePreview kind={visual} />
-              <span className="platform-feature-preview-label"><Icon name={audienceIcon} />{L('معاينة توضيحية', 'Illustrative preview')}</span>
-            </article>
-          )
-        })}
+      <div className="platform-workspace-shell">
+        <nav className="platform-feature-nav" aria-label={L('أدوات المنصة', 'Platform tools')}>
+          {features.map((feature, index) => {
+            const featureVisual = featureVisualFor(audience, index)
+            const featureSignal = featureSignalFor(featureVisual, L)
+            const isActive = activeIndex === index
+            return (
+              <m.button
+                type="button"
+                layout
+                className={isActive ? 'is-active' : ''}
+                aria-current={isActive ? 'true' : undefined}
+                aria-label={feature.title + ': ' + feature.desc}
+                key={feature.title}
+                onClick={() => setActiveIndex(index)}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.985 }}
+              >
+                <span className="platform-feature-nav-icon"><Icon name={feature.icon} /></span>
+                <span><b>{feature.title}</b><small>{featureSignal.label}</small></span>
+                <em dir="ltr">{String(index + 1).padStart(2, '0')}</em>
+                {isActive ? <m.i className="platform-feature-nav-active" layoutId="platform-feature-nav-active" /> : null}
+              </m.button>
+            )
+          })}
+        </nav>
+        <div className="platform-feature-stage" id="platform-features-panel" role="tabpanel" aria-labelledby={audience === 'marketer' ? 'marketer-tab' : 'company-tab'}>
+          <AnimatePresence mode="wait" initial={false}>
+            <m.article
+              className={['platform-feature-focus', 'platform-feature-focus--' + visual].join(' ')}
+              key={audience + '-' + activeFeature.title}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.28, ease: [0.22, 0.8, 0.2, 1] }}
+            >
+              <div className="platform-feature-focus-copy">
+                <div className="platform-feature-focus-top"><span className="platform-icon-shell"><Icon name={activeFeature.icon} /></span><span>{audience === 'marketer' ? L('مساحة المسوّق', 'Marketer workspace') : L('مساحة الشركة', 'Company workspace')}</span><b dir="ltr">{String(activeIndex + 1).padStart(2, '0')}</b></div>
+                <h3>{activeFeature.title}</h3>
+                <p>{activeFeature.desc}</p>
+                <div className="platform-feature-signal"><span>{signal.label}</span><b>{signal.value}</b></div>
+              </div>
+              <div className="platform-feature-focus-artifact"><FeaturePreview kind={visual} /></div>
+              <m.svg className="platform-signal-path" viewBox="0 0 620 340" preserveAspectRatio="none" aria-hidden="true">
+                <m.path d="M18 274C146 274 173 76 320 76c134 0 135 196 282 196" initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 0.72 }} transition={{ duration: 0.72, ease: 'easeOut' }} />
+                <m.circle cx="18" cy="274" r="5" initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.1, duration: 0.25 }} />
+                <m.circle cx="602" cy="272" r="5" initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.54, duration: 0.25 }} />
+              </m.svg>
+            </m.article>
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   )
@@ -776,12 +908,16 @@ function FinalCta() {
 export default function PlatformPage() {
   return (
     <PageShell active="platform">
-      <PlatformHero />
-      <RoleCards />
-      <PlatformStory />
-      <FeatureSwitch />
-      <Faq />
-      <FinalCta />
+      <LazyMotion features={domAnimation} strict>
+        <MotionConfig reducedMotion="user">
+          <PlatformHero />
+          <RoleCards />
+          <PlatformStory />
+          <FeatureSwitch />
+          <Faq />
+          <FinalCta />
+        </MotionConfig>
+      </LazyMotion>
     </PageShell>
   )
 }
