@@ -1,5 +1,7 @@
 import { ReactNode, useEffect } from 'react'
 import {
+  BarShift,
+  BlueNoise,
   Shader,
   Blob,
   ChromaFlow,
@@ -7,6 +9,9 @@ import {
   Dither,
   FilmGrain,
   FlutedGlass,
+  FlowingGradient,
+  Grid,
+  GridDistortion,
   SolidColor,
   Stretch,
   Stripes,
@@ -31,10 +36,10 @@ const fillStyle = { position: 'absolute', inset: 0, width: '100%', height: '100%
  * probe but can't actually run the engine (iOS Safari) downgrade to the
  * CSS fallbacks instead of showing blank canvases.
  */
-function FxShader({ children }: { children: ReactNode }) {
+function FxShader({ children, toneMapping }: { children: ReactNode; toneMapping?: 'neutral' }) {
   useEffect(() => fxSceneMounted(), [])
   return (
-    <Shader style={fillStyle} onReady={fxFrameRendered}>
+    <Shader style={fillStyle} toneMapping={toneMapping} onReady={fxFrameRendered}>
       {children}
     </Shader>
   )
@@ -233,6 +238,63 @@ export function ContactScene({ dark }: { dark: boolean }) {
         speed={0.15}
       />
       <FilmGrain strength={0.05} />
+    </FxShader>
+  )
+}
+
+/*
+ * Platform CTA: a contained, low-energy green decision surface. It follows
+ * the requested FlowingGradient / Grid / grain composition, while pointer
+ * devices receive only a light grid wake and a small green cursor bloom.
+ * This is deliberately slower and quieter than a hero treatment so the
+ * Arabic copy and the primary action retain their visual authority.
+ */
+export function FinalCtaScene() {
+  return (
+    <FxShader toneMapping="neutral">
+      <FlowingGradient
+        colorA="#052d25"
+        colorB="#075a45"
+        colorC="#0b9c6c"
+        colorD="#7cebc0"
+        colorSpace="oklab"
+        distortion={0.1}
+        seed={58}
+        speed={0.52}
+      />
+      <Grid
+        cells={26}
+        color="#dcffe9"
+        opacity={0.045}
+        softness={0.72}
+        thickness={0.28}
+      />
+      <BarShift angle={14} count={5} edges="mirror" intensity={0.012} speed={0.03} />
+      {!COARSE_POINTER ? (
+        <>
+          <Blob
+            blendMode="screen"
+            center={{
+              type: 'mouse-position',
+              originX: 0.68,
+              originY: 0.46,
+              reach: 0.28,
+              smoothing: 0.28,
+              momentum: 0.12,
+            }}
+            colorA="#52efad"
+            colorB="#007c56"
+            deformation={0.35}
+            opacity={0.14}
+            size={0.22}
+            softness={0.86}
+          />
+          <GridDistortion decay={8.5} gridSize={10} intensity={0.26} radius={1.15} />
+          <CursorRipples chromaticSplit={0.4} decay={9} intensity={5} radius={0.48} />
+        </>
+      ) : null}
+      <BlueNoise blendMode="overlay" colorA="#ffffff" colorB="#002b20" contrast={0.2} opacity={0.04} />
+      <FilmGrain strength={0.035} />
     </FxShader>
   )
 }

@@ -49,6 +49,8 @@
 }
 
 .platform-role-card {
+  --role-pointer-x: 50%;
+  --role-pointer-y: 50%;
   position: relative;
   display: flex;
   min-height: 0;
@@ -61,8 +63,25 @@
   box-shadow: 0 22px 54px -48px rgba(6, 68, 49, 0.45);
 }
 
+.platform-role-card::after {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: auto;
+  height: auto;
+  content: '';
+  border-radius: inherit;
+  background: radial-gradient(340px circle at var(--role-pointer-x) var(--role-pointer-y), rgba(87, 239, 174, 0.26), rgba(87, 239, 174, 0.07) 26%, transparent 64%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.platform-role-card > * { position: relative; z-index: 1; }
+
 .platform-role-card::before {
   position: absolute;
+  z-index: 2;
   inset: 0 0 auto;
   height: 3px;
   content: '';
@@ -251,6 +270,15 @@
 [data-theme='dark'] .platform-role-handoff { border-color: rgba(150, 250, 200, 0.15); background: #0d362c; box-shadow: none; }
 [data-theme='dark'] .platform-role-handoff b { color: #ecfff4; }
 [data-theme='dark'] .platform-role-handoff small { color: #9abfb0; }
+
+@media (hover: hover) and (pointer: fine) {
+  .platform-role-card[data-pointer-active='true'] {
+    border-color: rgba(4, 181, 116, 0.42);
+    box-shadow: 0 26px 58px -42px rgba(4, 104, 70, 0.25);
+  }
+
+  .platform-role-card[data-pointer-active='true']::after { opacity: 1; }
+}
 
 /* Story: signal is ambience; the product evidence is the visual hierarchy. */
 .platform-story {
@@ -765,6 +793,37 @@
 
 .platform-signal-path circle { fill: #8af4c2; filter: drop-shadow(0 0 7px rgba(128, 246, 190, 0.8)); }
 
+/* A single living material layer for the final action, replacing the old
+   decorative ring without competing with the CTA copy. */
+.platform-final {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.platform-final::after { display: none; }
+
+.platform-final > .platform-cta-fx {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: auto;
+  max-width: none;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.68;
+  pointer-events: none;
+}
+
+.platform-final > .platform-final-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .platform-final:hover > .platform-cta-fx { opacity: 0.76; }
+}
+
 [data-theme='dark'] .platform-features {
   background: linear-gradient(180deg, #071d18, #061a16);
 }
@@ -820,6 +879,11 @@
   .platform-feature-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: stretch; border-inline-end: 0; border-bottom: 1px solid #dbeae2; }
   .platform-feature-stage { min-height: 530px; }
   .platform-feature-focus { grid-template-columns: minmax(0, 1fr) minmax(250px, 0.8fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .platform-final > .platform-cta-fx { display: none; }
+  .platform-role-card::after { display: none; }
 }
 
 @media (max-width: 560px) {

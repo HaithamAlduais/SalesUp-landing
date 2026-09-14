@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import type { KeyboardEvent, ReactNode } from 'react'
+import type { KeyboardEvent, PointerEvent as ReactPointerEvent, ReactNode } from 'react'
 import { AnimatePresence, domAnimation, LazyMotion, m, MotionConfig } from 'motion/react'
-import { ActiveFx, HeroFx } from '../components/CardFx'
+import { ActiveFx, FinalCtaFx, HeroFx } from '../components/CardFx'
 import { PageShell } from '../shared/PageShell'
 import { useLang } from '../shared/i18n'
 import { usePageTheme } from '../shared/theme'
@@ -37,6 +37,19 @@ type StoryStep = {
   secondaryValue: string
   rows: [string, string][]
   bars: number[]
+}
+
+function updateRolePointer(event: ReactPointerEvent<HTMLElement>) {
+  if (event.pointerType !== 'mouse') return
+  const card = event.currentTarget
+  const bounds = card.getBoundingClientRect()
+  card.style.setProperty('--role-pointer-x', `${Math.round(((event.clientX - bounds.left) / bounds.width) * 100)}%`)
+  card.style.setProperty('--role-pointer-y', `${Math.round(((event.clientY - bounds.top) / bounds.height) * 100)}%`)
+  card.dataset.pointerActive = 'true'
+}
+
+function clearRolePointer(event: ReactPointerEvent<HTMLElement>) {
+  event.currentTarget.removeAttribute('data-pointer-active')
 }
 
 function Icon({ name }: { name: IconName }) {
@@ -187,6 +200,8 @@ function RoleCards() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.35 }}
             transition={{ duration: 0.42, ease: [0.22, 0.8, 0.2, 1] }}
+            onPointerMove={updateRolePointer}
+            onPointerLeave={clearRolePointer}
             key={role.title}
           >
             <div className="platform-role-top">
@@ -894,7 +909,8 @@ function FinalCta() {
 
   return (
     <section className="platform-final">
-      <div>
+      <FinalCtaFx />
+      <div className="platform-final-copy">
         <span>{L('جاهز تبدأ؟', 'Ready to begin?')}</span>
         <h2>{L('سجّل بخطوة وحدة، واختر أول منتج', 'Sign up, then choose your first product')}</h2>
         <p>{L('وابدأ تكسب من أول صفقة تقفلها.', 'Start earning from your first closed deal.')}</p>

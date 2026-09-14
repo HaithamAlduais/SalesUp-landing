@@ -17,6 +17,7 @@ const HeroScene = lazy(() => import('./fxScenes').then((m) => ({ default: m.Hero
 const CardScene = lazy(() => import('./fxScenes').then((m) => ({ default: m.CardScene })))
 const MegaLogoScene = lazy(() => import('./fxScenes').then((m) => ({ default: m.MegaLogoScene })))
 const ContactScene = lazy(() => import('./fxScenes').then((m) => ({ default: m.ContactScene })))
+const FinalCtaScene = lazy(() => import('./fxScenes').then((m) => ({ default: m.FinalCtaScene })))
 
 const HeroSceneGL = lazy(() => import('./glScenes').then((m) => ({ default: m.HeroSceneGL })))
 const CardSceneGL = lazy(() => import('./glScenes').then((m) => ({ default: m.CardSceneGL })))
@@ -206,6 +207,22 @@ export function ContactFx({ dark }: { dark: boolean }) {
       {renders(mode) ? (
         <InViewGate>
           {mode === 'webgpu' ? <ContactScene dark={dark} /> : <ContactSceneGL dark={dark} />}
+        </InViewGate>
+      ) : null}
+    </div>
+  )
+}
+
+/* Platform CTA scene: this intentionally uses the vendor shader only.
+   The established CSS panel underneath is the complete WebGL/CSS fallback,
+   which avoids creating another WebGL scene just for a decorative layer. */
+export function FinalCtaFx() {
+  const mode = useFxMode()
+  return (
+    <div className="platform-cta-fx" aria-hidden="true">
+      {mode === 'webgpu' ? (
+        <InViewGate margin="160px">
+          <FinalCtaScene />
         </InViewGate>
       ) : null}
     </div>
