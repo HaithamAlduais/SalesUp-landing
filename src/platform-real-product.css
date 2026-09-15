@@ -1,0 +1,55 @@
+/* Marketing shell stays shared; only the product evidence is replaced. */
+.platform-real-hero .platform-native-wrap { grid-template-columns: minmax(0, .84fr) minmax(0, 1.16fr); gap: clamp(24px, 4vw, 60px); }
+.platform-real-hero .platform-hero-copy h1 { font-size: clamp(36px, 4vw, 56px); }
+.platform-real-hero-preview { min-width: 0; }
+.platform-account-explore { display: block; padding: 16px 8px 0; text-align: center; color: var(--account-accent); font-size: 14px; font-weight: 600; }
+.platform-account-explore:focus-visible { outline: 2px solid var(--account-accent); outline-offset: 3px; }
+.platform-real-story .platform-story-grid { grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); gap: 34px; }
+.platform-real-story .platform-story-copy { grid-template-columns: 64px minmax(0, 1fr); gap: 18px; }
+.platform-real-story .platform-story-rail button { grid-template-columns: 28px minmax(0, 1fr); padding-inline: 0; }
+.platform-real-story .platform-story-rail button > b { display: none; }
+.platform-real-story .platform-story-step h2 { font-size: clamp(29px, 3vw, 41px); }
+.platform-real-story .platform-story-step > p { font-size: 16px; line-height: 1.9; }
+.platform-story-stage.platform-real-story-stage { padding: 0; border: 0; border-radius: 18px; background: none; box-shadow: none; min-height: 0; }
+.platform-real-story-stage::after, .platform-real-story-stage::before { display: none; }
+.platform-story-mobile-preview { display: none; }
+.platform-real-workspace .platform-workspace-shell { grid-template-columns: 225px minmax(0, 1fr); }
+.platform-real-workspace .platform-feature-stage { min-width: 0; padding: 24px; background: #f4f6f5; }
+.platform-real-workspace .platform-feature-nav { align-content: start; }
+.platform-real-feature-description { margin-bottom: 20px; }
+.platform-real-feature-description h3 { color: #133f40; font-size: 26px; }
+.platform-real-feature-description p { max-width: 700px; margin-top: 9px; color: #536960; font-size: 15px; line-height: 1.85; }
+.platform-real-workspace .platform-feature-nav button { grid-template-columns: 36px minmax(0, 1fr); }
+.platform-faq-list [hidden] { display: none; }
+.platform-faq-list article.is-open > div > p { opacity: 1; max-height: none; padding-bottom: 24px; }
+[data-theme='dark'] .platform-real-workspace .platform-feature-stage { background: #131413; }
+[data-theme='dark'] .platform-real-feature-description h3 { color: #edefee; }
+[data-theme='dark'] .platform-real-feature-description p { color: #bcbdbc; }
+@media (max-width: 1050px) {
+  .platform-real-hero .platform-native-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; }
+  .platform-real-story .platform-story-grid { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 24px; }
+  .platform-real-story .platform-story-copy { grid-template-columns: 36px minmax(0, 1fr); gap: 12px; }
+}
+@media (max-width: 820px) {
+  .platform-real-hero .platform-native-wrap, .platform-real-story .platform-story-grid { grid-template-columns: minmax(0, 1fr); }
+  .platform-real-hero-preview { margin-top: 8px; }
+  .platform-real-story .platform-story-copy { display: block; }
+  .platform-real-story .platform-story-step { grid-template-columns: 36px minmax(0, 1fr); padding: 22px 0 34px; border: 0; background: transparent; box-shadow: none; }
+  .platform-real-story .platform-story-step h2 { font-size: 30px; }
+  .platform-real-story .platform-story-step > p { font-size: 15px; }
+  .platform-real-story .platform-story-step + .platform-story-step { margin-top: 18px; }
+  .platform-real-story-stage { display: none; }
+  .platform-story-mobile-preview { display: block; grid-column: 1 / -1; margin-top: 18px; min-width: 0; }
+  .platform-real-workspace .platform-workspace-shell { grid-template-columns: minmax(0, 1fr); }
+  .platform-real-workspace .platform-feature-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .platform-real-workspace .platform-feature-stage { padding: 20px; }
+}
+@media (max-width: 560px) {
+  .platform-real-hero .platform-hero-copy h1 { font-size: 36px; line-height: 1.35; }
+  .platform-real-hero .platform-proof { gap: 10px; }
+  .platform-real-workspace .platform-feature-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .platform-real-workspace .platform-feature-stage { padding: 16px 10px; }
+  .platform-real-feature-description { padding-inline: 6px; }
+  .platform-real-feature-description h3 { font-size: 25px; }
+  .platform-real-feature-description p { font-size: 14px; }
+}

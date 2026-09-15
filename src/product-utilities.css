@@ -1,0 +1,9 @@
+/* No global reset: product components are isolated from the marketing shell. */
+@import "tailwindcss/theme.css" layer(product-theme);
+@import "./product-tokens.css";
+@source "./components/product-ui";
+@source "./components/ProductAppPreview.tsx";
+@custom-variant dark (&:where([data-theme='dark'] *, [data-theme='dark']));
+.product-app {
+  @tailwind utilities source(none);
+}
