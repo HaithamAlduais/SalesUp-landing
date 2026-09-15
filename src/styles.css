@@ -27,7 +27,7 @@ html {
 
 body {
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
   min-height: 100vh;
   background: #fff;
 }
@@ -2386,6 +2386,40 @@ html.fx-unproven .footer-logo-fx-inner {
   .footer-col .footer-head { margin-bottom: 12px; }
 
   .deco-about, .squiggle { display: none; }
+}
+
+@media (max-width: 560px) {
+  .header-shell,
+  .is-island .header-shell {
+    width: calc(100% - 24px);
+    gap: 8px;
+    padding-inline: 6px;
+  }
+
+  .brand-logo img,
+  .is-island .brand-logo img {
+    width: 104px;
+    height: 46px;
+  }
+
+  .header-actions { gap: 6px; }
+
+  .header-actions .language-link,
+  .header-actions .theme-toggle,
+  .header-actions .menu-toggle {
+    flex: 0 0 44px;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+  }
+
+  .mobile-sheet {
+    max-height: calc(100dvh - 92px - env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .mobile-sheet nav a { min-height: 48px; }
 }
 
 @media (max-width: 700px) {

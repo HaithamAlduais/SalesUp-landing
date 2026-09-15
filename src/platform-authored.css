@@ -12,273 +12,6 @@
   scroll-margin-top: 108px;
 }
 
-.platform-roles {
-  position: relative;
-  padding-top: clamp(78px, 9vw, 128px);
-  padding-bottom: clamp(86px, 10vw, 138px);
-}
-
-.platform-section-head--split {
-  display: grid;
-  grid-template-columns: minmax(0, 0.26fr) minmax(0, 0.74fr);
-  align-items: end;
-  gap: 28px;
-  max-width: none;
-  margin-bottom: 34px;
-}
-
-.platform-section-head--split > span {
-  padding-bottom: 8px;
-  color: #078a61;
-  font-size: 12px;
-  font-weight: 850;
-}
-
-.platform-section-head--split h2 {
-  max-width: 740px;
-  margin: 0;
-  text-wrap: balance;
-}
-
-.platform-role-journey {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(34px, 7vw, 94px);
-  align-items: stretch;
-}
-
-.platform-role-card {
-  --role-pointer-x: 50%;
-  --role-pointer-y: 50%;
-  position: relative;
-  display: flex;
-  min-height: 0;
-  flex-direction: column;
-  padding: clamp(26px, 3vw, 38px);
-  overflow: hidden;
-  border: 1px solid #d8e8df;
-  border-radius: 20px;
-  background: #fff;
-  box-shadow: 0 22px 54px -48px rgba(6, 68, 49, 0.45);
-}
-
-.platform-role-card::after {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  width: auto;
-  height: auto;
-  content: '';
-  border-radius: inherit;
-  background: radial-gradient(340px circle at var(--role-pointer-x) var(--role-pointer-y), rgba(87, 239, 174, 0.26), rgba(87, 239, 174, 0.07) 26%, transparent 64%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 180ms ease;
-}
-
-.platform-role-card > * { position: relative; z-index: 1; }
-
-.platform-role-card::before {
-  position: absolute;
-  z-index: 2;
-  inset: 0 0 auto;
-  height: 3px;
-  content: '';
-  background: linear-gradient(90deg, transparent, rgba(0, 186, 121, 0.65), transparent);
-  opacity: 0.7;
-}
-
-.platform-role-card--company {
-  background:
-    radial-gradient(circle at 93% 6%, rgba(22, 202, 127, 0.12), transparent 31%),
-    #fff;
-}
-
-.platform-role-card--marketer {
-  background:
-    radial-gradient(circle at 7% 95%, rgba(68, 216, 151, 0.13), transparent 34%),
-    #f4fbf7;
-}
-
-.platform-role-card .platform-role-top {
-  margin-bottom: 21px;
-}
-
-.platform-role-card .platform-icon-shell {
-  width: 44px;
-  height: 44px;
-  border-radius: 13px;
-  background: rgba(2, 180, 112, 0.09);
-}
-
-.platform-role-card .platform-role-index {
-  color: rgba(6, 126, 86, 0.45);
-  font-size: 12px;
-}
-
-.platform-role-card h3 {
-  max-width: 420px;
-  font-size: clamp(21px, 1.75vw, 27px);
-  line-height: 1.25;
-}
-
-.platform-role-card > p {
-  max-width: 440px;
-  margin-top: 7px;
-  color: #087f5c;
-  font-size: 14px;
-  line-height: 1.75;
-}
-
-.platform-role-path {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0;
-  margin: 25px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.platform-role-path li {
-  position: relative;
-  display: grid;
-  gap: 7px;
-  min-width: 0;
-  padding-inline-start: 12px;
-}
-
-.platform-role-path li + li::before {
-  position: absolute;
-  inset: 11px auto auto calc(100% - 3px);
-  width: calc(100% - 15px);
-  height: 1px;
-  content: '';
-  background: linear-gradient(90deg, transparent, rgba(6, 152, 101, 0.32));
-}
-
-.platform-role-path span {
-  display: grid;
-  width: 23px;
-  height: 23px;
-  place-items: center;
-  border: 1px solid rgba(0, 153, 96, 0.2);
-  border-radius: 8px;
-  background: #e9f9f0;
-  color: #087f5c;
-  font: 850 8px/1 Arial, sans-serif;
-}
-
-.platform-role-path b {
-  max-width: 112px;
-  color: #1f5143;
-  font-size: 11px;
-  line-height: 1.5;
-}
-
-.platform-role-card ul {
-  display: grid;
-  gap: 9px;
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(5, 102, 70, 0.1);
-  color: #58796e;
-  font-size: 12px;
-  line-height: 1.7;
-}
-
-.platform-role-card li .platform-check {
-  width: 15px;
-  height: 15px;
-  flex: 0 0 auto;
-  stroke-width: 2.6px;
-}
-
-.platform-role-handoff {
-  position: absolute;
-  z-index: 3;
-  top: 50%;
-  left: 50%;
-  display: grid;
-  width: 118px;
-  min-height: 118px;
-  place-items: center;
-  padding: 16px 8px;
-  transform: translate(-50%, -50%);
-  border: 1px solid rgba(4, 130, 85, 0.15);
-  border-radius: 50%;
-  background: rgba(252, 255, 253, 0.96);
-  box-shadow: 0 18px 34px -24px rgba(5, 83, 58, 0.38);
-  text-align: center;
-}
-
-.platform-role-handoff::before,
-.platform-role-handoff::after {
-  position: absolute;
-  z-index: -1;
-  top: 50%;
-  width: clamp(18px, 3.4vw, 48px);
-  height: 1px;
-  content: '';
-  background: linear-gradient(90deg, rgba(4, 151, 97, 0.52), transparent);
-}
-
-.platform-role-handoff::before { right: 100%; }
-.platform-role-handoff::after { left: 100%; transform: scaleX(-1); }
-
-.platform-role-handoff > span {
-  display: grid;
-  width: 31px;
-  height: 31px;
-  place-items: center;
-  border-radius: 10px;
-  background: #dff8ea;
-  color: #07895f;
-}
-
-.platform-role-handoff .platform-icon {
-  width: 16px;
-  height: 16px;
-}
-
-.platform-role-handoff b {
-  margin-top: 4px;
-  color: #1d5042;
-  font-size: 11px;
-}
-
-.platform-role-handoff small {
-  max-width: 84px;
-  margin-top: 2px;
-  color: #6e8e83;
-  font-size: 8px;
-  line-height: 1.4;
-}
-
-[data-theme='dark'] .platform-role-card {
-  border-color: rgba(200, 255, 223, 0.13);
-  background: #0a2d25;
-  box-shadow: none;
-}
-
-[data-theme='dark'] .platform-role-card--marketer { background: #09251f; }
-[data-theme='dark'] .platform-role-card h3 { color: #effff6; }
-[data-theme='dark'] .platform-role-card > p { color: #8ef0c0; }
-[data-theme='dark'] .platform-role-card ul { border-color: rgba(210, 255, 231, 0.1); color: #b4d1c4; }
-[data-theme='dark'] .platform-role-path b { color: #dff6e9; }
-[data-theme='dark'] .platform-role-path span { border-color: rgba(150, 250, 200, 0.2); background: rgba(101, 241, 179, 0.1); color: #a4f7ce; }
-[data-theme='dark'] .platform-role-handoff { border-color: rgba(150, 250, 200, 0.15); background: #0d362c; box-shadow: none; }
-[data-theme='dark'] .platform-role-handoff b { color: #ecfff4; }
-[data-theme='dark'] .platform-role-handoff small { color: #9abfb0; }
-
-@media (hover: hover) and (pointer: fine) {
-  .platform-role-card[data-pointer-active='true'] {
-    border-color: rgba(4, 181, 116, 0.42);
-    box-shadow: 0 26px 58px -42px rgba(4, 104, 70, 0.25);
-  }
-
-  .platform-role-card[data-pointer-active='true']::after { opacity: 1; }
-}
 
 /* Story: signal is ambience; the product evidence is the visual hierarchy. */
 .platform-story {
@@ -840,7 +573,6 @@
 [data-theme='dark'] .platform-feature-nav button > span:nth-child(2) small { color: #89aa9c; }
 
 @media (max-width: 1000px) {
-  .platform-role-journey { gap: 62px; }
   .platform-story-copy { grid-template-columns: 94px minmax(0, 1fr); }
   .platform-story-step h2 { font-size: clamp(36px, 4.2vw, 44px); }
   .platform-workspace-shell { grid-template-columns: minmax(232px, 0.35fr) minmax(0, 0.65fr); }
@@ -848,14 +580,6 @@
 }
 
 @media (max-width: 820px) {
-  .platform-section-head--split { display: block; margin-bottom: 27px; }
-  .platform-section-head--split > span { display: block; padding-bottom: 10px; }
-  .platform-role-journey { grid-template-columns: 1fr; gap: 15px; }
-  .platform-role-handoff { position: relative; top: auto; left: auto; width: 100%; min-height: 68px; grid-template-columns: 31px auto auto; justify-content: center; gap: 9px; transform: none; border-radius: 14px; }
-  .platform-role-handoff::before,
-  .platform-role-handoff::after { display: none; }
-  .platform-role-handoff b,
-  .platform-role-handoff small { margin: 0; max-width: none; }
 
   .platform-story-copy { display: block; min-height: 0; }
   .platform-story-rail { display: none; }
@@ -883,7 +607,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .platform-final > .platform-cta-fx { display: none; }
-  .platform-role-card::after { display: none; }
 }
 
 @media (max-width: 560px) {
@@ -892,10 +615,6 @@
   .platform-workspace-head .platform-section-head h2 { font-size: 31px; }
   .platform-audience { width: 100%; }
   .platform-audience button { min-width: 0; flex: 1; }
-  .platform-role-card { padding: 25px 22px; }
-  .platform-role-path { gap: 6px; }
-  .platform-role-path li { padding-inline-start: 5px; }
-  .platform-role-path b { font-size: 10px; }
 
   .platform-workspace-shell { border-radius: 18px; }
   .platform-feature-nav { grid-template-columns: 1fr; gap: 2px; padding: 10px; }

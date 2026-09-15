@@ -5,9 +5,12 @@ import { ActiveFx, FinalCtaFx, HeroFx } from '../components/CardFx'
 import { PageShell } from '../shared/PageShell'
 import { useLang } from '../shared/i18n'
 import { usePageTheme } from '../shared/theme'
+import '../platform-mobile.css'
+import '../platform-accounts.css'
 
 type IconName = 'box' | 'wallet' | 'users' | 'cup' | 'chart' | 'bell' | 'brief' | 'shield' | 'spark'
 type Audience = 'marketer' | 'company'
+type WorkspaceSelection = { audience: Audience; activeIndex: number }
 type ConsoleKind = 'publish' | 'opportunities' | 'pipeline' | 'approval' | 'payout' | 'analytics'
 type FeatureVisualKind = 'offers' | 'balance' | 'pipeline' | 'leaderboard' | 'report' | 'alerts' | 'publish' | 'team' | 'outcome' | 'approvals' | 'terms'
 type Localize = (arabic: string, english: string) => string
@@ -147,81 +150,70 @@ function PlatformHero() {
   )
 }
 
-function RoleCards() {
+function RoleCards({ onSelect }: { onSelect: (selection: WorkspaceSelection) => void }) {
   const { L } = useLang()
   const roles = [
     {
       icon: 'brief' as const,
-      index: '01',
-      tone: 'company',
-      title: L('للشركة صاحبة المنتج أو الخدمة', 'For product businesses'),
-      lead: L('فريق بيع جاهز، بدون توظيف ولا رواتب ثابتة.', 'A sales network, without fixed hiring overhead.'),
-      journey: [
-        L('انشر منتجك', 'Publish your product'),
-        L('حدّد العمولة', 'Set commission'),
-        L('اعتمد الصفقة', 'Approve the deal'),
-      ],
+      tone: 'company' as const,
+      label: L('للشركات وأصحاب المنتجات', 'For companies & product owners'),
+      title: L('منتجك عندك.', 'Your product.'),
+      accent: L('وفريق البيع هنا.', 'Your sales network, here.'),
+      lead: L('وصّل منتجك أو خدمتك لمسوّقين يبيعون معك، بدون توظيف ولا رواتب ثابتة.', 'Connect your product or service with marketers who sell with you, without fixed hiring costs.'),
+      action: L('استكشف حساب الشركة', 'Explore the company workspace'),
       points: [
-        L('تعرض منتجك وتحدّد العمولة والشروط بنفسك', 'Set your product, commission and terms'),
-        L('مسوّقون ينضمون له ويبدأون البيع', 'Marketers join and start selling'),
-        L('تشوف كل صفقة وصلتك', 'See every deal that reaches you'),
+        { title: L('عرضك، بشروطك', 'Your offer, your terms'), desc: L('انشر منتجك وحدّد العمولة والشروط بنفسك.', 'Publish your product and set its commission and terms.') },
+        { title: L('مسوّقون ينضمون لك', 'Marketers join your network'), desc: L('يختارون منتجك ويبدأون البيع معك.', 'They choose your product and start selling with you.') },
+        { title: L('كل صفقة أمامك', 'Every deal in view'), desc: L('تابع العملاء والصفقات وراجعها قبل الاعتماد.', 'Track customers and deals, then review and approve them.') },
       ],
     },
     {
       icon: 'users' as const,
-      index: '02',
-      tone: 'marketer',
-      title: L('للمسوّق', 'For marketers'),
-      lead: L('ابدأ من مكانك بدون رأس مال.', 'Start from anywhere, without capital.'),
-      journey: [
-        L('اختر الفرصة', 'Choose an opportunity'),
-        L('سجّل العميل', 'Record the customer'),
-        L('تابع الاستحقاق', 'Track your payout'),
-      ],
+      tone: 'marketer' as const,
+      label: L('للمسوّقين', 'For marketers'),
+      title: L('مهارتك في البيع.', 'Your sales skills.'),
+      accent: L('فرصتك في سيلز أب.', 'Your opportunity at SalesUp.'),
+      lead: L('اختر منتجاً تعرف تبيعه وابدأ من مكانك، بدون رأس مال وبعمولة واضحة.', 'Choose a product you know how to sell. Start from anywhere, without capital and with a clear commission.'),
+      action: L('استكشف حساب المسوّق', 'Explore the marketer workspace'),
       points: [
-        L('تتصفّح المنتجات وتشوف عمولة كل واحد قبل ما تنضم', 'Browse products and compare commissions'),
-        L('تسجّل عملاءك وصفقاتك في CRM خاص فيك', 'Track customers and deals in your own CRM'),
-        L('تشوف ترتيبك بين المسوّقين في لوحة المتصدّرين', 'See your rank in the marketer leaderboard'),
+        { title: L('اعرف عمولتك من البداية', 'Know your commission upfront'), desc: L('قارن المنتجات وشروطها قبل ما تنضم.', 'Compare products and their terms before joining.') },
+        { title: L('عملاؤك وصفقاتك مرتّبة', 'Keep customers and deals organised'), desc: L('سجّل العملاء وتابع الصفقات والاستحقاق في CRM خاص فيك.', 'Record customers and follow deals and payouts in your own CRM.') },
+        { title: L('شوف تقدّمك', 'See your progress'), desc: L('تابع أداءك وترتيبك في لوحة المتصدّرين.', 'Follow your performance and position on the leaderboard.') },
       ],
     },
   ]
 
   return (
-    <section className="platform-roles" id="platform-roles">
-      <div className="platform-section-head platform-section-head--split">
+    <section className="platform-roles platform-accounts" id="platform-roles" aria-labelledby="platform-accounts-title">
+      <div className="platform-accounts-heading">
         <span>{L('طرفين على نفس المنصة', 'Two sides, one platform')}</span>
-        <h2>{L('نفس الرحلة، لكن كل طرف يرى ما يحتاجه بالضبط', 'One journey, with the right view for each side')}</h2>
+        <h2 id="platform-accounts-title">{L('أنت وين في رحلة البيع؟', 'Where do you fit in the sale?')}</h2>
+        <p>{L('سواء عندك منتج أو مهارة في بيعه، لك مساحة في سيلز أب.', 'Whether you have a product or the skills to sell it, there’s a place for you at SalesUp.')}</p>
       </div>
-      <div className="platform-role-journey">
+      <div className="platform-accounts-grid">
         {roles.map((role) => (
-          <m.article
-            className={['platform-role-card', 'platform-role-card--' + role.tone].join(' ')}
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.35 }}
-            transition={{ duration: 0.42, ease: [0.22, 0.8, 0.2, 1] }}
+          <article
+            className={'platform-account platform-account--' + role.tone}
             onPointerMove={updateRolePointer}
             onPointerLeave={clearRolePointer}
-            key={role.title}
+            aria-labelledby={'platform-account-' + role.tone}
+            key={role.tone}
           >
-            <div className="platform-role-top">
-              <span className="platform-role-index" dir="ltr">{role.index}</span>
-              <span className="platform-icon-shell"><Icon name={role.icon} /></span>
+            <div className="platform-account-label"><Icon name={role.icon} /><span>{role.label}</span></div>
+            <div className="platform-account-intro">
+              <h3 id={'platform-account-' + role.tone}>{role.title}<em>{role.accent}</em></h3>
+              <p>{role.lead}</p>
             </div>
-            <h3>{role.title}</h3>
-            <p>{role.lead}</p>
-            <ol className="platform-role-path">
-              {role.journey.map((step, index) => <li key={step}><span dir="ltr">{String(index + 1).padStart(2, '0')}</span><b>{step}</b></li>)}
-            </ol>
-            <ul>{role.points.map((point) => <li key={point}><Check />{point}</li>)}</ul>
-          </m.article>
+            <ul className="platform-account-benefits">
+              {role.points.map((point) => <li key={point.title}><Check /><div><b>{point.title}</b><p>{point.desc}</p></div></li>)}
+            </ul>
+            <a className="platform-account-action" href="#platform-workspace" onClick={() => onSelect({ audience: role.tone, activeIndex: 0 })}>
+              {role.action}<Arrow />
+            </a>
+          </article>
         ))}
-        <div className="platform-role-handoff" aria-hidden="true">
-          <span><Icon name="shield" /></span>
-          <b>{L('صفقة موثّقة', 'Documented deal')}</b>
-          <small>{L('اتفاق واضح للطرفين', 'Clear for both sides')}</small>
-        </div>
       </div>
+      <p className="platform-accounts-note"><Icon name="shield" />{L('المنتج والعمولة والشروط واضحة للطرفين من البداية.', 'Product, commission and terms are clear to both sides from the start.')}</p>
     </section>
   )
 }
@@ -781,24 +773,24 @@ function featureSignalFor(kind: FeatureVisualKind, L: Localize) {
   return signals[kind]
 }
 
-function FeatureSwitch() {
+function FeatureSwitch({ selection, onSelect }: { selection: WorkspaceSelection; onSelect: (selection: WorkspaceSelection) => void }) {
   const { L } = useLang()
-  const [audience, setAudience] = useState<Audience>('marketer')
-  const [activeIndex, setActiveIndex] = useState(0)
+  const { audience, activeIndex } = selection
   const features = createFeatures(L)[audience]
   const activeFeature = features[activeIndex] ?? features[0]
   const visual = featureVisualFor(audience, activeIndex)
   const signal = featureSignalFor(visual, L)
 
   const selectAudience = (next: Audience) => {
-    setAudience(next)
-    setActiveIndex(0)
+    onSelect({ audience: next, activeIndex: 0 })
   }
 
   const handleAudienceKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return
     event.preventDefault()
-    selectAudience(event.key === 'Home' ? 'marketer' : event.key === 'End' ? 'company' : audience === 'marketer' ? 'company' : 'marketer')
+    const next = event.key === 'Home' ? 'marketer' : event.key === 'End' ? 'company' : audience === 'marketer' ? 'company' : 'marketer'
+    selectAudience(next)
+    event.currentTarget.parentElement?.querySelector<HTMLButtonElement>(`#${next}-tab`)?.focus()
   }
 
   return (
@@ -810,8 +802,8 @@ function FeatureSwitch() {
           <p>{L('واجهة واحدة مرتبة، لكن تفاصيلها تتغير بحسب دورك في البيع.', 'One orderly workspace, tailored to your role in every sale.')}</p>
         </div>
         <div className="platform-audience" role="tablist" aria-label={L('اختر نوع الحساب', 'Choose account type')}>
-          <m.button id="marketer-tab" className={audience === 'marketer' ? 'is-active' : ''} onClick={() => selectAudience('marketer')} onKeyDown={handleAudienceKeyDown} role="tab" aria-selected={audience === 'marketer'} aria-controls="platform-features-panel" whileTap={{ scale: 0.97 }}><Icon name="users" />{L('للمسوّق', 'For marketers')}</m.button>
-          <m.button id="company-tab" className={audience === 'company' ? 'is-active' : ''} onClick={() => selectAudience('company')} onKeyDown={handleAudienceKeyDown} role="tab" aria-selected={audience === 'company'} aria-controls="platform-features-panel" whileTap={{ scale: 0.97 }}><Icon name="brief" />{L('للشركة', 'For companies')}</m.button>
+          <m.button id="marketer-tab" className={audience === 'marketer' ? 'is-active' : ''} onClick={() => selectAudience('marketer')} onKeyDown={handleAudienceKeyDown} role="tab" tabIndex={audience === 'marketer' ? 0 : -1} aria-selected={audience === 'marketer'} aria-controls="platform-features-panel" whileTap={{ scale: 0.97 }}><Icon name="users" />{L('للمسوّق', 'For marketers')}</m.button>
+          <m.button id="company-tab" className={audience === 'company' ? 'is-active' : ''} onClick={() => selectAudience('company')} onKeyDown={handleAudienceKeyDown} role="tab" tabIndex={audience === 'company' ? 0 : -1} aria-selected={audience === 'company'} aria-controls="platform-features-panel" whileTap={{ scale: 0.97 }}><Icon name="brief" />{L('للشركة', 'For companies')}</m.button>
         </div>
       </div>
       <div className="platform-workspace-shell">
@@ -828,7 +820,7 @@ function FeatureSwitch() {
                 aria-current={isActive ? 'true' : undefined}
                 aria-label={feature.title + ': ' + feature.desc}
                 key={feature.title}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => onSelect({ audience, activeIndex: index })}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.985 }}
               >
@@ -921,14 +913,15 @@ function FinalCta() {
 }
 
 export default function PlatformPage() {
+  const [workspace, setWorkspace] = useState<WorkspaceSelection>({ audience: 'marketer', activeIndex: 0 })
   return (
     <PageShell active="platform">
       <LazyMotion features={domAnimation} strict>
         <MotionConfig reducedMotion="user">
           <PlatformHero />
-          <RoleCards />
+          <RoleCards onSelect={setWorkspace} />
           <PlatformStory />
-          <FeatureSwitch />
+          <FeatureSwitch selection={workspace} onSelect={setWorkspace} />
           <Faq />
           <FinalCta />
         </MotionConfig>
