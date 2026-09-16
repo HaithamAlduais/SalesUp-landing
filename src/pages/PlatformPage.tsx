@@ -50,6 +50,9 @@ function Defs() {
   )
 }
 
+/* sign-up / sign-in entry of the SalesUp app (app/(auth)/login) */
+const APP_URL = 'https://app.salesup.sa/login'
+
 const stillMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 /* starts as an arrow, opens into the full button on hover (see .grow) */
@@ -372,7 +375,7 @@ function Hero() {
             {L('اعرض منتجاتك، اكتشف فرص التسويق بعمولة، وأدر الصفقات والعمولات بسهولة ', 'List your products, discover commission opportunities, and manage deals and commissions with ease ')}
             <span className="nb">{L('عبر منصة تجمع الطرفين.', 'on one platform for both sides.')}</span>
           </p>
-          <div className="hcta"><GrowButton href="/#contact" label={L('ابدأ مجاناً', 'Start for free')} /></div>
+          <div className="hcta"><GrowButton href={APP_URL} label={L('ابدأ مجاناً', 'Start for free')} /></div>
         </div>
         <div className="stage" ref={stageRef}>
           <Rings />
@@ -700,7 +703,7 @@ function Final() {
         <div className="final">
           <ContactFx dark={dark} />
           <p className="lead">{L('سجّل بخطوة وحدة، اختر أول منتج، وابدأ تكسب من أول صفقة تقفلها', 'Sign up in one step, choose your first product, and start earning from your first closed deal')}</p>
-          <div className="hcta"><GrowButton href="/#contact" label={L('ابدأ مجاناً', 'Start for free')} /></div>
+          <div className="hcta"><GrowButton href={APP_URL} label={L('ابدأ مجاناً', 'Start for free')} /></div>
         </div>
       </div>
     </section>

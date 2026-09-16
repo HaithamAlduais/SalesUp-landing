@@ -90,9 +90,9 @@ Latest session: 2026-09-16 — page rebuilt to match the client's
   as noise on the white board in a real browser.
 
 ## Known gaps / TODOs
-- Both CTAs (`ابدأ مجاناً`) go to `/#contact` like before; the
-  reference points at `index.html` (placeholder). Swap to the product
-  sign-up URL when there is one.
+- Both CTAs (`ابدأ مجاناً`) go to the app: `https://app.salesup.sa/login`
+  (Sep 16, per Haitham). The app's login page also accepts
+  `?intent=brand` / `?intent=affiliate` if role-specific entry is wanted.
 - `src/components/ProductAppPreview.tsx`, `src/product-*.css`,
   `src/platform-product-content.ts` and `src/components/product-ui/`
   are no longer referenced by any page (they were already unused
