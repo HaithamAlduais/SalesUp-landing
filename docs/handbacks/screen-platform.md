@@ -1,86 +1,110 @@
-# Handback — screen: Platform  (session date: 2026-07-15)
+# Handback — screen: Platform (`/platform`, الحلول الرقمية)
+
+Latest session: 2026-09-16 — page rebuilt to match the client's
+`platform.html` reference (Eynas, Slack, Sep 13). Earlier sessions
+(coming-soon page → native product story) are superseded.
 
 ## What was built
-- Route(s): `/platform`
-- Branch / final commit: `screen/platform` @ `51d7c93`
-- Worktree / dev port used: `../salesup-worktrees/platform` / 5179
-- Files touched (must be: your page file + new assets + your styles.css block):
-  `src/pages/PlatformPage.tsx`, one appended `/* ===== screen:platform ===== */`
-  block at the end of `src/styles.css`. No new assets (reused `star.svg`).
-- Shared files modified (should be NONE — if any, list each with why): **NONE**
-- Figma frames implemented (node ids): `5:3414`
+- Route: `/platform`
+- Branch: `master` (work is uncommitted at handback time — commit after review)
+- Files touched:
+  - `src/pages/PlatformPage.tsx` — full rewrite from the reference
+  - `src/platform.css` — full rewrite; the ONLY platform stylesheet now,
+    imported by the page (route chunk), no longer by `main.tsx`
+  - Removed: `src/platform-refinement.css`, `platform-authored.css`,
+    `platform-mobile.css`, `platform-accounts.css`, `platform-real-product.css`
+  - `docs/handbacks/screen-platform.md` (this file)
+- Shared files modified (each minimal, listed for the hub):
+  - `src/main.tsx` — dropped the three global platform CSS imports
+  - `src/styles.css` — deleted the two dead platform blocks
+    (`/* ===== screen:platform ===== */` coming-soon styles and the
+    "Digital platform — native SalesUp product story" block at the end);
+    no other block touched
+  - `index.html` — Google Fonts link also loads JetBrains Mono
+    (400/500/700); the reference uses it for every number in the boards
+- Reference: client file `platform.html` (Slack DM, Sep 13). Not committed
+  to the repo — the design source of truth for this screen.
+
+## Client brief (Slack, Eynas)
+- «حرفيا سووها نفسها» — make it the same as the reference, BUT keep our
+  nav bar, keep our hero background (the platform shader), keep our footer.
+- «خليه حي أكثر وأنا أسوي سكرولينق» — more alive while scrolling.
+- Revision: the company feature card «انشر منتجك» → «انشر منصتك».
+- Haitham (Sep 16): not 100% identical — the shell, the shaders and the
+  sticky scroll must be applied on top of the reference.
 
 ## Design decisions
-- Where I followed Figma exactly: the page IS a "coming soon" page —
-  «قريبــاً» as the single statement + the dark gradient button with
-  Figma's exact label «العودة للصفحة الرئيسية», header (with الحلول
-  الرقمية active) and footer via the shared shell.
-- Where I deviated and why (better pattern / client license):
-  1. Figma's «قريباً» is modest body-size; I made it the page's
-     statement (clamp 64→120px, brand green, glow) — a quiet page needs
-     one confident moment.
-  2. **Flagged additions for client approval** (handoff explicitly
-     permits ONE tasteful extra on thin Figma content): an eyebrow
-     («الحلول الرقمية» / “Digital Solutions”), one supporting sentence
-     («منصة سيلز أب الرقمية قيد التجهيز — حلول تساعدك تقيس وتحسّن أداء
-     مبيعاتك»), and a secondary ghost CTA «تواصل معنا الآن» → `/#contact`
-     (label taken from Figma's own header vocabulary).
-  3. Two floating `star.svg` motifs stand in for Figma's two 113×293
-     decoration frames (which sit invisibly pale in the footer zone of
-     the mock) — pinned inside the hero, gently animated, disabled
-     under `prefers-reduced-motion`.
-- Effects & interactions used: `HeroFx` (reused as the atmosphere band —
-  includes InViewGate GPU gating, touch Blob, dark tuning) behind a
-  `.platform-fx` wrapper with the landing's -86px header reach, bottom
-  dissolve mask, and static gradient fallback for no-WebGPU browsers.
+- Structure and copy follow the reference 1:1: hero (h1 regular line +
+  green bold line, lead, one "grow" CTA), «طرفين على نفس المنصة» duo
+  cards, «كل أداة تحتاجها موجودة بمنصتنا» with the للمسوّق/للشركة toggle
+  and 3×2 feature cards, FAQ with sticky heading + native `<details>`,
+  the dark «سجّل بخطوة وحدة…» final block. The reference's extra hero
+  copy that our previous build had (kicker, proof checks, second link)
+  is gone because the reference doesn't have it.
+- CSS is a scoped port of the reference stylesheet (`.platform …`) with
+  the same class names so the two files diff side by side.
+- Kept ours: `PageShell` header/footer; `HeroFx` behind the hero (with
+  the landing's -86px reach + bottom dissolve; -72px under 980px where
+  the header is shorter); the sticky product story.
+- Hero board = the reference's 4 auto-rotating scenes (commissions live
+  feed that pushes a row every 3s while on screen, CRM kanban,
+  leaderboard, performance) — the exact data and timings (5.2s / 3s).
+- Sticky story («من المنتج إلى النتيجة», 6 steps, 600vh) reuses the
+  reference board as its stage: three reference scenes (CRM, commissions,
+  performance) + three built from the same primitives (publish,
+  opportunities, approval). `ActiveFx` sits inside the board as a soft
+  edge vignette (masked, .14 light / .22 dark) so the data stays legible.
+  Under 700px the pinned story becomes a plain list, each step with its
+  own board (a 100vh pin doesn't fit a phone with the board + copy).
+- "Alive on scroll": the reference's staggered reveal (`.rv` → `.in`,
+  110ms sibling stagger) is ported as `useReveal`; reduced-motion skips
+  it and freezes the feed/rotation, as in the reference.
+- The `.grow` CTA (arrow circle that opens on hover) is always open on
+  touch (`hover: none`) so phones get a real button.
+- Final block («سجّل بخطوة وحدة…»): per Haitham (Sep 16) it carries the
+  landing's contact-panel material — the panel gradient underneath plus
+  `ContactFx` (the shell's `.contact-fx` rules clip it and provide the
+  animated CSS fallback without a GPU scene). The reference's static
+  radial glow was dropped in favour of the scene.
+- Client revision applied: company card #1 is «انشر منصتك» / "Publish
+  your platform" — flagged: literal reading of the Slack note; confirm.
 
 ## Verification evidence
-- [x] `npx tsc --noEmit` clean
-- [x] Arabic: desktop 1440 light + dark — verified headlessly (see note)
-- [x] Arabic: mobile 375 — verified headlessly
-- [x] English: desktop 1440 light + dark — verified headlessly
-- [x] English: mobile 375 — verified headlessly
-- [x] LTR mirroring correct — `html[dir='ltr']` arrow-flip rules present
-  and matching in the cascade; text/ordering verified in DOM
-- [x] All new strings bilingual incl. aria-labels/placeholders
-- [x] Touch behaviors: no tap-to-reveal interactions on this page
-  (links only); HeroFx touch Blob ships with the reused component
-- [x] Console error sweep clean
-- [x] GPU: no permanently-mounted Shader roots added (HeroFx is
-  InViewGate-gated)
-- Notes on anything visually uncertain: **the Browser pane's compositor
-  was frozen this session** (parallel-session environment; rAF never
-  fired, screenshots timed out pane-wide, CSS transitions stuck
-  mid-flight). All verification was done headlessly instead: DOM
-  structure (read_page), computed styles per state (colors, sizes,
-  flex-direction, tap targets ≥44px, no horizontal scroll at 375px),
-  cascade rule matching for the LTR arrow flip, and route/nav-active
-  checks across AR/EN × light/dark × 1440/375. What could NOT be
-  observed: actual rendered pixels (shader appearance, star float,
-  hover states). **Hub: please re-take the 8-state screenshot matrix
-  during the merge audit.**
+- [x] `npx tsc --noEmit -p tsconfig.app.json` clean
+- [x] Console + Vite error sweep clean
+- [x] Screenshot matrix (headless Chrome, full page + one shot per story
+  step): AR light 1440, EN light 1440, AR dark 1440, EN dark 1440,
+  AR light 375, EN dark 375 — no horizontal overflow in any state
+- [x] LTR: arrows flip (`html[dir='rtl'] .btn svg`), story progress bar
+  origin flips, `.total b` direction flips, numbers stay LTR
+- [x] All strings bilingual incl. aria-labels
+- [x] Interactions: audience toggle (company set shows «انشر منصتك»),
+  FAQ open/close, hero scene rotation, story scroll sync (rail, scene,
+  progress bar, ActiveFx gate); rail click → smooth scroll verified by
+  scroll position math (the hidden Browser pane can't animate scroll)
+- [x] GPU: HeroFx (InViewGate) + ActiveFx (track-visibility gated) +
+  ContactFx (InViewGate) — never more than two alive at once, as on the
+  landing
+- Not verified: real WebGPU look of the vignette (headless used the GL
+  path); the ActiveFx opacity is a judgement call — tune if it reads
+  as noise on the white board in a real browser.
 
-## Client-review revisions applied
-- 2026-07-15: actions stacked vertically (ghost CTA under the primary
-  button) and the primary button now sizes to its label on one line
-  (`width: auto` + `white-space: nowrap`, min-width preserved) — client
-  feedback on the EN label wrapping. Verified 1-line rendering in all
-  four language/viewport states.
-
-## Known gaps / TODOs for the audit session
-- Visual screenshot matrix pending (compositor freeze, above).
-- The additions in Design decisions #2 need client sign-off; trivially
-  removable (single JSX block) if declined.
-- `.claude/launch.json` in the MAIN checkout gained an uncommitted
-  `platform-dev` entry (port 5179) — per handoff rules it was not
-  committed; hub may keep or discard.
+## Known gaps / TODOs
+- Both CTAs (`ابدأ مجاناً`) go to `/#contact` like before; the
+  reference points at `index.html` (placeholder). Swap to the product
+  sign-up URL when there is one.
+- `src/components/ProductAppPreview.tsx`, `src/product-*.css`,
+  `src/platform-product-content.ts` and `src/components/product-ui/`
+  are no longer referenced by any page (they were already unused
+  before this session). Left in place; delete if the product-UI port
+  is not coming back.
+- Final block lead wraps to two lines in AR at 1440 (reference shows
+  one) — same `46ch` cap; cosmetic.
 
 ## New shared things future sessions should know
-- `HeroFx` works beautifully as a generic page-atmosphere band: wrap it
-  in your own absolutely-positioned container with `inset: -86px 0 0 0`,
-  a bottom mask, and a static gradient fallback — zero shared-file
-  changes needed (pattern in `.platform-fx`).
-- The occluded Browser pane freezes rAF/transitions when another
-  session holds focus — verify computed styles via stylesheet rule
-  matching rather than transition-dependent computed values, and defer
-  pixel proof to the hub.
+- Reference-driven screens: scope the reference CSS under one root
+  class and keep its class names — the diff against the client file
+  stays readable and revisions are a copy-paste.
+- The Browser pane can't scroll or animate while hidden; use the
+  headless capture scripts pattern (CDP + scroll-through + per-step
+  shots) for the screenshot matrix.
