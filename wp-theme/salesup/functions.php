@@ -71,8 +71,12 @@ function salesup_redirect_map() {
 		'our-services'            => '/services',
 		'why-us'                  => '/',
 		'contact-us'              => '/#contact',
-		'affiliate'               => '/marketers',
-		'برنامج-التسويق-بالعمولة-المطور' => '/marketers',
+		'affiliate'               => '/platform',
+		'برنامج-التسويق-بالعمولة-المطور' => '/platform',
+		/* the marketing service page was retired (client, Sep 2026) */
+		'marketers'               => '/services',
+		'marketers/apply'         => '/services',
+		'marketers/request'       => '/services',
 		'انضم-لنا'                => '/jobs',
 		'تدريب-تعاوني'            => '/jobs',
 		/* retired/utility pages */
@@ -152,7 +156,7 @@ add_action( 'template_redirect', function () {
 	      would have refused to index /services, /marketers, /jobs … */
 	if ( is_404() ) {
 		$first      = explode( '/', $decoded )[0];
-		$app_routes = array( 'services', 'marketers', 'sectors', 'blog', 'platform', 'jobs' );
+		$app_routes = array( 'services', 'sectors', 'blog', 'platform', 'jobs' );
 		if ( '' === $decoded || in_array( $first, $app_routes, true ) ) {
 			global $wp_query;
 			$wp_query->is_404 = false;
@@ -175,7 +179,6 @@ function salesup_route_titles() {
 		'services/sales-development' => 'تطوير المبيعات',
 		'services/lead-generation'   => 'توليد العملاء المحتملين',
 		'services/ai-sales'          => 'أدوات الذكاء الاصطناعي',
-		'marketers'                  => 'التسويق',
 		'sectors'                    => 'القطاعات',
 		'sectors/technology'         => 'تقنية المعلومات',
 		'sectors/fintech'            => 'تقنية مالية',

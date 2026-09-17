@@ -1,4 +1,8 @@
 {
+  "redirects": [
+    { "source": "/marketers", "destination": "/services", "permanent": true },
+    { "source": "/marketers/:path*", "destination": "/services", "permanent": true }
+  ],
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "functions": {
     "api/lead.js": {

@@ -9,7 +9,6 @@ import { appPath } from '../shared/base'
  */
 const LandingPage = lazy(() => import('../App'))
 const ServicesPage = lazy(() => import('./ServicesPage'))
-const MarketersPage = lazy(() => import('./MarketersPage'))
 const SectorPage = lazy(() => import('./SectorPage'))
 const BlogPage = lazy(() => import('./BlogPage'))
 const BlogArticlePage = lazy(() => import('./BlogArticlePage'))
@@ -34,8 +33,6 @@ export function resolvePage(pathname: string): ReactNode {
 
   if (path === '/') return <LandingPage />
   if (path === '/services' || /^\/services\/[^/]+$/.test(path)) return <ServicesPage />
-  if (path === '/marketers') return <MarketersPage />
-  if (path === '/marketers/apply' || path === '/marketers/request') return <MarketersPage apply />
 
   const sectorSlug = path.match(/^\/sectors\/([^/]+)$/)?.[1]
   if (sectorSlug) {

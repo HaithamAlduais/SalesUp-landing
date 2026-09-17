@@ -3,17 +3,16 @@ import { PageShell } from '../shared/PageShell'
 import { useLang } from '../shared/i18n'
 import { usePageTheme } from '../shared/theme'
 import { Select } from '../shared/Select'
+import { BrainCircuit, Globe, Handshake, Target, TrendingUp } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { ActiveFx, ContactFx } from '../components/CardFx'
 import { EMAIL_PATTERN, leadFromForm, submitLead } from '../components/leads'
-
-import iconInsideSales from '../assets/icon-inside-sales.webp'
-import iconOutsideSales from '../assets/icon-outside-sales.webp'
-import iconMarketers from '../assets/icon-marketers.webp'
-import badgeStar from '../assets/badge-star.svg'
+import { BrandIcon } from '../shared/icons'
 
 /*
  * الخدمات — services index + service detail + request-success state.
- * Figma: 5:1675 index (6 cards), 5:1755 card-hover state (استكشف الخدمة
+ * Figma: 5:1675 index (6 cards; the marketing card was dropped at the
+ * client's request, Sep 2026), 5:1755 card-hover state (استكشف الخدمة
  * CTA reveal), 5:1835 detail (title + desc + request-form panel + FAQ),
  * 5:3609 success panel. `/services` renders the index;
  * `/services/:slug` renders the detail (the shared router forwards both
@@ -33,10 +32,8 @@ type Service = {
   ar: string
   en: string
   latin?: boolean
-  badge?: boolean
-  icon: string
+  icon: LucideIcon
   fx: number
-  href?: string
   descAr: string
   descEn: string
   detailAr?: string
@@ -54,7 +51,7 @@ const SERVICES: Service[] = [
     slug: 'outside-sales',
     ar: 'المبيعات الخارجية',
     en: 'Outside Sales',
-    icon: iconOutsideSales,
+    icon: Globe,
     fx: 5,
     descAr: 'نوصل لعملاء جدد ، ونساعدك توسّع حضورك في أسواق أو مناطق جديدة',
     descEn: 'We reach new customers and help you expand into new markets and regions',
@@ -139,7 +136,7 @@ const SERVICES: Service[] = [
     slug: 'inside-sales',
     ar: 'المبيعات الداخلية',
     en: 'Inside Sales',
-    icon: iconInsideSales,
+    icon: Handshake,
     fx: 3,
     descAr: 'نتابع التواصل مع العملاء المهتمين، ونحوّل اهتمامهم لفرص مبيعات أوضح',
     descEn: 'We follow up with interested customers and turn their interest into clearer sales opportunities',
@@ -186,7 +183,7 @@ const SERVICES: Service[] = [
     slug: 'sales-development',
     ar: 'تطوير المبيعات',
     en: 'Sales Development',
-    icon: iconOutsideSales,
+    icon: TrendingUp,
     fx: 0,
     descAr: 'نراجع طريقة البيع الحالية، ونطوّر خطوات المتابعة، والإغلاق بشكل أوضح',
     descEn: 'We review how you sell today and structure clearer follow-up and closing steps',
@@ -195,7 +192,7 @@ const SERVICES: Service[] = [
     slug: 'lead-generation',
     ar: 'توليد العملاء المحتملين',
     en: 'Lead Generation',
-    icon: iconInsideSales,
+    icon: Target,
     fx: 2,
     descAr: 'نساعدك تستهدف الجمهور الأنسب لخدمتك، وتجيب فرص مبيعات قابلة للمتابعة',
     descEn: 'We help you target the right audience for your service and bring in opportunities you can act on',
@@ -204,21 +201,10 @@ const SERVICES: Service[] = [
     slug: 'ai-sales',
     ar: 'أدوات الذكاء الاصطناعي',
     en: 'AI for Sales',
-    icon: iconOutsideSales,
+    icon: BrainCircuit,
     fx: 6,
     descAr: 'نستخدم التحليل والأدوات الذكية لفهم الأداء، كشف الفرص، وتحسين قرارات البيع',
     descEn: 'We use analytics and smart tools to understand performance, uncover opportunities, and sharpen sales decisions',
-  },
-  {
-    slug: 'marketers',
-    ar: 'التسويق',
-    en: 'Marketing',
-    badge: true,
-    icon: iconMarketers,
-    fx: 1,
-    href: '/marketers',
-    descAr: 'ندير لك حملاتك الإعلانية ونحسن ظهورك في محركات البحث من خلال الـ SEO',
-    descEn: 'We run your digital marketing from Google to social media, with a clear monthly plan',
   },
 ]
 
@@ -231,18 +217,12 @@ function ServicePanel({ service, index, fxActive }: { service: Service; index: n
           pinned, so visibility is driven by deck scroll progress
           (active ± 1) instead of per-panel observers */}
       <ActiveFx variant={service.fx} active={fxActive} />
-      {service.badge ? (
-        <span className="featured-badge">
-          {L('جديـــــــد', 'NEW')}
-          <img className="badge-star" src={badgeStar} alt="" />
-        </span>
-      ) : null}
       <span className="svc-panel-index" dir="ltr" aria-hidden="true">{`0${index + 1}`}</span>
       <div className="svc-panel-copy">
-        <img className="svc-icon" src={service.icon} alt="" width={104} height={104} />
+        <BrandIcon className="svc-icon" icon={service.icon} />
         <h3 lang={service.latin ? 'en' : undefined}>{L(service.ar, service.en)}</h3>
         <p>{L(service.descAr, service.descEn)}</p>
-        <a className="svc-cta" href={service.href ?? `/services/${service.slug}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+        <a className="svc-cta" href={`/services/${service.slug}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
           {L('استكشف الخدمة', 'Explore Service')}
           <svg className="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M19 12H5m0 0 6-6m-6 6 6 6" />
@@ -360,7 +340,7 @@ function RequestForm({ service }: { service: Service }) {
               name="service"
               ariaLabel={L('الخدمة', 'Service')}
               placeholder={L('اختر الخدمة*', 'Choose a service*')}
-              options={SERVICES.filter((s) => !s.href).map((s) => ({ value: s.slug, label: L(s.ar, s.en) }))}
+              options={SERVICES.map((s) => ({ value: s.slug, label: L(s.ar, s.en) }))}
               defaultValue={service.slug}
               required
             />
@@ -485,7 +465,7 @@ function ServiceDetail({ service }: { service: Service }) {
 export default function ServicesPage() {
   const path = window.location.pathname.replace(/\/+$/, '')
   const slug = path.match(/^\/services\/([^/]+)$/)?.[1]
-  const service = slug ? SERVICES.find((s) => s.slug === slug && !s.href) : undefined
+  const service = slug ? SERVICES.find((s) => s.slug === slug) : undefined
 
   return (
     <PageShell active="services">

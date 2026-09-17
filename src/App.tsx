@@ -1,26 +1,13 @@
 import { CSSProperties, FormEvent, useEffect, useRef, useState } from 'react'
+import { Globe, Handshake } from 'lucide-react'
 import { ActiveFx, COARSE_POINTER, ContactFx, HeroFx, InViewFx } from './components/CardFx'
 import { EMAIL_PATTERN, leadFromForm, submitLead } from './components/leads'
 import { PageShell } from './shared/PageShell'
 import { usePageTheme } from './shared/theme'
 import { useLang } from './shared/i18n'
 import { CountUp } from './shared/ui'
+import { BrandIcon } from './shared/icons'
 import { SECTORS } from './data/sectors'
-
-import maskSquiggleL from './assets/mask-squiggle-l.webp'
-import maskSquiggleR from './assets/mask-squiggle-r.webp'
-import decoAbout from './assets/deco-about.svg'
-import starShape from './assets/star.svg'
-import contactGlow from './assets/contact-glow.svg'
-import badgeStar from './assets/badge-star.svg'
-
-import iconFintech from './assets/icon-fintech.webp'
-import iconSaas from './assets/icon-saas.webp'
-import iconAgencies from './assets/icon-agencies.webp'
-import iconTech from './assets/icon-tech.webp'
-import iconInsideSales from './assets/icon-inside-sales.webp'
-import iconOutsideSales from './assets/icon-outside-sales.webp'
-import iconMarketers from './assets/icon-marketers.webp'
 
 import brandZid from './assets/brand-zid-trim.webp'
 import brandZidWhite from './assets/brand-zid-white.svg'
@@ -170,17 +157,11 @@ function About() {
       <section className="about-section" id="about">
         <div className="about-track" ref={trackRef}>
           <div className="about-viewport">
-            {/* decorations live inside the sticky viewport so they hold
-                their places on screen while the story plays */}
-            <img className="deco-about" src={decoAbout} alt="" aria-hidden="true" />
-            <div className="squiggle squiggle--left" aria-hidden="true" style={{ maskImage: `url(${maskSquiggleL})`, WebkitMaskImage: `url(${maskSquiggleL})` }}>
-              <div className="squiggle-fill squiggle-fill--left" />
-            </div>
-            <div className="section-heading section-heading--end">
+            <div className="section-heading">
               <p className="eyebrow">{L('من نحن ', 'About Us')}</p>
               <div className="heading-group">
                 <h2>{L('شريك يساعدك تحوّل الفرص إلى نمو واضح', 'A partner who turns opportunities into clear growth')}</h2>
-                <p>{L('ركّز على تطوير منتجك، واترك لنا إدارة مبيعاتك وتحسين ظهورك لجمهورك المناسب، من التخطيط إلى تحقيق نمو شهري مستدام، ندير رحلة العميل كاملة من الوصول للعملاء المحتملين وحتى اتخاذ قرار الشراء', 'Focus on building your product and leave us your sales — and your visibility to the right audience — from planning to sustainable monthly growth. We manage the full customer journey, from reaching prospects to the buying decision.')}</p>
+                <p className="heading-desc">{L('ركّز على تطوير منتجك، واترك لنا إدارة مبيعاتك وتحسين ظهورك لجمهورك المناسب، من التخطيط إلى تحقيق نمو شهري مستدام، ندير رحلة العميل كاملة من الوصول للعملاء المحتملين وحتى اتخاذ قرار الشراء', 'Focus on building your product and leave us your sales — and your visibility to the right audience — from planning to sustainable monthly growth. We manage the full customer journey, from reaching prospects to the buying decision.')}</p>
               </div>
             </div>
             <div className="about-stage">
@@ -218,10 +199,10 @@ function Sectors() {
      leaving the page */
   const [open, setOpen] = useState<number | null>(null)
   const cards = [
-    { slug: 'fintech', title: L('تقنية مالية', 'Financial Technology'), icon: iconFintech, href: '/sectors/fintech' },
-    { slug: 'saas', title: 'SaaS', icon: iconSaas, href: '/sectors/saas' },
-    { slug: 'agencies', title: L('الوكالات الإعلانية', 'Ad Agencies'), icon: iconAgencies, href: '/sectors/agencies' },
-    { slug: 'technology', title: L('تقنية المعلومات', 'Information Technology'), icon: iconTech, href: '/sectors/technology' },
+    { slug: 'fintech', title: L('تقنية مالية', 'Financial Technology'), href: '/sectors/fintech' },
+    { slug: 'saas', title: 'SaaS', href: '/sectors/saas' },
+    { slug: 'agencies', title: L('الوكالات الإعلانية', 'Ad Agencies'), href: '/sectors/agencies' },
+    { slug: 'technology', title: L('تقنية المعلومات', 'Information Technology'), href: '/sectors/technology' },
   ]
   const toggle = (i: number) => setOpen((cur) => (cur === i ? null : i))
   return (
@@ -253,7 +234,7 @@ function Sectors() {
                 is on screen; hover/open intensifies it */}
             <InViewFx variant={4 + i} />
             <div className="sector-card-inner">
-              <img className="sector-icon" src={c.icon} alt="" width={134} height={134} />
+              <BrandIcon className="sector-icon" icon={SECTORS[c.slug].icon} />
               <h3>{c.title}</h3>
               {/* the short teaser: the full description overflowed the
                   card and clipped mid-sentence */}
@@ -281,18 +262,9 @@ function Services() {
   const { lang, L } = useLang()
   const services = [
     {
-      key: 'marketers',
-      title: L('التسويق', 'Marketing'),
-      badge: true,
-      icon: iconMarketers,
-      desc: L('ندير لك حملاتك الإعلانية ونحسن ظهورك في محركات البحث من خلال الـ SEO', 'We run your ad campaigns and grow your search visibility through SEO'),
-      href: '/marketers',
-      fx: 1,
-    },
-    {
       key: 'inside',
       title: L('المبيعات الداخلية', 'Inside Sales'),
-      icon: iconInsideSales,
+      icon: Handshake,
       desc: L('نتابع التواصل مع العملاء المهتمين، ونحوّل اهتمامهم لفرص مبيعات حقيقية', 'We follow up with interested customers and turn their interest into real sales opportunities'),
       href: '/services',
       fx: 3,
@@ -300,7 +272,7 @@ function Services() {
     {
       key: 'outside',
       title: L('المبيعات الخارجية', 'Outside Sales'),
-      icon: iconOutsideSales,
+      icon: Globe,
       desc: L('نوصل لعملاء جدد ، ونساعدك توسّع حضورك في أسواق أو مناطق جديدة', 'We reach new customers and help you expand into new markets and regions'),
       href: '/services',
       fx: 5,
@@ -348,9 +320,6 @@ function Services() {
 
   return (
     <div className="band band--services">
-      <div className="squiggle squiggle--right" aria-hidden="true" style={{ maskImage: `url(${maskSquiggleR})`, WebkitMaskImage: `url(${maskSquiggleR})` }}>
-        <div className="squiggle-fill squiggle-fill--right" />
-      </div>
       <section className="services-section" id="services">
         <div className="section-heading">
           <p className="eyebrow">{L('الخدمات', 'Services')}</p>
@@ -392,14 +361,8 @@ function Services() {
               }}
             >
               <ActiveFx variant={s.fx} active={open === i} />
-              {s.badge ? (
-                <span className="featured-badge">
-                  {L('جديـــــــد', 'NEW')}
-                  <img className="badge-star" src={badgeStar} alt="" />
-                </span>
-              ) : null}
               <div className="expander-head">
-                <img className="expander-icon" src={s.icon} alt="" width={132} height={132} />
+                <BrandIcon className="expander-icon" icon={s.icon} />
                 <h3>{s.title}</h3>
               </div>
               <div className="expander-body">
@@ -473,7 +436,6 @@ function Process() {
                 </div>
                 <div className="step-marker">
                   <p className="step-number">{i + 1}</p>
-                  <img className="step-star" src={starShape} alt="" />
                 </div>
               </div>
             ))}
@@ -514,9 +476,6 @@ function Contact({ dark }: { dark: boolean }) {
       <p className="contact-eyebrow">{L('احصل على استشارة مجانية', 'Get a Free Consultation')}</p>
       <div className="contact-panel" role={status === 'sent' ? 'status' : undefined}>
         <ContactFx dark={dark} />
-        <div className="contact-clip" aria-hidden="true">
-          <img className="contact-glow" src={contactGlow} alt="" />
-        </div>
         {status === 'sent' ? (
           <div className="contact-success-inner">
             <span className="mk-check" aria-hidden="true">

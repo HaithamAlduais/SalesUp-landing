@@ -1,7 +1,5 @@
-import iconFintech from '../assets/icon-fintech.webp'
-import iconSaas from '../assets/icon-saas.webp'
-import iconAgencies from '../assets/icon-agencies.webp'
-import iconTech from '../assets/icon-tech.webp'
+import { Cloud, Megaphone, Server, Wallet } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
 /*
  * Sector identities shared by the landing cards, the sector pages, and
@@ -16,7 +14,7 @@ export const SECTORS: Record<
   {
     ar: string
     en: string
-    icon: string
+    icon: LucideIcon
     fx: number
     /** one-line teaser for the landing cards (the long desc clipped) */
     cardAr: string
@@ -28,7 +26,7 @@ export const SECTORS: Record<
   technology: {
     ar: 'تقنية المعلومات',
     en: 'Information Technology',
-    icon: iconTech,
+    icon: Server,
     fx: 7,
     cardAr:
       'حلول تقنية تشمل تطوير البرمجيات، إدارة البيانات، والحلول السحابية',
@@ -42,7 +40,7 @@ export const SECTORS: Record<
   fintech: {
     ar: 'تقنية مالية',
     en: 'Financial Technology',
-    icon: iconFintech,
+    icon: Wallet,
     fx: 4,
     cardAr:
       'نساعد شركات التقنية المالية توصل لعملائها بثقة وتسرّع قرار الاشتراك',
@@ -56,7 +54,7 @@ export const SECTORS: Record<
   saas: {
     ar: 'Saas',
     en: 'SaaS',
-    icon: iconSaas,
+    icon: Cloud,
     fx: 5,
     cardAr:
       'حلول برمجية مرنة عبر الإنترنت: CRM، إدارة المشاريع، والتعاون',
@@ -70,7 +68,7 @@ export const SECTORS: Record<
   agencies: {
     ar: 'الوكالات الاعلانية',
     en: 'Ad Agencies',
-    icon: iconAgencies,
+    icon: Megaphone,
     fx: 6,
     cardAr:
       'شريك للوكالات: تطوير الحملات، إدارة السوشال، وتحليل البيانات',

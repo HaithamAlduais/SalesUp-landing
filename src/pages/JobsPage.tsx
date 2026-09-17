@@ -7,7 +7,6 @@ import { ContactFx, InViewFx } from '../components/CardFx'
 import { EMAIL_PATTERN, leadFromForm, submitLead } from '../components/leads'
 import { Job, JobTrack, isNew, postedLabel, TRACKS } from '../data/jobs'
 import { fetchJobs, inTrack } from '../data/wpJobs'
-import contactGlow from '../assets/contact-glow.svg'
 
 /*
  * انضم لنا — careers (Figma section "اضافه الوظائف").
@@ -292,7 +291,6 @@ function ApplyForm() {
       <h1 className="jobs-apply-title">{L('ابدأ طلبك برفع بياناتك', 'Start your application')}</h1>
       <div className="contact-panel jobs-apply-panel">
         <ContactFx dark={dark} />
-        <img className="contact-glow" src={contactGlow} alt="" aria-hidden="true" />
         <div className="contact-inner">
           <p className="jobs-apply-lead">
             {L(

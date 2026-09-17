@@ -26,7 +26,14 @@ page already departs from Figma with approved patterns — reuse them.
 - Type scale: H1 55/bold, H2 40/bold, H3 34-35/bold, body 24/400,
   buttons 24/bold. Sections use `.section-heading` (eyebrow + h2 + desc).
 - Cards: radius 22, shadow `0 0 4px rgba(0,0,0,.1)`. Buttons: full-pill
-  radius; `.button--dark` = 251×79 gradient `#133f40→#177e6f`.
+  radius; EVERY filled button uses the consultation CTA gradient
+  `var(--cta-gradient)` (`#076c61→#0b9e79→#31c795`, 120deg) + `var(--cta-shadow)`
+  — client rule, Sep 2026. `#133f40→#177e6f` is for panels only.
+- Icons: gradient line glyphs only — `<BrandIcon icon={LucideIcon} />`
+  from `src/shared/icons.tsx` (lucide-react, stroked with the CTA
+  gradient). No 3D icon renders, no emoji.
+- No decorative shapes (squiggles, stars, glow blobs) anywhere — client
+  rule, Sep 2026. Section headings are centered, never side-aligned.
 - Content width: `--content` = 1123px; `width: min(var(--content), 100% - 32px)`.
 - Breakpoints: 1240 / 980 / 700. ≤980 hides desktop nav + decorations.
 
@@ -150,7 +157,7 @@ copy and spacing.
 |---|---|---|---|
 | Landing | `/` | 5:962 (variant 55:879 unchecked) | ✅ built |
 | Services index | `/services` | 5:1675, 5:1755, 5:1835, 5:3609 | handoff |
-| Marketers | `/marketers` | 5:2379, 5:2494 + states 5:2618…5:3350 | handoff |
+| Marketers | `/marketers` | 5:2379, 5:2494 + states 5:2618…5:3350 | removed (client, Sep 2026; route 301s to /services) |
 | Sectors ×4 | `/sectors/:slug` | 5:1530, 5:1944, 5:2089, 5:2234 | handoff |
 | Blog index | `/blog` | 5:1392 | handoff |
 | Blog article | `/blog/:slug` | 5:1467 | handoff |

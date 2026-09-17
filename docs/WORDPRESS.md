@@ -44,13 +44,14 @@ update.
 
 ## Verify after activation
 
-- Home, /services, /marketers, /sectors/fintech, /blog, /platform,
+- Home, /services, /sectors/fintech, /blog, /platform,
   /jobs all load the new interface (refresh with Ctrl+F5).
 - A blog post opens at /blog/<slug> with content; an OLD post URL
   (from Google) 301-redirects to its /blog/<slug> home.
 - Old page URLs redirect: /internal-sales → /services/inside-sales,
   /our-services → /services, /contact-us → /#contact, /affiliate →
-  /marketers, etc. (full map in wp-theme/salesup/functions.php).
+  /platform, /marketers → /services (retired page), etc. (full map in
+  wp-theme/salesup/functions.php).
 - Submit the contact form → success message → contact appears in Bigin.
 - View source of any page: Rank Math's meta/OG tags and the tracking
   scripts are present in <head>.

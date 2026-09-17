@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { PageShell } from '../shared/PageShell'
 import { useLang } from '../shared/i18n'
 import { ActiveFx } from '../components/CardFx'
+import { BrandIcon } from '../shared/icons'
 import { SECTORS } from '../data/sectors'
 import { withBase } from '../shared/base'
 
@@ -56,7 +57,7 @@ function SectorsBody({ initial }: { initial: string }) {
       <div className="sector-layout">
         <div className="sector-panel" ref={panelRef} aria-hidden="true">
           <ActiveFx variant={current.fx} active={panelVisible} />
-          <img key={open} className="sector-panel-icon" src={current.icon} alt="" />
+          <BrandIcon key={open} className="sector-panel-icon" icon={current.icon} strokeWidth={1.2} />
         </div>
         <div className="sector-accordion">
           {ORDER.map((slug) => {
@@ -80,7 +81,7 @@ function SectorsBody({ initial }: { initial: string }) {
                 </button>
                 <div className="sector-acc-body" id={`sector-body-${slug}`} role="region">
                   <div className="sector-acc-inner">
-                    <img className="sector-acc-icon" src={s.icon} alt="" width={96} height={96} />
+                    <BrandIcon className="sector-acc-icon" icon={s.icon} />
                     <p>{L(s.descAr, s.descEn)}</p>
                   </div>
                 </div>
