@@ -280,7 +280,7 @@ function ServicesIndex() {
         <p className="eyebrow">{L('الخدمات', 'Services')}</p>
         <div className="heading-group">
           <h2>{L('حلول تساعدك تزيد مبيعاتك وتفتح فرص نمو أكبر', 'Solutions that grow your sales and open bigger opportunities')}</h2>
-          <p className="heading-desc">{L('نشتغل معك حسب احتياجك، سواء كنت تحتاج فريق مبيعات يساعدك في توليد العملاء المحتملين، إدارة عملية البيع وقياس وتحسين الأداء، أو فريق تسويق يدير حملاتك الإعلانية ويحسّن ظهورك في محركات البحث من خلال الـ SEO', 'We work around your needs — a sales team to generate leads, run your sales process and measure and improve performance, or a marketing team to run your ad campaigns and grow your search visibility through SEO')}</p>
+          <p className="heading-desc">{L('نشتغل معك حسب احتياجك، سواء كنت تحتاج فريق مبيعات يساعدك في توليد العملاء المحتملين، أو إدارة عملية البيع وقياس وتحسين الأداء', 'We work around your needs — a sales team to generate leads, or to run your sales process and measure and improve performance')}</p>
         </div>
       </div>
       <div className="svc-deck" ref={deckRef}>
