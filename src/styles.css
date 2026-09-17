@@ -812,7 +812,9 @@ h1, h2, h3, p { margin: 0; }
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 340px;
+  /* track the card, never wider: a fixed 340px inner on the 266px card
+     laid long English titles out on one line and the card clipped them */
+  width: calc(100% - 32px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -829,6 +831,7 @@ h1, h2, h3, p { margin: 0; }
   font-size: 32px;
   font-weight: 700;
   text-align: center;
+  text-wrap: balance;
 }
 
 /* reveal state: card body toggles a short description + full shader;
@@ -1871,6 +1874,9 @@ html[dir='ltr'] .skip-link { right: auto; left: 16px; }
 html[dir='ltr'] .cta-arrow { transform: scaleX(-1); }
 html[dir='ltr'] .header-cta:hover .cta-arrow { transform: scaleX(-1) translateX(-4px); }
 html[dir='ltr'] .sector-card:hover .cta-arrow { transform: scaleX(-1) translateX(-4px); }
+/* English titles wrap to two lines on the card; the Arabic-tuned 1.5
+   leading pushed the revealed icon + CTA to the card edges */
+html[dir='ltr'] .sector-card h3 { line-height: 1.2; }
 html[dir='ltr'] .expander-card:hover .expander-cta .cta-arrow { transform: scaleX(-1) translateX(-4px); }
 
 html[dir='ltr'] .step-copy { text-align: left; }
