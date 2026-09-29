@@ -161,7 +161,10 @@ copy and spacing.
 | Sectors ×4 | `/sectors/:slug` | 5:1530, 5:1944, 5:2089, 5:2234 | handoff |
 | Blog index | `/blog` | 5:1392 | handoff |
 | Blog article | `/blog/:slug` | 5:1467 | handoff |
-| Platform | `/platform` | 5:3414 | handoff |
+| Platform | `/platform` | 5:3414 (superseded by client HTML refs) | ✅ built |
+| Platform · companies | `/platform/business` | client `business.html` | ✅ built |
+| Platform · marketers | `/platform/affiliate` | client `affiliate.html` | ✅ built |
+| Platform · students | `/platform/students` (standalone, unlinked) | client `students.html` | ✅ built |
 | Jobs | `/jobs` | 5:3470 | handoff |
 | Header specs | — | 5:3526…5:3538 (reference only; our header is better) | n/a |
 

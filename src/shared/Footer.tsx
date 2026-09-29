@@ -23,13 +23,15 @@ const OFFICE = {
   link: 'https://maps.app.goo.gl/5sCQKCrstpm5miXbA',
 }
 
-export function Footer() {
+/* `minimal`: the slim footer of standalone pages — brand, legal line
+   and the closing block, no site links or map */
+export function Footer({ minimal = false }: { minimal?: boolean }) {
   const { L, lang } = useLang()
   const { dark } = usePageTheme()
   const mapSrc = `https://maps.google.com/maps?q=${OFFICE.lat},${OFFICE.lng}&z=16&hl=${lang}&output=embed`
 
   return (
-    <footer className="site-footer" id="footer">
+    <footer className={minimal ? 'site-footer site-footer--minimal' : 'site-footer'} id="footer">
       <button
         className="to-top"
         type="button"
@@ -53,6 +55,7 @@ export function Footer() {
             </div>
           </div>
 
+          {minimal ? null : <>
           <nav className="footer-col" aria-label={L('روابط', 'Links')}>
             <p className="footer-head">{L('روابط', 'Links')}</p>
             <a className="footer-link" href="/">{L('الرئيسية', 'Home')}</a>
@@ -96,12 +99,13 @@ export function Footer() {
             <a className="footer-link" href="/jobs">{L('انضم لنا', 'Join Us')}</a>
             <a className="footer-link" href="/#contact">{L('استشارة مجانية', 'Free Consultation')}</a>
           </nav>
+          </>}
         </div>
 
         {/* office map: the iframe stays interactive (pan/zoom), and the
             overlaid link opens the place in Google Maps. Lazy so the
             embed never costs the initial load on any page. */}
-        <section className="footer-map" aria-label={L('موقع المكتب', 'Office location')}>
+        {minimal ? null : <section className="footer-map" aria-label={L('موقع المكتب', 'Office location')}>
           <iframe
             className="footer-map-frame"
             src={mapSrc}
@@ -122,7 +126,7 @@ export function Footer() {
             </svg>
             <span>{L('افتح الموقع في خرائط جوجل', 'Open in Google Maps')}</span>
           </a>
-        </section>
+        </section>}
 
         <div className="footer-bottom">
           <p className="copyright">

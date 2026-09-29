@@ -13,6 +13,7 @@ const SectorPage = lazy(() => import('./SectorPage'))
 const BlogPage = lazy(() => import('./BlogPage'))
 const BlogArticlePage = lazy(() => import('./BlogArticlePage'))
 const PlatformPage = lazy(() => import('./PlatformPage'))
+const PlatformAudiencePage = lazy(() => import('./PlatformAudiencePage'))
 const JobsPage = lazy(() => import('./JobsPage'))
 
 function normalizePath(pathname: string) {
@@ -45,6 +46,12 @@ export function resolvePage(pathname: string): ReactNode {
   if (articleSlug) return <BlogArticlePage slug={articleSlug} />
 
   if (path === '/platform') return <PlatformPage />
+  /* the platform's audience pages; /platform/students is standalone
+     (its own header and footer) and deliberately not linked anywhere */
+  const audience = path.match(/^\/platform\/(business|affiliate|students)$/)?.[1]
+  if (audience === 'business' || audience === 'affiliate' || audience === 'students') {
+    return <PlatformAudiencePage audience={audience} />
+  }
 
   /* انضم لنا: hub, per-track listings, the application form, and role
      detail — 'students'/'graduates'/'apply' are reserved, anything else

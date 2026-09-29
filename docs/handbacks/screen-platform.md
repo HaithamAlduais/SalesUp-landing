@@ -1,6 +1,77 @@
 # Handback — screen: Platform (`/platform`, الحلول الرقمية)
 
-Latest session: 2026-09-16 — page rebuilt to match the client's
+## 2026-09-29 — client review round (تعديلات وملاحظات لصفحات الهبوط.pdf)
+
+All applied to the page each slide names; shared copy on the other pages
+is untouched.
+- **Students**: headline «طالب وودّك تجمع بين / خبرة عملية ومصدر دخل»
+  (the client's note: students want work experience before they
+  graduate); new lead; «ليش يناسبك كطالب»; two reworded bullets in
+  «كل شي واضح قدامك»; tools heading «كل الأدوات الي تحتاجها موجودة في
+  منصتنا» with the six new descriptions («منتجات متنوعة تنضم لها»);
+  FAQ: new answer to «ما عندي خبرة…» and «هل فيه وقت محدد للعمل؟».
+- **Marketers**: new hero lead; new answer to «كيف تشتغل المنصة؟»;
+  «كيف تُحسب العمولة؟»; added «ماهو CRM؟» (the answer is drafted from
+  the approved CRM copy — the client gave the question only, review
+  it); final line «سجّل بخطوة واحدة، اختر أول منتج واكسب مع أول صفقة
+  تقفلها»; cross card «…وتلقى مسوّقين يبيعونه لك».
+- **Companies**: final line «انشر منتجك اليوم وخلّ المسوّقين يبيعونه لك».
+- Small fixes to the client's text: «أعتمدت» → «اعتُمدت», a missing
+  space after «وقفت،».
+- Verified: every new phrase present in AR and EN on its page, no
+  console errors; students hero checked at 1440 and 375.
+
+## 2026-09-27 — audience pages (business / affiliate / students)
+
+Ported Eynas's three references (Slack, Sep 22) the same way as
+`/platform`: React on shared building blocks, our shell and shaders,
+not the raw HTML.
+
+- **Routes**: `/platform/business` (business.html), `/platform/affiliate`
+  (affiliate.html), `/platform/students` (students.html).
+- **Kit**: `src/pages/platformKit.tsx` now holds every building block
+  (board + scenes, hero, duo, sticky story, features, FAQ, final, cross
+  card, scroll reveal). `PlatformPage.tsx` (unchanged output — same
+  page height, verified) and `PlatformAudiencePage.tsx` compose it.
+- **Nav dropdown** (shared `Header.tsx`): الحلول الرقمية opens
+  للشركات / للمسوّقين with the reference's icon + one-line description,
+  on hover and keyboard focus; on touch screens the first tap opens it.
+  The link itself still goes to `/platform` (the overview). The mobile
+  menu lists both as indented sub-links. The current page is marked.
+- **Per the client comments**: hero background = our HeroFx shader;
+  business/affiliate use the site's own footer; before the footer a
+  cross card links to the other audience's page («صفحة المسوّقين» /
+  «صفحة الشركات»); «ابدأ الآن مجاناً» goes straight into the app —
+  companies to `app.salesup.sa/login?intent=brand`, marketers AND
+  students to `?intent=affiliate` (the marketer flow).
+- **Students**: standalone — `src/shared/StandaloneShell.tsx` (unlinked
+  logo, CTA, language + theme toggles, no site nav, no WhatsApp button)
+  and `<Footer minimal />` (faded wordmark, legal line, closing block,
+  socials — the reference's slim footer). Not linked from the site.
+- **Same treatment as /platform (flag for review)**: each page also
+  gets the sticky product story, using only the step copy already
+  approved on /platform — business: publish → approval → performance;
+  marketers/students: opportunities → CRM → commissions — and the
+  ContactFx final block. Remove a page's story by dropping its
+  `<Story>` line.
+- **Copy**: verbatim from each reference; the business page's first
+  feature card is «انشر منتجك» as in business.html (the /platform card
+  stays «انشر منصتك» per the Sep 13 revision).
+- **WordPress**: route titles for the three pages; the old-site
+  `affiliate` / `برنامج-التسويق-بالعمولة-المطور` 301s now land on
+  `/platform/affiliate` instead of `/platform`.
+- **Verified**: tsc clean; headless AR light / EN dark desktop 1440 and
+  AR light 375 for all three pages, every story step, no console
+  errors, no horizontal overflow; dropdown in EN dark (LTR); mobile
+  menu; students header at 375 (AR/EN) and 320.
+- **Open**: a student-specific signup marker (the reference used
+  `?role=student`) needs the app side (Shaya) — for now students use
+  the marketer intent. The WhatsApp button overlaps the hero lead on
+  phones site-wide (pre-existing, not new here).
+
+---
+
+Earlier session: 2026-09-16 — page rebuilt to match the client's
 `platform.html` reference (Eynas, Slack, Sep 13). Earlier sessions
 (coming-soon page → native product story) are superseded.
 

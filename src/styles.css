@@ -397,6 +397,103 @@ h1, h2, h3, p { margin: 0; }
 .mobile-sheet.is-open nav a { opacity: 1; transform: none; }
 .mobile-sheet nav a:hover { background: rgba(4, 203, 121, 0.08); color: var(--green); }
 
+/* the dropdown's items, indented under their parent */
+.mobile-sheet nav a.sheet-sub {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-block: 10px;
+  padding-inline: 34px 16px;
+  font-size: 16px;
+  color: #3d5f58;
+}
+.mobile-sheet nav a.sheet-sub svg { flex: none; width: 18px; height: 18px; color: #039458; }
+.mobile-sheet nav a.sheet-sub.is-current { background: rgba(4, 203, 121, 0.08); color: var(--green); }
+
+/* ---------- nav dropdown (الحلول الرقمية → للشركات / للمسوّقين) ---------- */
+
+.nav-dd {
+  position: relative;
+  display: inline-flex;
+}
+.nav-dd:hover > a .nav-chevron,
+.nav-dd:focus-within > a .nav-chevron,
+.nav-dd.is-open > a .nav-chevron { transform: rotate(-180deg); }
+
+.nav-dd-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  z-index: 60;
+  display: grid;
+  gap: 2px;
+  min-width: 250px;
+  padding: 8px;
+  border: 1px solid rgba(19, 63, 64, 0.1);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 24px 50px -22px rgba(3, 62, 38, 0.3);
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -8px);
+  transition:
+    opacity 250ms cubic-bezier(0.22, 0.85, 0.3, 1),
+    transform 250ms cubic-bezier(0.22, 0.85, 0.3, 1),
+    visibility 250ms;
+}
+/* bridges the gap so the pointer can travel from the link to the list */
+.nav-dd-menu::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: -14px;
+  height: 14px;
+}
+.nav-dd:hover .nav-dd-menu,
+.nav-dd:focus-within .nav-dd-menu,
+.nav-dd.is-open .nav-dd-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+.desktop-nav .nav-dd-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  color: var(--ink);
+  font-size: 14px;
+  text-align: start;
+  transition: background-color 200ms ease;
+}
+.desktop-nav .nav-dd-item:hover,
+.desktop-nav .nav-dd-item.is-current {
+  background: rgba(4, 203, 121, 0.1);
+  color: var(--ink);
+}
+.nav-dd-item svg { flex: none; width: 18px; height: 18px; margin-top: 2px; color: #039458; }
+.nav-dd-item b { display: block; font-size: 14.5px; font-weight: 700; line-height: 1.4; }
+.nav-dd-item b + span { display: block; margin-top: 3px; color: #5f7a72; font-size: 12.5px; line-height: 1.5; }
+
+/* standalone pages: no site nav, so the actions sit opposite the logo */
+.site-header--standalone .brand-logo { cursor: default; }
+/* small phones: logo, CTA and both toggles must share ~350px (the
+   English label is the longer one) */
+@media (max-width: 480px) {
+  .site-header.site-header--standalone .header-actions { gap: 6px; }
+  .site-header.site-header--standalone .brand-logo img { width: 92px; height: 41px; }
+  .site-header.site-header--standalone .header-cta { padding: 0 12px; font-size: 12.5px; }
+  .site-header.site-header--standalone .header-cta .cta-arrow { display: none; }
+}
+/* the smallest phones: the hero's CTA sits right below, so the bar keeps
+   only the logo and the toggles */
+@media (max-width: 360px) {
+  .site-header.site-header--standalone .header-cta { display: none; }
+}
+
 .sheet-cta {
   display: flex;
   align-items: center;
@@ -1862,6 +1959,19 @@ div[id^='gb-widget'],
   text-align: center;
 }
 
+/* slim footer of standalone pages: a quiet centered wordmark above the
+   legal line and closing block */
+.site-footer--minimal .footer-grid { justify-content: center; align-items: center; }
+.site-footer--minimal .footer-brand {
+  align-items: center;
+  max-width: none;
+  opacity: 0.45;
+  transition: opacity 300ms ease;
+}
+.site-footer--minimal .footer-brand:hover { opacity: 0.7; }
+.site-footer--minimal .footer-logo-fx { width: 230px; }
+.site-footer--minimal .footer-bottom { margin-top: 48px; }
+
 /* ---------- English (LTR) adjustments ----------
    flexbox/logical properties mirror automatically with dir="ltr";
    these overrides cover the physical bits: forward arrows point RIGHT
@@ -2065,6 +2175,22 @@ html.fx-unproven .footer-logo-fx-inner {
 }
 [data-theme='dark'] .mobile-sheet nav a { color: #e8f6ef; }
 [data-theme='dark'] .mobile-sheet nav a:hover { background: rgba(4, 203, 121, 0.12); }
+[data-theme='dark'] .mobile-sheet nav a.sheet-sub { color: rgba(232, 246, 239, 0.75); }
+[data-theme='dark'] .mobile-sheet nav a.sheet-sub svg,
+[data-theme='dark'] .nav-dd-item svg { color: var(--green); }
+[data-theme='dark'] .mobile-sheet nav a.sheet-sub.is-current { color: var(--green); }
+[data-theme='dark'] .nav-dd-menu {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: #102a2c;
+  box-shadow: 0 24px 50px -20px rgba(0, 0, 0, 0.6);
+}
+[data-theme='dark'] .desktop-nav .nav-dd-item { color: #e8f6ef; }
+[data-theme='dark'] .desktop-nav .nav-dd-item:hover,
+[data-theme='dark'] .desktop-nav .nav-dd-item.is-current {
+  background: rgba(4, 203, 121, 0.14);
+  color: #e8f6ef;
+}
+[data-theme='dark'] .nav-dd-item b + span { color: rgba(232, 246, 239, 0.6); }
 
 [data-theme='dark'] .hero-copy p,
 [data-theme='dark'] .section-heading .heading-desc {
@@ -2214,6 +2340,8 @@ html.fx-unproven .footer-logo-fx-inner {
   .desktop-nav { display: none; }
   .menu-toggle { display: grid; }
   .header-cta { display: none; }
+  /* standalone pages have no menu sheet: their CTA stays in the bar */
+  .site-header--standalone .header-cta { display: inline-flex; height: 40px; padding: 0 14px; font-size: 13.5px; }
   .site-header { height: 72px; }
   .header-shell { height: 72px; }
   .is-island .header-shell { height: 56px; transform: translateY(10px); }
