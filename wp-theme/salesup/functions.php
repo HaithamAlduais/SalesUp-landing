@@ -31,7 +31,12 @@ add_action( 'wp_enqueue_scripts', function () {
 	if ( ! $entry ) {
 		return;
 	}
-	$ver = wp_get_theme()->get( 'Version' );
+	/* no ?ver: the build's file names are content-hashed already, and the
+	   entry MUST load at its bare URL. The route chunks import it back as
+	   "./index-<hash>.js"; with "?ver=…" on the <script> the browser sees
+	   two different modules, runs the app twice and mounts a second copy
+	   of every page under the first. */
+	$ver = null;
 	foreach ( $entry['css'] ?? array() as $i => $css ) {
 		wp_enqueue_style( 'salesup-app-' . $i, get_theme_file_uri( $css ), array(), $ver );
 	}
