@@ -11,7 +11,8 @@
   edit them in wp-admin if wanted (their SEO keyword is «مسوق بالعمولة»).
 - **Story step pills removed on every page** («للبائع · اختر فرصتك»,
   «للشركة · البداية من منتجك» …).
-- **Students**: every sign-up button reads «انضم معنا» / “Join us”.
+- **Sign-up buttons**: every audience (companies, sellers, students)
+  reads «انضم معنا» / “Join us” — hero, closing block, students header.
 - **Sellers page**: «بِع منتجات رقمية».
 - **Business**: dropped «أنت تكتب الشروط والعمولة» from the first card.
 - **Footer map**: only on home and services (`<PageShell footerMap>`).

@@ -18,11 +18,13 @@ import type { FaqItem, Feature, Side } from './platformKit'
 
 export type Audience = 'business' | 'affiliate' | 'students'
 
+/* every audience signs up through «انضم معنا» / “Join us” (client, Sep 30) */
+
 function Business() {
   const { L } = useLang()
   const steps = storySteps(L)
   const faq = faqItems(L)
-  const cta = { href: APP_COMPANY, label: L('ابدأ الآن مجاناً', 'Start now for free') }
+  const cta = { href: APP_COMPANY, label: L('انضم معنا', 'Join us') }
 
   return (
     <PlatformBody>
@@ -72,7 +74,7 @@ function Business() {
 }
 
 /* the marketer pages share the hero board, the story and the tools */
-function MarketerBody({ title, lead, duo, features, faq, final, cross, ctaLabel }: {
+function MarketerBody({ title, lead, duo, features, faq, final, cross }: {
   title: [string, string]
   lead: [string, string]
   duo: { title: string; sides: Side[] }
@@ -81,12 +83,10 @@ function MarketerBody({ title, lead, duo, features, faq, final, cross, ctaLabel 
   faq: FaqItem[]
   final: string
   cross?: boolean
-  /* the sign-up button's label (defaults to «ابدأ الآن مجاناً») */
-  ctaLabel?: string
 }) {
   const { L } = useLang()
   const steps = storySteps(L)
-  const cta = { href: APP_MARKETER, label: ctaLabel ?? L('ابدأ الآن مجاناً', 'Start now for free') }
+  const cta = { href: APP_MARKETER, label: L('انضم معنا', 'Join us') }
 
   return (
     <PlatformBody>
@@ -212,8 +212,6 @@ function Students() {
         [L('كيف أبدأ؟', 'How do I start?'), L('سجّل ببريدك، اختر أول منتج يناسبك، وتدرّب عليه ثم ابدأ البيع.', 'Sign up with your email, pick a first product that suits you, get trained on it, then start selling.')],
       ]}
       final={L('سجّل ببريدك، اختر أول منتج، وابدأ من اليوم', 'Sign up with your email, pick your first product, and start today')}
-      /* students sign up through «انضم معنا» (client, Sep 30) */
-      ctaLabel={L('انضم معنا', 'Join us')}
     />
   )
 }
