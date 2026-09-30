@@ -410,7 +410,7 @@ h1, h2, h3, p { margin: 0; }
 .mobile-sheet nav a.sheet-sub svg { flex: none; width: 18px; height: 18px; color: #039458; }
 .mobile-sheet nav a.sheet-sub.is-current { background: rgba(4, 203, 121, 0.08); color: var(--green); }
 
-/* ---------- nav dropdown (الحلول الرقمية → للشركات / للمسوّقين) ---------- */
+/* ---------- nav dropdown (الحلول الرقمية → للشركات / للبائعين) ---------- */
 
 .nav-dd {
   position: relative;

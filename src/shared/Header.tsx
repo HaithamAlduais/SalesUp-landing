@@ -20,10 +20,10 @@ const NAV_LINKS: { key: NavKey; ar: string; en: string; href: string; menu?: boo
     key: 'platform',
     ar: 'الحلول الرقمية',
     en: 'Digital Solutions',
-    href: '/platform',
+    href: '/platform/business',
     items: [
-      { href: '/platform/business', ar: 'للشركات', en: 'For companies', descAr: 'اعرض منتجك وخلّ المسوّقين يبيعونه', descEn: 'List your product and let marketers sell it', icon: 'brief' },
-      { href: '/platform/affiliate', ar: 'للمسوّقين', en: 'For marketers', descAr: 'بِع وخذ عمولتك', descEn: 'Sell and earn your commission', icon: 'users' },
+      { href: '/platform/business', ar: 'للشركات', en: 'For companies', descAr: 'اعرض منتجك وخلّ البائعين يبيعونه', descEn: 'List your product and let sellers sell it', icon: 'brief' },
+      { href: '/platform/affiliate', ar: 'للبائعين', en: 'For sellers', descAr: 'بِع وخذ عمولتك', descEn: 'Sell and earn your commission', icon: 'users' },
     ],
   },
   { key: 'blog', ar: 'المدونة', en: 'Blog', href: '/blog' },

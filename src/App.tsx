@@ -536,7 +536,7 @@ function LandingSections() {
 /* the landing screen (Figma 5:962), wrapped in the shared shell */
 export default function LandingPage() {
   return (
-    <PageShell active="home">
+    <PageShell active="home" footerMap>
       <LandingSections />
     </PageShell>
   )

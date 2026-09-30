@@ -26,7 +26,7 @@ function WhatsAppFab() {
   )
 }
 
-function Shell({ active, children }: { active?: NavKey; children: ReactNode }) {
+function Shell({ active, footerMap, children }: { active?: NavKey; footerMap?: boolean; children: ReactNode }) {
   const [theme, toggleTheme] = useTheme()
   const { L } = useLang()
   return (
@@ -35,7 +35,7 @@ function Shell({ active, children }: { active?: NavKey; children: ReactNode }) {
         <a className="skip-link" href="#main-content">{L('تجاوز إلى المحتوى', 'Skip to content')}</a>
         <Header theme={theme} onToggleTheme={toggleTheme} active={active} />
         <main id="main-content">{children}</main>
-        <Footer />
+        <Footer map={footerMap} />
         <WhatsAppFab />
       </div>
     </ThemeProvider>
@@ -49,10 +49,10 @@ function Shell({ active, children }: { active?: NavKey; children: ReactNode }) {
  * scaffold. Page bodies read theme via usePageTheme() and language via
  * useLang().L(ar, en).
  */
-export function PageShell({ active, children }: { active?: NavKey; children: ReactNode }) {
+export function PageShell({ active, footerMap, children }: { active?: NavKey; footerMap?: boolean; children: ReactNode }) {
   return (
     <LangProvider>
-      <Shell active={active}>{children}</Shell>
+      <Shell active={active} footerMap={footerMap}>{children}</Shell>
     </LangProvider>
   )
 }

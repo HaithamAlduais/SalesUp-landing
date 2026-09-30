@@ -1,5 +1,25 @@
 # Handback — screen: Platform (`/platform`, الحلول الرقمية)
 
+## 2026-09-30 — naming + التعديلات.pdf + retiring /platform
+
+- **مسوّق → بائع everywhere the site says it** (every form: المسوّقين →
+  البائعين, للمسوّق → للبائع, مسوّقون → بائعون …, and the role's
+  «فرص/جاهزة/بدء التسويق» → «البيع»); English marketer → seller. Kept:
+  مسودة (draft), SalesUp's own marketing services, the «أخصائي تسويق»
+  job, old redirect slugs. NOT changeable from code: two WordPress blog
+  posts («لماذا يختار مسوقين بالعمولة…», «منصات التسويق بالعمولة…») —
+  edit them in wp-admin if wanted (their SEO keyword is «مسوق بالعمولة»).
+- **Story step pills removed on every page** («للبائع · اختر فرصتك»,
+  «للشركة · البداية من منتجك» …).
+- **Students**: every sign-up button reads «انضم معنا» / “Join us”.
+- **Sellers page**: «بِع منتجات رقمية».
+- **Business**: dropped «أنت تكتب الشروط والعمولة» from the first card.
+- **Footer map**: only on home and services (`<PageShell footerMap>`).
+- **/platform retired** (Eynas): الحلول الرقمية and the footer link open
+  `/platform/business`; `/platform` redirects there (app, WordPress
+  301, Vercel). `PlatformPage.tsx`, the audience toggle and its CSS are
+  gone.
+
 ## 2026-09-29 — client review round (تعديلات وملاحظات لصفحات الهبوط.pdf)
 
 All applied to the page each slide names; shared copy on the other pages

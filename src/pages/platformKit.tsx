@@ -152,9 +152,9 @@ export function CommissionsScene({ live = false }: { live?: boolean }) {
 export function ProductsScene() {
   const { L } = useLang()
   const rows = [
-    { i: L('ن', 'P'), t: L('نظام نقاط بيع', 'POS system'), s: L('14 مسوّق منضم', '14 marketers joined'), a: L('9 صفقات', '9 deals') },
-    { i: L('ر', 'C'), t: L('منصة CRM', 'CRM platform'), s: L('8 مسوّقين', '8 marketers'), a: L('12 صفقة', '12 deals') },
-    { i: L('د', 'S'), t: L('أمن سيبراني', 'Cybersecurity'), s: L('6 مسوّقين', '6 marketers'), a: L('7 صفقات', '7 deals') },
+    { i: L('ن', 'P'), t: L('نظام نقاط بيع', 'POS system'), s: L('14 بائع منضم', '14 sellers joined'), a: L('9 صفقات', '9 deals') },
+    { i: L('ر', 'C'), t: L('منصة CRM', 'CRM platform'), s: L('8 بائعين', '8 sellers'), a: L('12 صفقة', '12 deals') },
+    { i: L('د', 'S'), t: L('أمن سيبراني', 'Cybersecurity'), s: L('6 بائعين', '6 sellers'), a: L('7 صفقات', '7 deals') },
     { i: L('س', 'H'), t: L('استضافة سحابية', 'Cloud hosting'), s: L('بانتظار المراجعة', 'Awaiting review'), a: L('مسودة', 'Draft'), pend: true },
   ]
   return (
@@ -297,7 +297,7 @@ export function CompanyPerformanceScene() {
         title: L('ملخّص أداء منتجاتك', 'Your products’ performance'),
         tiles: [
           { label: L('صفقات وصلتك', 'Deals received'), value: '34', note: <>{L('هذا الشهر', 'This month')} <bdi dir="ltr">+21%</bdi></>, hot: true },
-          { label: L('مسوّقون نشطون', 'Active marketers'), value: '28', note: L('على 4 منتجات', 'across 4 products') },
+          { label: L('بائعون نشطون', 'Active sellers'), value: '28', note: L('على 4 منتجات', 'across 4 products') },
           { label: L('معدّل الإقفال', 'Close rate'), value: '63%', note: L('من الصفقات', 'of deals') },
           { label: L('عمولات مصروفة', 'Commissions paid'), value: '18,400', note: L('ر.س', 'SAR') },
         ],
@@ -315,13 +315,13 @@ export function PublishScene() {
     <>
       <Label title={L('إضافة منتج جديد', 'New product')} live={L('جاهز للنشر', 'Ready to publish')} />
       <div className="tiles">
-        <div className="tile hot"><span>{L('العمولة', 'Commission')}</span><b>12%</b><em>{L('تظهر للمسوّق قبل الانضمام', 'Shown before a marketer joins')}</em></div>
+        <div className="tile hot"><span>{L('العمولة', 'Commission')}</span><b>12%</b><em>{L('تظهر للبائع قبل الانضمام', 'Shown before a seller joins')}</em></div>
         <div className="tile"><span>{L('المنتج', 'Product')}</span><b className="txt">{L('نظام نقاط بيع', 'POS system')}</b><em>{L('اشتراك سنوي', 'Annual plan')}</em></div>
         <div className="tile"><span>{L('الفئة', 'Category')}</span><b className="txt">{L('حلول المتاجر', 'Retail solutions')}</b><em>{L('يظهر ضمن الفرص', 'Listed in opportunities')}</em></div>
-        <div className="tile"><span>{L('مسوّقون مهتمون', 'Interested marketers')}</span><b>86</b><em>{L('خلال أول أسبوع', 'In the first week')}</em></div>
+        <div className="tile"><span>{L('بائعون مهتمون', 'Interested sellers')}</span><b>86</b><em>{L('خلال أول أسبوع', 'In the first week')}</em></div>
       </div>
       <div className="total" style={{ marginTop: 14, marginBottom: 0 }}>
-        <span>{L('حالة النشر', 'Publishing status')}</span><b className="txt">{L('مكتمل · ظاهر للمسوّقين', 'Complete · visible to marketers')}</b>
+        <span>{L('حالة النشر', 'Publishing status')}</span><b className="txt">{L('مكتمل · ظاهر للبائعين', 'Complete · visible to sellers')}</b>
       </div>
     </>
   )
@@ -332,7 +332,7 @@ export function OpportunitiesScene() {
   const rows = [
     { i: L('ر', 'C'), t: L('منصة CRM · اشتراك سنوي', 'CRM platform · annual plan'), s: L('مفتوحة · شروط واضحة', 'Open · clear terms'), a: '18%' },
     { i: L('م', 'E'), t: L('متجر إلكتروني · قطع غيار', 'E-commerce · spare parts'), s: L('مفتوحة · مبيعات B2B', 'Open · B2B sales'), a: '14%' },
-    { i: L('س', 'S'), t: L('خدمة استضافة · سُهيل', 'Hosting service · Suhail'), s: L('مفتوحة · جاهزة للتسويق', 'Open · ready to market'), a: '12%' },
+    { i: L('س', 'S'), t: L('خدمة استضافة · سُهيل', 'Hosting service · Suhail'), s: L('مفتوحة · جاهزة للبيع', 'Open · ready to sell'), a: '12%' },
     { i: L('ن', 'N'), t: L('نظام نقاط بيع · متجر نُوى', 'POS system · Nuwa Store'), s: L('مفتوحة · عمولة على الإقفال', 'Open · paid on close'), a: '12%' },
   ]
   return (
@@ -414,7 +414,7 @@ function useRotation(count: number, ref: RefObject<HTMLElement | null>, ms = 520
 }
 
 /* sections flow in as you scroll, instead of landing all at once */
-const REVEAL = '.shead, .faqhead, .side, .side li, .feat, .q, .final, .cross, .hcopy, .hero .stage, .aud, .story-item'
+const REVEAL = '.shead, .faqhead, .side, .side li, .feat, .q, .final, .cross, .hcopy, .hero .stage, .story-item'
 
 function useReveal(root: RefObject<HTMLElement | null>) {
   useEffect(() => {
@@ -479,7 +479,7 @@ export function Hero({ title, lead, cta, grow = false, scenes }: {
           <Rings />
           <Board scenes={scenes} active={active} />
           <span className="badge bd1"><Icon name="shield" />{L('عمولتك محفوظة ومرصودة', 'Your commission is recorded and protected')}</span>
-          <span className="badge bd2"><Icon name="users" /><bdi dir="ltr">+1,400</bdi>&nbsp;{L('مسوّق نشط', 'active marketers')}</span>
+          <span className="badge bd2"><Icon name="users" /><bdi dir="ltr">+1,400</bdi>&nbsp;{L('بائع نشط', 'active sellers')}</span>
         </div>
       </div>
     </header>
@@ -508,51 +508,45 @@ export function Duo({ title, sides }: { title: string; sides: Side[] }) {
   )
 }
 
-export type StoryStep = { eyebrow: string; title: string; desc: string; proof: string; icon: IconName; fx: number; scene: ReactNode }
+export type StoryStep = { title: string; desc: string; proof: string; icon: IconName; fx: number; scene: ReactNode }
 
 /* the six product-story steps approved on /platform; audience pages
    pick the ones that speak to them */
 export function storySteps(L: Localize) {
   return {
     publish: {
-      eyebrow: L('للشركة · البداية من منتجك', 'Company · Start with your product'),
       title: L('انشر منتجك بالشروط التي تناسبك', 'Publish your product on your terms'),
-      desc: L('تضيف منتجك بوصفه وشروطه وتحدّد عمولته، ويظهر للمسوّقين في ثوانٍ.', 'Add your product, its terms and commission, and it is visible to marketers in seconds.'),
-      proof: L('لا تحتاج أن تعيد شرح العرض لكل مسوّق.', 'No need to explain the offer to every marketer.'),
+      desc: L('تضيف منتجك بوصفه وشروطه وتحدّد عمولته، ويظهر للبائعين في ثوانٍ.', 'Add your product, its terms and commission, and it is visible to sellers in seconds.'),
+      proof: L('لا تحتاج أن تعيد شرح العرض لكل بائع.', 'No need to explain the offer to every seller.'),
       icon: 'box', fx: 0, scene: <PublishScene />,
     },
     opportunities: {
-      eyebrow: L('للمسوّق · اختر فرصتك', 'Marketer · Choose your opportunity'),
       title: L('تدخل على منتج تعرف كيف تبيعه', 'Join a product you know how to sell'),
       desc: L('تتصفّح المتاح، تشوف عمولة كل منتج وشروطه، وتنضم للي تعرف تبيعه.', 'Browse what is open, see each product’s commission and terms, and join the ones you can sell.'),
       proof: L('العمولة والشروط واضحة قبل أول تواصل.', 'Commission and terms are clear before your first outreach.'),
       icon: 'users', fx: 1, scene: <OpportunitiesScene />,
     },
     crm: {
-      eyebrow: L('للمسوّق · عملك مرتب', 'Marketer · Keep work organized'),
       title: L('كل عميل وصفقة في CRM خاص فيك', 'Every customer and deal in your own CRM'),
       desc: L('عملاؤك وصفقاتك منظّمة، وتعرف كل صفقة وين وصلت ومتى آخر تواصل.', 'Your customers and deals stay organized, with every stage and last contact in view.'),
       proof: L('ما تضيع الفرص بين المحادثات والملفات.', 'No opportunities lost between chats and files.'),
       icon: 'brief', fx: 2, scene: <CrmScene />,
     },
     approval: {
-      eyebrow: L('للشركة · تحكّم في الاعتماد', 'Company · Control approval'),
       title: L('كل صفقة تصل موثّقة وجاهزة للقرار', 'Every deal arrives documented and ready for a decision'),
       desc: L('كل صفقة تصلك بتفاصيل عميلها ومرحلتها، وتعتمدها بضغطة.', 'Every deal reaches you with its customer details and stage, ready to approve in one click.'),
       proof: L('تدفع على النتيجة، وليس على الوعود.', 'You pay for outcomes, not promises.'),
       icon: 'shield', fx: 3, scene: <ApprovalScene />,
     },
     commissions: {
-      eyebrow: L('للمسوّق · حقك محسوب', 'Marketer · Your earnings, counted'),
       title: L('المستحق والجاري قدامك لحظة بلحظة', 'Payable and pending, in front of you moment by moment'),
       desc: L('المستحق والجاري وإجمالي ما كسبته، محدّث لحظياً بدون ما تسأل أحد.', 'Payable, pending and total earnings, updated live without asking anyone.'),
       proof: L('تعرف بالضبط ماذا لك ومتى يصرف.', 'Know exactly what is yours and when it pays out.'),
       icon: 'wallet', fx: 4, scene: <CommissionsScene />,
     },
     performance: {
-      eyebrow: L('لكل الطرفين · قرارات أوضح', 'Both sides · Clearer decisions'),
       title: L('تشوف الأداء، وتتحرّك على بيانات حقيقية', 'See performance and act on real data'),
-      desc: L('تشوف أي منتج يتحرّك، وكم صفقة وصلتك، ومن أي مسوّق جات. وتعرف أي فرصة تستحق جهدك أكثر.', 'See which product is moving, how many deals arrived and which marketer brought them, so you know where to focus next.'),
+      desc: L('تشوف أي منتج يتحرّك، وكم صفقة وصلتك، ومن أي بائع جات. وتعرف أي فرصة تستحق جهدك أكثر.', 'See which product is moving, how many deals arrived and which seller brought them, so you know where to focus next.'),
       proof: L('تقاريرك تشرح لك أين تكبر، لا مجرد أرقام.', 'Your reports show where to grow, not just numbers.'),
       icon: 'chart', fx: 5, scene: <PerformanceScene />,
     },
@@ -613,7 +607,6 @@ function useStoryScroll(count: number) {
 function StepCopy({ step }: { step: StoryStep }) {
   return (
     <div className="step">
-      <span className="pill"><Icon name={step.icon} />{step.eyebrow}</span>
       <h3>{step.title}</h3>
       <p className="lead">{step.desc}</p>
       <p className="proof"><Icon name="chk" />{step.proof}</p>
@@ -682,8 +675,6 @@ export function Story({ steps }: { steps: StoryStep[] }) {
 }
 
 export type Feature = { icon: IconName; title: string; desc: string }
-export type FeatureSet = { key: string; label: string; items: Feature[] }
-
 function FeatureGrid({ items }: { items: Feature[] }) {
   return (
     <>
@@ -698,33 +689,13 @@ function FeatureGrid({ items }: { items: Feature[] }) {
   )
 }
 
-/* one set renders a plain grid; several get the audience toggle */
-export function Features({ sets, title }: { sets: FeatureSet[]; title?: string }) {
+export function Features({ items, title }: { items: Feature[]; title?: string }) {
   const { L } = useLang()
-  const [audience, setAudience] = useState(sets[0].key)
-
   return (
     <section className="feat-section" id="platform-workspace">
       <div className="w">
         <div className="shead"><h2>{title ?? L('كل أداة تحتاجها موجودة بمنصتنا', 'Every tool you need is on our platform')}</h2></div>
-        {sets.length === 1 ? (
-          <div className="grid3"><FeatureGrid items={sets[0].items} /></div>
-        ) : (
-          <>
-            <div className="aud" role="tablist" aria-label={L('اختر نوع الحساب', 'Choose account type')}>
-              {sets.map((set) => (
-                <button type="button" role="tab" id={'pf-tab-' + set.key} aria-selected={audience === set.key} aria-controls={'pf-panel-' + set.key} className={audience === set.key ? 'on' : undefined} onClick={() => setAudience(set.key)} key={set.key}>
-                  {set.label}
-                </button>
-              ))}
-            </div>
-            {sets.map((set) => (
-              <div className={'grid3 aset' + (audience === set.key ? ' on' : '')} role="tabpanel" id={'pf-panel-' + set.key} aria-labelledby={'pf-tab-' + set.key} aria-hidden={audience !== set.key} key={set.key}>
-                <FeatureGrid items={set.items} />
-              </div>
-            ))}
-          </>
-        )}
+        <div className="grid3"><FeatureGrid items={items} /></div>
       </div>
     </section>
   )
@@ -735,7 +706,7 @@ export function marketerFeatures(L: Localize): Feature[] {
     { icon: 'box', title: L('منتجات تنضم لها', 'Products to join'), desc: L('تتصفّح المتاح، تشوف عمولة كل منتج وشروطه، وتنضم للي تعرف تبيعه.', 'Browse what is open, see each product’s commission and terms, and join the ones you can sell.') },
     { icon: 'wallet', title: L('عمولات محسوبة', 'Commissions, counted'), desc: L('المستحق والجاري وإجمالي ما كسبته، محدّث لحظياً بدون ما تسأل أحد.', 'Payable, pending and total earnings, updated live without asking anyone.') },
     { icon: 'users', title: L('CRM خاص فيك', 'Your own CRM'), desc: L('عملاؤك وصفقاتك منظّمة، وتعرف كل صفقة وين وصلت ومتى آخر تواصل.', 'Your customers and deals stay organized, with every stage and last contact in view.') },
-    { icon: 'cup', title: L('لوحة المتصدّرين', 'Leaderboard'), desc: L('ترتيبك بين المسوّقين قدامك، تعرف وين تقف ووش يحتاج منك جهد أكثر.', 'Your rank among marketers, so you know where you stand and where to push harder.') },
+    { icon: 'cup', title: L('لوحة المتصدّرين', 'Leaderboard'), desc: L('ترتيبك بين البائعين قدامك، تعرف وين تقف ووش يحتاج منك جهد أكثر.', 'Your rank among sellers, so you know where you stand and where to push harder.') },
     { icon: 'chart', title: L('تقارير أدائك', 'Performance reports'), desc: L('عمولاتك شهرياً، نسبة إقفالك، وأي منتج يجيب لك أكثر.', 'Monthly commissions, your close rate, and which product earns you the most.') },
     { icon: 'bell', title: L('تنبيهات تسبقك', 'Alerts ahead of you'), desc: L('صفقة اعتُمدت، عمولة نُزّلت، أو صفقة وقفت، يوصلك أول بأول.', 'A deal approved, a commission paid, or a deal on hold: you hear about it first.') },
   ]
@@ -745,10 +716,10 @@ export function marketerFeatures(L: Localize): Feature[] {
    reference's titles for the first two */
 export function companyFeatures(L: Localize, first: [string, string], second: [string, string]): Feature[] {
   return [
-    { icon: 'box', title: L(...first), desc: L('تضيف منتجك بوصفه وشروطه وتحدّد عمولته، ويظهر للمسوّقين في ثوانٍ.', 'Add your product, its terms and commission, and it is visible to marketers in seconds.') },
-    { icon: 'users', title: L(...second), desc: L('مسوّقون ينضمون لمنتجك ويبدأون البيع، بدون توظيف ولا رواتب ثابتة.', 'Marketers join your product and start selling, with no hiring and no fixed salaries.') },
+    { icon: 'box', title: L(...first), desc: L('تضيف منتجك بوصفه وشروطه وتحدّد عمولته، ويظهر للبائعين في ثوانٍ.', 'Add your product, its terms and commission, and it is visible to sellers in seconds.') },
+    { icon: 'users', title: L(...second), desc: L('بائعون ينضمون لمنتجك ويبدأون البيع، بدون توظيف ولا رواتب ثابتة.', 'Sellers join your product and start selling, with no hiring and no fixed salaries.') },
     { icon: 'wallet', title: L('تدفع على النتيجة', 'Pay for outcomes'), desc: L('العمولة تُستحق فقط عند إقفال الصفقة، والمنصة تتولّى الاحتساب.', 'Commission is due only when a deal closes, and the platform handles the math.') },
-    { icon: 'chart', title: L('أداء منتجاتك', 'Product performance'), desc: L('تشوف أي منتج يتحرّك، وكم صفقة وصلتك، ومن أي مسوّق جات.', 'See which product is moving, how many deals arrived, and which marketer brought them.') },
+    { icon: 'chart', title: L('أداء منتجاتك', 'Product performance'), desc: L('تشوف أي منتج يتحرّك، وكم صفقة وصلتك، ومن أي بائع جات.', 'See which product is moving, how many deals arrived, and which seller brought them.') },
     { icon: 'brief', title: L('صفقات موثّقة', 'Documented deals'), desc: L('كل صفقة تصلك بتفاصيل عميلها ومرحلتها، وتعتمدها بضغطة.', 'Every deal reaches you with its customer details and stage, ready to approve in one click.') },
     { icon: 'shield', title: L('شروط تحميك', 'Terms that protect you'), desc: L('أنت تكتب شروط العمولة.', 'You write the commission terms.') },
   ]
@@ -759,13 +730,13 @@ export type FaqItem = [string, string]
 /* the shared platform questions, by key, so each page lists its own */
 export function faqItems(L: Localize) {
   return {
-    how: [L('كيف تشتغل المنصة؟', 'How does the platform work?'), L('الشركات تعرض منتجاتها وفرصها، والمسوقون يختارون الفرص المناسبة لهم. ومن خلال المنصة يقدر الطرفان يتابعون الصفقات والعمولات من مكان واحد.', 'Companies list their products and opportunities, and marketers choose the ones that suit them. Both sides then follow deals and commissions from one place.')],
-    commission: [L('كيف تنحسب العمولة؟', 'How is the commission calculated?'), L('كل منتج أو فرصة يكون لها عمولة محددة وواضحة من البداية، بحيث يعرف المسوّق عمولته وتعرف الشركة تكلفة كل صفقة قبل بدء التسويق.', 'Every product or opportunity has a clear commission from the start, so the marketer knows their earnings and the company knows the cost of each deal before marketing begins.')],
+    how: [L('كيف تشتغل المنصة؟', 'How does the platform work?'), L('الشركات تعرض منتجاتها وفرصها، والبائعون يختارون الفرص المناسبة لهم. ومن خلال المنصة يقدر الطرفان يتابعون الصفقات والعمولات من مكان واحد.', 'Companies list their products and opportunities, and sellers choose the ones that suit them. Both sides then follow deals and commissions from one place.')],
+    commission: [L('كيف تنحسب العمولة؟', 'How is the commission calculated?'), L('كل منتج أو فرصة يكون لها عمولة محددة وواضحة من البداية، بحيث يعرف البائع عمولته وتعرف الشركة تكلفة كل صفقة قبل بدء البيع.', 'Every product or opportunity has a clear commission from the start, so the seller knows their earnings and the company knows the cost of each deal before selling begins.')],
     approval: [L('كيف يتم اعتماد الصفقة؟', 'How is a deal approved?'), L('بعد تسجيل الصفقة، تتم مراجعتها واعتمادها حسب تفاصيل العملية. وبعد الاعتماد تظهر حالة الصفقة والعمولة بشكل واضح للطرفين.', 'After a deal is recorded, it is reviewed and approved according to its details. Once approved, the deal and commission status is clear to both sides.')],
     payout: [L('متى تُصرف العمولة؟', 'When is the commission paid?'), L('بعد اعتماد الصفقة تنتقل العمولة إلى حالة الاستحقاق، ويتم صرفها بحسب دورة الدفع المحددة في المنصة.', 'Once a deal is approved, its commission becomes payable and is paid according to the platform’s payment cycle.')],
-    many: [L('هل أقدر أتعامل مع أكثر من منتج أو مسوّق؟', 'Can I work with more than one product or marketer?'), L('نعم. المسوّق يقدر يشارك في أكثر من فرصة، والشركة تقدر تعرض أكثر من منتج وتتعامل مع عدة مسوقين من خلال حساب واحد.', 'Yes. A marketer can join more than one opportunity, and a company can list several products and work with several marketers from one account.')],
+    many: [L('هل أقدر أتعامل مع أكثر من منتج أو بائع؟', 'Can I work with more than one product or seller?'), L('نعم. البائع يقدر يشارك في أكثر من فرصة، والشركة تقدر تعرض أكثر من منتج وتتعامل مع عدة بائعين من خلال حساب واحد.', 'Yes. A seller can join more than one opportunity, and a company can list several products and work with several sellers from one account.')],
     follow: [L('كيف أتابع الصفقات والعمولات؟', 'How do I follow deals and commissions?'), L('كل طرف عنده لوحة تحكم توضح له الصفقات وحالتها والعمولات المرتبطة فيها، عشان تكون رحلة البيع واضحة من البداية للنهاية.', 'Each side has a dashboard showing deals, their status and the related commissions, so the sales journey is clear from start to finish.')],
-    start: [L('وش أحتاج عشان أبدأ؟', 'What do I need to start?'), L('اختر نوع حسابك، أكمل بياناتك، وبعدها تقدر تبدأ بعرض منتجاتك كشركة أو اكتشاف فرص التسويق كمسوّق.', 'Choose your account type, complete your details, and then start listing products as a company or discovering opportunities as a marketer.')],
+    start: [L('وش أحتاج عشان أبدأ؟', 'What do I need to start?'), L('اختر نوع حسابك، أكمل بياناتك، وبعدها تقدر تبدأ بعرض منتجاتك كشركة أو اكتشاف فرص البيع كبائع.', 'Choose your account type, complete your details, and then start listing products as a company or discovering opportunities as a seller.')],
   } satisfies Record<string, FaqItem>
 }
 

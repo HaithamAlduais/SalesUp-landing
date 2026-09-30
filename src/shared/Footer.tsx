@@ -24,8 +24,9 @@ const OFFICE = {
 }
 
 /* `minimal`: the slim footer of standalone pages — brand, legal line
-   and the closing block, no site links or map */
-export function Footer({ minimal = false }: { minimal?: boolean }) {
+   and the closing block, no site links. `map`: the office map, which
+   only the home and services pages show (client, Sep 30) */
+export function Footer({ minimal = false, map = false }: { minimal?: boolean; map?: boolean }) {
   const { L, lang } = useLang()
   const { dark } = usePageTheme()
   const mapSrc = `https://maps.google.com/maps?q=${OFFICE.lat},${OFFICE.lng}&z=16&hl=${lang}&output=embed`
@@ -95,7 +96,7 @@ export function Footer({ minimal = false }: { minimal?: boolean }) {
 
           <nav className="footer-col" aria-label={L('اكتشف', 'Discover')}>
             <p className="footer-head">{L('اكتشف', 'Discover')}</p>
-            <a className="footer-link" href="/platform">{L('الحلول الرقمية', 'Digital Solutions')}</a>
+            <a className="footer-link" href="/platform/business">{L('الحلول الرقمية', 'Digital Solutions')}</a>
             <a className="footer-link" href="/jobs">{L('انضم لنا', 'Join Us')}</a>
             <a className="footer-link" href="/#contact">{L('استشارة مجانية', 'Free Consultation')}</a>
           </nav>
@@ -105,7 +106,7 @@ export function Footer({ minimal = false }: { minimal?: boolean }) {
         {/* office map: the iframe stays interactive (pan/zoom), and the
             overlaid link opens the place in Google Maps. Lazy so the
             embed never costs the initial load on any page. */}
-        {minimal ? null : <section className="footer-map" aria-label={L('موقع المكتب', 'Office location')}>
+        {minimal || !map ? null : <section className="footer-map" aria-label={L('موقع المكتب', 'Office location')}>
           <iframe
             className="footer-map-frame"
             src={mapSrc}

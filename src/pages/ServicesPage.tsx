@@ -468,7 +468,7 @@ export default function ServicesPage() {
   const service = slug ? SERVICES.find((s) => s.slug === slug) : undefined
 
   return (
-    <PageShell active="services">
+    <PageShell active="services" footerMap>
       {service ? <ServiceDetail service={service} /> : <ServicesIndex />}
     </PageShell>
   )

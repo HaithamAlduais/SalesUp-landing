@@ -29,7 +29,7 @@ function Business() {
       <Hero
         title={[L('فريق مبيعات', 'A sales team'), L('بدون توظيف', 'without hiring')]}
         lead={[
-          L('تنشر منتجك وتحدّد عمولته، ويبدأ المسوّقين البيع من أول يوم ', 'Publish your product and set its commission, and marketers start selling from day one, '),
+          L('تنشر منتجك وتحدّد عمولته، ويبدأ البائعين البيع من أول يوم ', 'Publish your product and set its commission, and sellers start selling from day one, '),
           L('والعمولة تُستحق عند الإقفال.', 'with commission due only when a deal closes.'),
         ]}
         cta={cta}
@@ -42,8 +42,7 @@ function Business() {
             icon: 'users',
             title: L('فريق بيع بدون توظيف', 'A sales team without hiring'),
             points: [
-              L('مسوّقون ينضمون لمنتجك ويبدأون البيع', 'Marketers join your product and start selling'),
-              L('أنت تكتب الشروط والعمولة', 'You write the terms and the commission'),
+              L('بائعون ينضمون لمنتجك ويبدأون البيع', 'Sellers join your product and start selling'),
               L('توقف أو تعدّل متى ما حبيت', 'Pause or change it whenever you like'),
             ],
           },
@@ -59,21 +58,21 @@ function Business() {
         ]}
       />
       <Story steps={[steps.publish, steps.approval, { ...steps.performance, scene: <CompanyPerformanceScene /> }]} />
-      <Features sets={[{ key: 'company', label: L('للشركة', 'For companies'), items: companyFeatures(L, ['انشر منتجك', 'Publish your product'], ['فريق بيع بالعمولة', 'A commission-based sales team']) }]} />
+      <Features items={companyFeatures(L, ['انشر منتجك', 'Publish your product'], ['فريق بيع بالعمولة', 'A commission-based sales team'])} />
       <Faq items={[faq.how, faq.commission, faq.approval, faq.many, faq.follow]} />
-      <Final text={L('انشر منتجك اليوم وخلّ المسوّقين يبيعونه لك', 'Publish your product today and let marketers sell it for you')} cta={cta} />
+      <Final text={L('انشر منتجك اليوم وخلّ البائعين يبيعونه لك', 'Publish your product today and let sellers sell it for you')} cta={cta} />
       <Cross
         href="/platform/affiliate"
-        title={L('أنت مسوّق وودّك بمصدر دخل؟', 'Are you a marketer looking for an income?')}
+        title={L('أنت بائع وودّك بمصدر دخل؟', 'Are you a seller looking for an income?')}
         desc={L('اختر منتج، تدرّب، بِع، وخذ عمولتك.', 'Pick a product, get trained, sell, and earn your commission.')}
-        button={L('صفحة المسوّقين', 'Marketers page')}
+        button={L('صفحة البائعين', 'Sellers page')}
       />
     </PlatformBody>
   )
 }
 
 /* the marketer pages share the hero board, the story and the tools */
-function MarketerBody({ title, lead, duo, features, faq, final, cross }: {
+function MarketerBody({ title, lead, duo, features, faq, final, cross, ctaLabel }: {
   title: [string, string]
   lead: [string, string]
   duo: { title: string; sides: Side[] }
@@ -82,24 +81,26 @@ function MarketerBody({ title, lead, duo, features, faq, final, cross }: {
   faq: FaqItem[]
   final: string
   cross?: boolean
+  /* the sign-up button's label (defaults to «ابدأ الآن مجاناً») */
+  ctaLabel?: string
 }) {
   const { L } = useLang()
   const steps = storySteps(L)
-  const cta = { href: APP_MARKETER, label: L('ابدأ الآن مجاناً', 'Start now for free') }
+  const cta = { href: APP_MARKETER, label: ctaLabel ?? L('ابدأ الآن مجاناً', 'Start now for free') }
 
   return (
     <PlatformBody>
       <Hero title={title} lead={lead} cta={cta} scenes={[<CommissionsScene live />, <CrmScene />, <LeaderboardScene />, <PerformanceScene />]} />
       <Duo {...duo} />
       <Story steps={[steps.opportunities, steps.crm, steps.commissions]} />
-      <Features title={features?.title} sets={[{ key: 'marketer', label: L('للمسوّق', 'For marketers'), items: features?.items ?? marketerFeatures(L) }]} />
+      <Features title={features?.title} items={features?.items ?? marketerFeatures(L)} />
       <Faq items={faq} />
       <Final text={final} cta={cta} />
       {cross ? (
         <Cross
           href="/platform/business"
           title={L('عندك منتج أو خدمة تبي من يبيعها؟', 'Have a product or service you want sold?')}
-          desc={L('اعرضه على المنصة وحدّد عمولته وتلقى مسوّقين يبيعونه لك', 'List it on the platform, set its commission, and get marketers who sell it for you')}
+          desc={L('اعرضه على المنصة وحدّد عمولته وتلقى بائعين يبيعونه لك', 'List it on the platform, set its commission, and get sellers who sell it for you')}
           button={L('صفحة الشركات', 'Companies page')}
         />
       ) : null}
@@ -112,7 +113,7 @@ function Affiliate() {
   const faq = faqItems(L)
   return (
     <MarketerBody
-      title={[L('بِع منتجات', 'Sell products'), L('وخذ عمولتك', 'and earn your commission')]}
+      title={[L('بِع منتجات رقمية', 'Sell digital products'), L('وخذ عمولتك', 'and earn your commission')]}
       lead={[
         L('اختر من المنتجات المعروضة والموضحة عمولتها، سجّل وتابع صفقاتك، ', 'Choose from listed products with their commission shown, record and track your deals, '),
         L('وعمولتك تُحسب وتُصرف لك تلقائيًا.', 'and your commission is calculated and paid to you automatically.'),
@@ -134,7 +135,7 @@ function Affiliate() {
       }}
       faq={[
         /* marketer-page wording per the client's review (Sep 28) */
-        [faq.how[0], L('الشركات تعرض منتجاتها وفرصها والمسوّقين يختارون الي يناسبهم منها، ومن خلال المنصة يتابع الطرفين صفقاتهم وعمولاتهم من مكان واحد.', 'Companies list their products and opportunities, marketers choose the ones that suit them, and both sides follow their deals and commissions on the platform from one place.')],
+        [faq.how[0], L('الشركات تعرض منتجاتها وفرصها والبائعين يختارون الي يناسبهم منها، ومن خلال المنصة يتابع الطرفين صفقاتهم وعمولاتهم من مكان واحد.', 'Companies list their products and opportunities, sellers choose the ones that suit them, and both sides follow their deals and commissions on the platform from one place.')],
         [L('كيف تُحسب العمولة؟', 'How is the commission calculated?'), faq.commission[1]],
         [L('ماهو CRM؟', 'What is a CRM?'), L('CRM يعني إدارة علاقات العملاء: صفحة خاصة فيك داخل المنصة تتابع فيها عملاءك وصفقاتك بكل تفاصيلها، وتعرف كل صفقة وين وصلت ومتى آخر تواصل.', 'CRM stands for customer relationship management: your own page on the platform where you follow your customers and deals in full detail, and see where each deal stands and when you last spoke.')],
         faq.payout, faq.many, faq.follow, faq.start,
@@ -197,7 +198,7 @@ function Students() {
           { icon: 'box', title: L('منتجات متنوعة تنضم لها', 'A range of products to join'), desc: L('تتصفّح المنتجات المتاحة، تشوف عمولة وشروط كل منتج وتنضم للمنتج الي يناسبك.', 'Browse the available products, see each one’s commission and terms, and join the product that suits you.') },
           { icon: 'wallet', title: L('عمولات محسوبة', 'Commissions, counted'), desc: L('عمولاتك المستحقة والجارية وإجمالي عمولاتك من وقت انضمامك تتحدث تلقائيًا.', 'Your payable and pending commissions, and your total since you joined, update automatically.') },
           { icon: 'users', title: L('CRM خاص فيك', 'Your own CRM'), desc: L('صفحة خاصة تتابع فيها عملاءك وصفقاتك بكل تفاصيلها.', 'Your own page to follow your customers and deals in full detail.') },
-          { icon: 'cup', title: L('لوحة المتصدّرين', 'Leaderboard'), desc: L('تقدر تشوف ترتيبك بين المسوّقين وتعرف مستوى أداءك.', 'See your rank among marketers and where your performance stands.') },
+          { icon: 'cup', title: L('لوحة المتصدّرين', 'Leaderboard'), desc: L('تقدر تشوف ترتيبك بين البائعين وتعرف مستوى أداءك.', 'See your rank among sellers and where your performance stands.') },
           { icon: 'chart', title: L('تقارير أدائك', 'Performance reports'), desc: L('توضح لك نسبة إقفالك للصفقات وأي منتج يجيب لك عمولة أكثر.', 'Shows your deal close rate and which product earns you the most commission.') },
           { icon: 'bell', title: L('تنبيهات تسبقك', 'Alerts ahead of you'), desc: L('صفقة اعتُمدت، صفقة وقفت، أو عمولة نزلت، كل جديد يوصلك أول بأول.', 'A deal approved, a deal on hold, or a commission paid: every update reaches you first.') },
         ],
@@ -211,6 +212,8 @@ function Students() {
         [L('كيف أبدأ؟', 'How do I start?'), L('سجّل ببريدك، اختر أول منتج يناسبك، وتدرّب عليه ثم ابدأ البيع.', 'Sign up with your email, pick a first product that suits you, get trained on it, then start selling.')],
       ]}
       final={L('سجّل ببريدك، اختر أول منتج، وابدأ من اليوم', 'Sign up with your email, pick your first product, and start today')}
+      /* students sign up through «انضم معنا» (client, Sep 30) */
+      ctaLabel={L('انضم معنا', 'Join us')}
     />
   )
 }
@@ -218,7 +221,7 @@ function Students() {
 export default function PlatformAudiencePage({ audience }: { audience: Audience }) {
   if (audience === 'students') {
     return (
-      <StandaloneShell cta={{ href: APP_MARKETER, ar: 'ابدأ الآن مجاناً', en: 'Start now for free' }}>
+      <StandaloneShell cta={{ href: APP_MARKETER, ar: 'انضم معنا', en: 'Join us' }}>
         <Students />
       </StandaloneShell>
     )

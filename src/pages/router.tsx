@@ -1,6 +1,6 @@
 import { lazy, ReactNode, Suspense } from 'react'
 import { SECTORS } from '../data/sectors'
-import { appPath } from '../shared/base'
+import { appPath, withBase } from '../shared/base'
 
 /*
  * Route-level code splitting: each screen ships as its own chunk (and
@@ -12,7 +12,6 @@ const ServicesPage = lazy(() => import('./ServicesPage'))
 const SectorPage = lazy(() => import('./SectorPage'))
 const BlogPage = lazy(() => import('./BlogPage'))
 const BlogArticlePage = lazy(() => import('./BlogArticlePage'))
-const PlatformPage = lazy(() => import('./PlatformPage'))
 const PlatformAudiencePage = lazy(() => import('./PlatformAudiencePage'))
 const JobsPage = lazy(() => import('./JobsPage'))
 
@@ -45,7 +44,13 @@ export function resolvePage(pathname: string): ReactNode {
   const articleSlug = path.match(/^\/blog\/([^/]+)$/)?.[1]
   if (articleSlug) return <BlogArticlePage slug={articleSlug} />
 
-  if (path === '/platform') return <PlatformPage />
+  /* the combined platform page was retired (client, Sep 30):
+     الحلول الرقمية opens the companies page. Old links land there too,
+     with the address corrected so it can be shared/bookmarked */
+  if (path === '/platform') {
+    window.history.replaceState(null, '', withBase('/platform/business') + window.location.search + window.location.hash)
+    return <PlatformAudiencePage audience="business" />
+  }
   /* the platform's audience pages; /platform/students is standalone
      (its own header and footer) and deliberately not linked anywhere */
   const audience = path.match(/^\/platform\/(business|affiliate|students)$/)?.[1]

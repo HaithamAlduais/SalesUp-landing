@@ -1,5 +1,6 @@
 {
   "redirects": [
+    { "source": "/platform", "destination": "/platform/business", "permanent": true },
     { "source": "/marketers", "destination": "/services", "permanent": true },
     { "source": "/marketers/:path*", "destination": "/services", "permanent": true }
   ],

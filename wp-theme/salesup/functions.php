@@ -76,6 +76,8 @@ function salesup_redirect_map() {
 		'our-services'            => '/services',
 		'why-us'                  => '/',
 		'contact-us'              => '/#contact',
+		/* the combined platform page was retired → the companies page */
+		'platform'                => '/platform/business',
 		/* the old affiliate program → the marketers page (Sep 2026) */
 		'affiliate'               => '/platform/affiliate',
 		'برنامج-التسويق-بالعمولة-المطور' => '/platform/affiliate',
@@ -193,7 +195,7 @@ function salesup_route_titles() {
 		'blog'                       => 'المدونة',
 		'platform'                   => 'الحلول الرقمية',
 		'platform/business'          => 'للشركات، فريق مبيعات بدون توظيف',
-		'platform/affiliate'         => 'للمسوّقين، بِع وخذ عمولتك',
+		'platform/affiliate'         => 'للبائعين، بِع وخذ عمولتك',
 		'platform/students'          => 'للطلاب، ابدأ مصدر دخلك من جهازك',
 		'jobs'                       => 'انضم لنا',
 		'jobs/students'              => 'التدريب التعاوني',
